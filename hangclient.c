@@ -5,6 +5,8 @@
  #include <sys/socket.h>
  #include <netinet/in.h>
  #include <netdb.h>
+ #include <string.h>	// 19/09/2017 Warning for memcpy
+ #include <stdlib.h>	// 19/09/2017 Warning for exit
 
  # define LINESIZE 80
  # define HANGMAN_TCP_PORT 1066
@@ -31,7 +33,7 @@
 
  	host_info = gethostbyname(server_name);
  	if (host_info == NULL) {
- 		fprintf (stderr, "%s: unknown host:%s \ n", argv [0], server_name);
+ 		fprintf (stderr, "%s: unknown host:%s \n", argv [0], server_name);
  		exit (2);
  	}
 
@@ -49,10 +51,12 @@
  Take a line from the server and show it, take a line and send the user input to the server. 
  Repeat until the server terminates the connection. */
 
- 	printf ("Connected to server% s \ n", server_name);
+ 	printf ("Connected to server: %s \n", server_name);	// 19/09/2017 Change formatting
  	while ((count = read (sock, i_line, LINESIZE)) > 0) {
  		write (1, i_line, count);
  		count = read (0, o_line, LINESIZE);//0 = STDIN
  		write (sock, o_line, count);
  	}
+
+	printf("Game Over!\n");	// 19/09/2017 Add simple game over message to test prog terminates
  }
