@@ -14,19 +14,20 @@
 			Added hangman graphic
 */
 
- #include <sys/types.h>
- #include <sys/socket.h>
- #include <netinet/in.h>
- #include <stdio.h>
- #include <syslog.h>
- #include <signal.h>
- #include <errno.h>
- #include <string.h>										// 23/09/2017 Warning for strcpy
- #include <stdlib.h>										// 23/09/2017 Warning for exit
- #include <unistd.h>										// 23/09/2017 gethostname(), write(), read(), close()
- #include <arpa/inet.h>										// 23/09/2017 inet_ntop()
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <stdio.h>
+#include <syslog.h>
+#include <signal.h>
+#include <errno.h>
+#include <string.h>										// 23/09/2017 Warning for strcpy
+#include <stdlib.h>										// 23/09/2017 Warning for exit
+#include <unistd.h>										// 23/09/2017 gethostname(), write(), read(), close()
+#include <arpa/inet.h>										// 23/09/2017 inet_ntop()
+#include <sys/wait.h>										// 08/10/2017 wait()
 
- extern time_t time ();
+extern time_t time ();
 
  int maxlives = 12;
  char *word [] = {
@@ -54,26 +55,34 @@ char *hangman[]= {
  void main ()											// No command line arguments
  {
  	int sock, fd, client_len;
- 	//struct sockaddr_in server, client;							// Made global to display client name outside main
+	//socklen_t client_len;
+	pid_t childpid;
+	socklen_t clilen;
+	struct sockaddr_in cliaddr, servaddr;
+	void sig_chld(int);
 
  	srand ((int) time ((long *) 0)); 							/* randomize the seed */
 
  	sock = socket (AF_INET, SOCK_STREAM, 0);						// 0 or IPPROTO_TCP	// Create the socket
- 	if (sock <0) { 										// This error checking is the code Stevens wraps in his Socket Function etc
+
+ 	if (sock < 0) { 									// This error checking is the code Stevens wraps in his Socket Function etc
  		perror ("creating stream socket");
  		exit (1);
  	}
 
+	bzero(&server, sizeof(server));
  	server.sin_family = AF_INET;								// IPv4 address
  	server.sin_addr.s_addr = htonl(INADDR_ANY);						// Server IP
  	server.sin_port = htons(HANGMAN_TCP_PORT);						// Server port
 
- 	if (bind(sock, (struct sockaddr *) & server, sizeof(server)) <0) {			// socket(), bind(), listen() -> Server prepared to accept connection
+ 	if (bind(sock, (struct sockaddr *) & server, sizeof(server)) < 0) {			// socket(), bind(), listen() -> Server prepared to accept connection
  		perror ("binding socket");
 	 	exit (2);
  	}
 
  	listen (sock, 5);									// socket(), bind(), listen() -> server passive open
+
+	signal(SIGCHLD, sig_chld);	
 
 	// Draw hangman
 	int h;
@@ -94,8 +103,13 @@ char *hangman[]= {
 		if (inet_ntop(AF_INET, &client.sin_addr.s_addr, clntName,sizeof(clntName)) != NULL){
   			printf("Handling client %s/%d\n", clntName, ntohs(client.sin_port));
 		}
+		
+		if ( (childpid = fork()) == 0) {							// XXX child process, was Fork()
+			close(sock);											// XXX close listening socket, was Close()
+ 			play_hangman (fd, fd);								// Play the game
+			exit(0);
+		}
 
- 		play_hangman (fd, fd);								// Play the game
  		close (fd);									// Close the connection to client
  	}
  }
@@ -169,3 +183,14 @@ char *hangman[]= {
 		}
  	}
  }
+
+
+void sig_chld(int signo) {
+	pid_t pid;
+	int stat;
+
+	pid = wait(&stat);
+	printf("Child %d has terminated\n", pid);
+
+	return;
+}
