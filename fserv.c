@@ -153,7 +153,7 @@ char *hangman[]= {										// ASCII hangman graphic
 	part_word[i] = '\0';									// Add string terminating character
 
  	//sprintf (outbuf, "%s %d \n", part_word, lives);					// Set outbuf to the part word & the lives left
- 	snprintf (outbuf, sizeof(outbuf), "%s %d \n", part_word, lives);			// Set outbuf to the part word & the lives left, with protection against buffer overflow
+ 	snprintf (outbuf, sizeof(outbuf), "%s %d \n", part_word, lives);			// Convert to text string. Set outbuf to the part word & the lives left, with protection against buffer overflow
  	write (out, outbuf, strlen(outbuf));							// Send to client
 
  	while (game_state == 'I')								// Loop until game is complete
@@ -179,7 +179,7 @@ char *hangman[]= {										// ASCII hangman graphic
  			strcpy (part_word, whole_word); 					/* User Show the word */
  		}
  		//sprintf (outbuf, "%s %d \n", part_word, lives);				// Set the part_word and lives to be sent
- 		snprintf (outbuf, sizeof(outbuf), "%s %d \n", part_word, lives);		// Set the part_word and lives to be sent, with protection against buffer overflow
+ 		snprintf (outbuf, sizeof(outbuf), "%s %d \n", part_word, lives);		// Convert to text string. Set the part_word and lives to be sent, with protection against buffer overflow
  		write (out, outbuf, strlen (outbuf));						// Send outbuf info to client
 	
 		// Send game over message
@@ -198,14 +198,19 @@ char *hangman[]= {										// ASCII hangman graphic
  	}
  }
 
-// P180 Zombies - Signal handler to catch SIGCHLD
+// P180 Zombies - Signal handler to catch SIGCHLD (SIGCHLD default disposition is to be ignored)
 // Needs to be done before we fork the first child, and needs to be done once
 void sig_chld(int signo) {
 	pid_t pid;
 	int stat;
 
-	pid = wait(&stat);
-	printf("Child %d has terminated\n", pid);	// Diagnostic tool - Shows when the child terminates
-
-	return;
+	//pid = wait(&stat);				// Call to wait() handles the terminated child
+	//printf("Child %d has terminated\n", pid);	// Diagnostic tool - Shows when the child terminates
+	
+	// Handle zombies, preventing them from being left around, waitpid can be called in a loop, wait can't
+	// A SIGCHLD handler must be coded correctly using waitpid, to prevent any zombies from being left around
+	while ((pid = waitpid(-1, &stat, WNOHANG)) > 0)	// Calling wait insufficient for preventing zombies, WNOHANG: tells waitpid not to block if child running that has not terminated. wait can't be called in a loop, no way to stop wait from blocking
+		printf("Child %d terminated\n", pid);
+	
+	return;						// return not necessary here (void) - Reminder that return may interrupt a system call
 }
