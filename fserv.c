@@ -23,11 +23,11 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <stdio.h>
-#include <syslog.h>
+#include <stdio.h>										// printf()
+#include <syslog.h>										// syslog()
 #include <signal.h>
 #include <errno.h>
-#include <string.h>										// 23/09/2017 Warning for strcpy
+#include <string.h>										// 23/09/2017 Warning for strcpy, bzero()
 #include <stdlib.h>										// 23/09/2017 Warning for exit
 #include <unistd.h>										// 23/09/2017 gethostname(), write(), read(), close()
 #include <arpa/inet.h>										// 23/09/2017 inet_ntop()
@@ -57,7 +57,7 @@ char *hangman[]= {										// ASCII hangman graphic
 "  |    _// \\\\_",
 "__|____________"};    
 
- void play_hangman(int in, int out);								// Function delcaration for play_hangman
+void play_hangman(int in, int out);								// Function delcaration for play_hangman
 
  void main ()											// No command line arguments
  {
@@ -65,7 +65,7 @@ char *hangman[]= {										// ASCII hangman graphic
 	//socklen_t client_len;
 	pid_t childpid;										// pid_t: signed int data type, capable of representing  a process ID
 	socklen_t clilen;									// socklen_t: unsigned opaque integral type of length of at least 32 bits
-	struct sockaddr_in cliaddr, servaddr;							// Internet socket address structures
+	//struct sockaddr_in cliaddr, servaddr;							// Internet socket address structures
 	void sig_chld(int);
 
  	//srand ((int) time ((long *) 0)); 							// 08-10-2017 Moved - randomize the seed - Same Game Each Client
