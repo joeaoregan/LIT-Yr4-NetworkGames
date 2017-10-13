@@ -8,39 +8,23 @@
 	Samantha Marah	K00200782
 	Jason Foley 	K00186690
 
+	12/10/2017	Added header files for shared game variables and methods
 	19/09/2017 	Added includes to get rid of compile warnings (wasn't necessary)
 			Game Over message displayed after connection to Server terminates
 	23/09/2017	Added include to clear warning on read(), write()
 			Added hangman graphic
 */
 
- #include <stdio.h>
- #include <sys/types.h>
- #include <sys/socket.h>
- #include <netinet/in.h>
- #include <netdb.h>
- #include <string.h>	// 19/09/2017 Warning for memcpy
- #include <stdlib.h>	// 19/09/2017 Warning for exit
- #include <unistd.h>	// 24/09/2017 write(), read()
-
- # define LINESIZE 80
- # define HANGMAN_TCP_PORT 1066
-
-char *hangman[]= {
-"   T E A M 2",
-" H A N G M A N",
-"  _____________", 
-"  |/      |",
-"  |   ___(\")___",
-"  |      |_|",
-"  |      /^\\",
-"  |    _// \\\\_",
-"__|____________"};    
-
-char *altArms[]={"  |    __(\")___", "  |    __(\")__", "  |      (\")___", "  |      (\")"};	// ARMS - left hand, right hand, left arm, none
-char *altBody[]={"  |"};									// BODY - none
-char *altLegs[]={"  |      ~^\\", "  |      ~^~",};						// LEGS - 0.Left, 1.right, 2.none
-char *altFeet[]={"  |     // \\\\_","  |     // \\\\", "  |        \\\\_", "  |"};		// Feet - 0.Left foot, 1.right foot, 2.Left shin, 3. Right shin (none)
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <string.h>		// 19/09/2017 Warning for memcpy
+#include <stdlib.h>		// 19/09/2017 Warning for exit
+#include <unistd.h>		// 24/09/2017 write(), read()
+#include "../Hangman.h"		// 11/10/2017 Hangamen header file
+#include "../DrawHangman.h"	// 11/10/2017 Draw Hangman Graphic
 
  int main (int argc, char * argv [])
  {
@@ -79,11 +63,7 @@ char *altFeet[]={"  |     // \\\\_","  |     // \\\\", "  |        \\\\_", "  |"
  	  exit (3);
  	}
 
-	// Draw hangman
-	int h;
-	for (h = 0; h < 9; ++h){
-	  printf("%s\n", hangman[h]);
-	}
+	drawHangman();										// Draw hangman Graphic
 
  	/*OK connected to the server.  
  	Take a line from the server and show it, take a line and send the user input to the server. 
@@ -93,8 +73,31 @@ char *altFeet[]={"  |     // \\\\_","  |     // \\\\", "  |        \\\\_", "  |"
 
 	//int i, numLetters = 0;
 
+	/* -----------------------------------------------------------------------------------------------------------------------------*/
+
+	//char a1[8], a2[8], a3[3], a4[6] a5[10], arg1PartWord[20];
+	char arg1PartWord[20];
+	int arg2LivesLeft;
+
+	count = read (sock, i_line, 34);
+	write (1, i_line, count);
+
  	while ((count = read (sock, i_line, LINESIZE)) > 0) {
- 	    write (1, i_line, count);	
+		sscanf(i_line, "%s %d", &(*arg1PartWord), &arg2LivesLeft);
+ 
+	    	write (1, i_line, count);	
+
+
+	//if (sscanf(i_line, "%s%d", &arg1PartWord, &arg2LivesLeft) == 2)
+	//sscanf(i_line, "%s %s %s %s %s %s %d", &(*a1), &(*a2), &(*a3), &(*a4), &(*a5), &arg2LivesLeft);
+	sscanf(i_line, "%s %d", &(*arg1PartWord), &arg2LivesLeft);
+	//printf("test: %s\n", arg1PartWord);
+	//printf("Try A Guess: %s Lives Left: %d\n", arg1PartWord, arg2LivesLeft);
+	
+	amputate(arg2LivesLeft);
+
+
+	/* -----------------------------------------------------------------------------------------------------------------------------*/
 
 	    // parse server stuff
 	    //for (i = 0; i < LINESIZE; i++) {
