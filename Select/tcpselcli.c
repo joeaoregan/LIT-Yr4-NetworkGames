@@ -9,18 +9,17 @@
 #include <stdlib.h>					// 23/09/2017 Warning for exit
 #include <unistd.h>					// 23/09/2017 gethostname(), write(), read(), close()
 #include <arpa/inet.h>					// 23/09/2017 inet_ntop()
-	
-#define	MAXLINE		4096				/* max text line length */
-//#define	SERV_PORT	9877	
-
-# define HANGMAN_TCP_PORT 1066								// The port number
-
- # define LINESIZE 80
+#include "../Hangman.h"					// 11/10/2017 Hangamen header file
+#include "../DrawHangman.h"				// 11/10/2017 Draw Hangman Graphic
 
 void str_echo(int sockfd);
 void str_cli(FILE *fp, int sockfd);
 static ssize_t my_read(int fd, char *ptr);
 ssize_t readline(int fd, void *vptr, size_t maxlen);
+
+// Parse server data to these variables
+char arg1PartWord[20];
+int arg2LivesLeft;
 
 int main(int argc, char **argv)
 {
@@ -36,10 +35,11 @@ int main(int argc, char **argv)
 	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_port = htons(HANGMAN_TCP_PORT);
-	inet_pton(AF_INET, argv[1], &servaddr.sin_addr);	// XXX
+	inet_pton(AF_INET, argv[1], &servaddr.sin_addr);			// XXX
 
 	connect(sockfd, (struct sockaddr *) &servaddr, sizeof(servaddr));	// XXX
 
+	drawHangman();								// Draw hangman Graphic
 	printf("Client Connecting On Port: %d \n", ntohs(servaddr.sin_port));	// Display port number
 
 	str_cli(stdin, sockfd);		/* do it all */
@@ -50,15 +50,19 @@ int main(int argc, char **argv)
 
 void str_cli(FILE *fp, int sockfd)
 {
-	char	sendline[MAXLINE], recvline[MAXLINE];
+	char sendline[LINESIZE], recvline[LINESIZE];
 
-	while (fgets(sendline, MAXLINE, fp) != NULL) {
+	while (fgets(sendline, LINESIZE, fp) != NULL) {
 
 		write(sockfd, sendline, strlen(sendline));
 
-		if (readline(sockfd, recvline, MAXLINE) == 0)
+		if (readline(sockfd, recvline, LINESIZE) == 0)
 			//err_quit("str_cli: server terminated prematurely");
 			printf("str_cli: server terminated prematurely");
+
+		sscanf(recvline, "%s %d", &(*arg1PartWord), &arg2LivesLeft);
+
+		amputate(arg2LivesLeft);
 
 		fputs(recvline, stdout);
 	}
@@ -67,7 +71,7 @@ void str_cli(FILE *fp, int sockfd)
 
 static int	read_cnt;
 static char	*read_ptr;
-static char	read_buf[MAXLINE];
+static char	read_buf[LINESIZE];
 
 static ssize_t my_read(int fd, char *ptr)
 {
@@ -98,14 +102,14 @@ ssize_t readline(int fd, void *vptr, size_t maxlen)
 		if ( (rc = my_read(fd, &c)) == 1) {
 			*ptr++ = c;
 			if (c == '\n')
-				break;	/* newline is stored, like fgets() */
+				break;		/* newline is stored, like fgets() */
 		} else if (rc == 0) {
 			*ptr = 0;
-			return(n - 1);	/* EOF, n - 1 bytes were read */
+			return(n - 1);		/* EOF, n - 1 bytes were read */
 		} else
 			return(-1);		/* error, errno set by read() */
 	}
 
-	*ptr = 0;	/* null terminate like fgets() */
+	*ptr = 0;				/* null terminate like fgets() */
 	return(n);
 }

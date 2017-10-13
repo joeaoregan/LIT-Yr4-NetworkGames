@@ -79,7 +79,7 @@ void main ()												// No command line arguments
  	}
  }
 
- /* ---------------- Play_hangman () ---------------------*/
+/* ---------------- Play_hangman () ---------------------*/
 
  void play_hangman (int in, int out)
  {
@@ -89,10 +89,8 @@ void main ()												// No command line arguments
  	
   	displayHostname(out, outbuf);									// Display the name of the server
 
- 	/* Pick a word at random from the list */
- 	whole_word = word[rand() % NUM_OF_WORDS];							// Select random word from words array
+ 	whole_word = whole_word = selectRandomWord(clntName, CLI_PORT);					// Select random word from words array
  	word_length = strlen(whole_word);								// Get length of word
- 	syslog (LOG_USER | LOG_INFO, "server chose hangman word %s", whole_word);
 
  	/* No letters are guessed Initially */
  	for (i = 0; i <word_length; i++)
@@ -123,6 +121,6 @@ void main ()												// No command line arguments
  		sprintf (outbuf, "%s %d \n", part_word, lives);						// Set the part_word and lives to be sent
  		write (out, outbuf, strlen (outbuf));							// Send outbuf info to client
 	
-    		checkGameOver(game_state, outbuf, sizeof(outbuf), whole_word, out, clntName, CLI_PORT); // If game is finished, display win/lose message
+    		checkGameOver(game_state, outbuf, whole_word, out, clntName, CLI_PORT); 		// If game is finished, display win/lose message
  	}
  }

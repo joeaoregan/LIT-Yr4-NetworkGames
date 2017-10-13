@@ -33,42 +33,22 @@
 #include <arpa/inet.h>										// 23/09/2017 inet_ntop()
 #include <sys/wait.h>										// 08/10/2017 wait()
 #include <time.h>
+#include "../DrawHangman.h"
+#include "../Hangman.h"
 
 extern time_t time ();
-
-int maxlives = 12;
-char *word [] = {
-  #include "../words"
-};
-# define NUM_OF_WORDS (sizeof (word) / sizeof (word [0]))
-# define MAXLEN 80 										/* Maximum size in the world of Any string */
-# define HANGMAN_TCP_PORT 1066									// The port number
-
 char clntName[INET_ADDRSTRLEN];									// Client address string
 struct sockaddr_in server, client;
-char *hangman[]= {										// ASCII hangman graphic
-"   T E A M 1",											// Changed to Team 1 (the actual team name)
-" H A N G M A N",
-"  _____________", 
-"  |/      |",
-"  |   ___(\")___",
-"  |      |_|",
-"  |      /^\\",
-"  |    _// \\\\_",
-"__|____________"};    
+#define CLI_PORT ntohs(client.sin_port)
 
-void play_hangman(int in, int out);								// Function delcaration for play_hangman
-
- void main ()											// No command line arguments
- {
- 	int sock, fd, client_len;								// Socket, client socket, and length of client socket
+void main ()											// No command line arguments
+{
+	int sock, fd, client_len;								// Socket, client socket, and length of client socket
 	//socklen_t client_len;
 	pid_t childpid;										// pid_t: signed int data type, capable of representing  a process ID
 	socklen_t clilen;									// socklen_t: unsigned opaque integral type of length of at least 32 bits
 	//struct sockaddr_in cliaddr, servaddr;							// Internet socket address structures
 	void sig_chld(int);
-
- 	//srand ((int) time ((long *) 0)); 							// 08-10-2017 Moved - randomize the seed - Same Game Each Client
 
  	sock = socket (AF_INET, SOCK_STREAM, 0);						// 0 or IPPROTO_TCP	// Create the socket
 
@@ -91,10 +71,7 @@ void play_hangman(int in, int out);								// Function delcaration for play_hang
 
 	signal(SIGCHLD, sig_chld);								// SIGCHLD signal is sent to the parent of a child process when it exits, is interuppted, or resumes after interruption
 
-	// Draw hangman
-	for (int h = 0; h < 9; ++h){								// Draw hangman ASCII
-	  printf("%s\n", hangman[h]);
-	}
+	drawHangman();										// Draw the hangman graphic
 
 	printf("Server now running on port: %d \n", ntohs(server.sin_port));			// Display port number
 
@@ -127,74 +104,45 @@ void play_hangman(int in, int out);								// Function delcaration for play_hang
 
  void play_hangman (int in, int out)
  {
- 	char * whole_word, part_word [MAXLEN],							// The word to guess, the word so far
- 	guess[MAXLEN], outbuf [MAXLEN];
+ 	char * whole_word, part_word [LINESIZE],
+ 	guess[LINESIZE], outbuf [LINESIZE];
+ 	int i, word_length, lives = MAX_LIVES, game_state = 'I';					// Iterator, length of whole_word, correct guesses, game state
+ 	
+  	displayHostname(out, outbuf);									// Display the name of the server
 
- 	int lives = maxlives;									// Initialise the number of guesses
- 	int game_state = 'I';									// I = Incomplete
- 	int i, good_guess, word_length;								// Iterator, correct guesses, 
- 	char hostname[MAXLEN];									// Name of the current system
-
- 	gethostname (hostname, MAXLEN);								// Get the host name
-	
- 	//sprintf(outbuf, "Playing hangman on host: %s \n \n", hostname);
- 	snprintf(outbuf, sizeof(outbuf), "Playing hangman on host: %s \n \n", hostname);	// Set outbuf to server hostname, with protection against buffer overflow
- 	write(out, outbuf, strlen (outbuf));							// Send outbuf to client
-
- 	/* Pick a word at random from the list */
- 	whole_word = word[rand() % NUM_OF_WORDS];						// Select random word from words array
- 	word_length = strlen(whole_word);							// Get length of word
- 	syslog (LOG_USER | LOG_INFO, "server chose hangman word %s", whole_word);		// Message logging
+ 	whole_word = whole_word = selectRandomWord(clntName, CLI_PORT);					// Select random word from words array
+ 	word_length = strlen(whole_word);								// Get length of word
 
  	/* No letters are guessed Initially */
  	for (i = 0; i <word_length; i++)
- 		part_word[i]='-';								// Display hyphens to indicate size of word
+ 		part_word[i]='-';									// Display hyphens to indicate size of word
  	
-	part_word[i] = '\0';									// Add string terminating character
+	part_word[i] = '\0';										// Add string terminating character
 
- 	//sprintf (outbuf, "%s %d \n", part_word, lives);					// Set outbuf to the part word & the lives left
- 	snprintf (outbuf, sizeof(outbuf), "%s %d \n", part_word, lives);			// Convert to text string. Set outbuf to the part word & the lives left, with protection against buffer overflow
- 	write (out, outbuf, strlen(outbuf));							// Send to client
+ 	sprintf (outbuf, "%s %d \n", part_word, lives);							// Set outbuf to the part word & the lives left
+ 	write (out, outbuf, strlen(outbuf));								// Send to client
 
- 	while (game_state == 'I')								// Loop until game is complete
+ 	while (game_state == 'I')									// Loop until game is complete
  	/* Get a letter from player guess */
  	{
-		while (read (in, guess, MAXLEN) <0) {						// Read guess from client
- 			if (errno != EINTR)							// Check for error
+		while (read (in, guess, LINESIZE) <0) {							// Read guess from client
+ 			if (errno != EINTR)								// Check for error
  				exit (4);
  			printf ("re-read the startin \n");
- 			} 									/* Re-start read () if interrupted by signal */
- 		good_guess = 0;									// Set/reset good_guess to false
- 		for (i = 0; i <word_length; i++) {
- 			if (guess [0] == whole_word [i]) {					// If the guess from client is a match
- 				good_guess = 1;							// Set good guess true
- 				part_word [i] = whole_word [i];					// Fill the guessed letter in correct position
- 			}
+ 		} 											/* Re-start read () if interrupted by signal */
+
+    		if (!correctGuess(whole_word, part_word, guess)) lives--;				// If it's an incorrect guess, decrement the number of lives
+
+ 		if (strcmp (whole_word, part_word) == 0)						// If all letters guessed correctly
+ 			game_state = 'W'; 								/* W ==> User Won */
+ 		else if (lives == 0) {									// If client has run out of guesses
+ 			game_state = 'L'; 								/* L ==> User Lost */
+ 			strcpy (part_word, whole_word); 						/* User Show the word */
  		}
- 		if (! good_guess) lives--;							// If the player guesses wrong, decrement lives
- 		if (strcmp (whole_word, part_word) == 0)					// If all letters guessed correctly
- 			game_state = 'W'; 							/* W ==> User Won */
- 		else if (lives == 0) {								// If client has run out of guesses
- 			game_state = 'L'; 							/* L ==> User Lost */
- 			strcpy (part_word, whole_word); 					/* User Show the word */
- 		}
- 		//sprintf (outbuf, "%s %d \n", part_word, lives);				// Set the part_word and lives to be sent
- 		snprintf (outbuf, sizeof(outbuf), "%s %d \n", part_word, lives);		// Convert to text string. Set the part_word and lives to be sent, with protection against buffer overflow
- 		write (out, outbuf, strlen (outbuf));						// Send outbuf info to client
+ 		sprintf (outbuf, "%s %d \n", part_word, lives);						// Set the part_word and lives to be sent
+ 		write (out, outbuf, strlen (outbuf));							// Send outbuf info to client
 	
-		// Send game over message
-		if (game_state == 'W') {
-			printf("Client %s/%d has guessed \"%s\" correctly!\n", clntName, ntohs(client.sin_port), whole_word);
- 			//sprintf (outbuf, "\nPlayer Has Guessed \"%s\" Correctly!\n", whole_word);			// Set win message to return to client
- 			snprintf (outbuf, sizeof(outbuf), "\nPlayer Has Guessed \"%s\" Correctly!\n", whole_word);	// Set win message to return to client
- 			write (out, outbuf, strlen (outbuf));								// Send outbuf info to client
-		}
-		else if (game_state == 'L') {
-			printf("Client %s/%d is a loser!\n", clntName, ntohs(client.sin_port));
- 			//sprintf (outbuf, "\nPlayer Has Run Out Of Guesses!\n");					// Set lose message to return to client
- 			snprintf (outbuf, sizeof(outbuf), "\nPlayer Has Run Out Of Guesses!\n");			// Set lose message to return to client, with protection against buffer overflow
- 			write (out, outbuf, strlen (outbuf));								// Send outbuf info to client
-		}
+    		checkGameOver(game_state, outbuf, whole_word, out, clntName, CLI_PORT); // If game is finished, display win/lose message
  	}
  }
 
