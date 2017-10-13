@@ -30,7 +30,7 @@
 
  int maxlives = 12;
  char *word [] = {
- #include "words"
+   #include "../words"
  };
  # define NUM_OF_WORDS (sizeof (word) / sizeof (word [0]))
  # define MAXLEN 80 										/* Maximum size in the world of Any string */
