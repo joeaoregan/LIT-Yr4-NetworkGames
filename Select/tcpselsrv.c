@@ -20,7 +20,7 @@
 //  #include "../words"
 //};
 #define NUM_OF_WORDS (sizeof (word) / sizeof (word [0]))
-#define MAXLEN 80 											/* Maximum size in the world of Any string */
+//#define MAXLEN 80 											/* Maximum size in the world of Any string */
 //#define HANGMAN_TCP_PORT 1066								// The port number
 
 
@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 	int					nready, arrClient[FD_SETSIZE];
 	ssize_t				n;
 	fd_set				rset, allset;
-	char				buf[MAXLEN];
+	char				buf[LINESIZE];
 	socklen_t			clilen;
 
 	listenfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -108,10 +108,11 @@ int main(int argc, char **argv)
 				 	
 					part_word[j] = '\0';	
 /*arr part*/		arrPartWords[i] = part_word;	
+					//strcpy (arrPartWords[i], part_word);
 /*arr lives*/		arrLives[i] = MAX_LIVES;
 /*arr state*/		arrStates[i] = 'I';
 /*arr length*/		arrLengths[i] = word_length;
-
+					printf("test part word: %s\n", arrPartWords[i]);
 
 					break;
 				}
@@ -129,9 +130,10 @@ int main(int argc, char **argv)
 			if ( (sockfd = arrClient[clientIndex]) < 0) continue;
 
 			if (FD_ISSET(sockfd, &rset)) {
-			  while (arrStates[clientIndex] == 'I') {
+			 // while (arrStates[clientIndex] == 'I') {
+			  if (arrStates[clientIndex] == 'I') {
 /* READ CLIENT GUESS */
-				if ( (n = read(sockfd, guess, MAXLEN)) == 0) {					// Get the guess from the client
+				if ( (n = read(sockfd, guess, LINESIZE)) == 0) {					// Get the guess from the client
 					/* 4connection closed by client */
 					close(sockfd);
 					FD_CLR(sockfd, &allset);
@@ -153,17 +155,17 @@ int main(int argc, char **argv)
 			 		for (i = 0; i < arrLengths[clientIndex]; i++) {
 			 			if (guess [0] == arrWholeWords[clientIndex][i]) {									// If the guess from client is a match
 			 				good_guess = 1;																	// Set good guess true
-			 				arrPartWords[clientIndex] [i] = arrWholeWords[clientIndex][i];					// Fill the guessed letter in correct position
+			 				arrPartWords[clientIndex][i] = arrWholeWords[clientIndex][i];					// Fill the guessed letter in correct position
+							printf("part word after guess: %s\n", arrPartWords[clientIndex]);
 			 			}
 			 		}
-
 
 					if (! good_guess) arrLives[clientIndex]--;
 					if (strcmp (arrWholeWords[clientIndex], arrPartWords[clientIndex]) == 0)				// If all letters guessed correctly
  						arrStates[clientIndex] = 'W'; 
 					else if (arrLives[clientIndex] <= 0) {													// If client has run out of guesses
 			 			arrStates[clientIndex] = 'L'; 														/* L ==> User Lost */
-			 			strcpy (part_word, arrWholeWords[clientIndex]); 									/* User Show the word */
+			 			strcpy (arrPartWords[clientIndex], arrWholeWords[clientIndex]); 									/* User Show the word */
 			 		}
 
 /*SET FOR EACH CLIENT*/		
@@ -171,9 +173,10 @@ int main(int argc, char **argv)
 			
 /* WRITE BACK TO CLIENT*/					
 
-    				snprintf (buf, sizeof(buf), "%s %d \n", arrPartWords[clientIndex], arrLives[clientIndex]);
+    				//snprintf (buf, sizeof(buf), "%s %d \n", arrPartWords[clientIndex], arrLives[clientIndex]);
+    				sprintf (buf, "%s %d \n", arrPartWords[clientIndex], arrLives[clientIndex]);
+					//if (arrStates[clientIndex] == 'I') 
 					write (sockfd, buf, strlen (buf));
-
 
 					printf("part word: %s lives: %d state: %c\n", arrPartWords[clientIndex], arrLives[clientIndex], arrStates[clientIndex]);
 /* FINISH GAME */
@@ -181,16 +184,18 @@ int main(int argc, char **argv)
 					// Send game over message
 					if (arrStates[clientIndex] == 'W') {
 						printf("Client %s/%d has guessed correctly!\n", clntName, ntohs(cliaddr.sin_port));
-			 			sprintf (outbuf, "\nPlayer Has Guessed Correctly!\n");			// Set win message to return to client
-			 			write (sockfd, buf, strlen (buf));								// Send outbuf info to client
+			 			sprintf (outbuf, "Player Has Guessed Correctly!\n");			// Set win message to return to client
+			 			write (sockfd, outbuf, strlen (outbuf));	
+						close(sockfd);							// Send outbuf info to client
 					}
 					else if (arrStates[clientIndex] == 'L') {
 						printf("Client %s/%d is a loser!\n", clntName, ntohs(cliaddr.sin_port));
-			 			sprintf (outbuf, "\nPlayer Has Run Out Of Guesses!\n");			// Set lose message to return to client
-			 			write (sockfd, buf, strlen (buf));								// Send outbuf info to client
+			 			sprintf (outbuf, "Player Has Run Out Of Guesses!\n");			// Set lose message to return to client
+			 			write (sockfd, outbuf, strlen (outbuf));	
+						close(sockfd);							// Send outbuf info to client
 					}
 				}
-				if (--nready <= 0) break;																	/* no more readable descriptors */
+				if (--nready <= 0) break;												/* no more readable descriptors */
 
 				}	// end while game state I
 			}
