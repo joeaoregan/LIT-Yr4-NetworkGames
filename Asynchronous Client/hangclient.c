@@ -30,10 +30,10 @@
  {
  	struct sockaddr_in server; /* Server's address assembled here */
  	struct hostent * host_info;
- 	int sock, count;									// The socket, and the size of the data to receive
- 	char i_line[LINESIZE];									// input buffer (linesize definition (80) moved to Hangman.h headf file)
- 	char o_line[LINESIZE];									// output buffer
- 	char * server_name;									// The name for the server, input as a command line argument
+ 	int sock, count;
+ 	char i_line[LINESIZE];
+ 	char o_line[LINESIZE];
+ 	char * server_name;
 
  	/* Get server name from the command line.  If none, use 'localhost' */
 
@@ -51,6 +51,7 @@
  	  fprintf (stderr, "%s: unknown host:%s \n", argv [0], server_name);
  	  exit (2);
  	}
+/**/	else printf("Servername: %s\n", server_name);						// Display the server name
 
  	/* Set up the server's socket address, then connect */
 
@@ -73,7 +74,7 @@
 
 	//int i, numLetters = 0;
 
-	/* -------------------------------------------------------------------------------------*/
+	/* -----------------------------------------------------------------------------------------------------------------------------*/
 /* PARSE VARIABLES */
 /**/	char arg1PartWord[20];
 /**/	int arg2LivesLeft;
@@ -84,14 +85,19 @@
  	while ((count = read (sock, i_line, LINESIZE)) > 0) {
 /* PARSE INPUT FROM SERVER */
 /**/		sscanf(i_line, "%s %d", &(*arg1PartWord), &arg2LivesLeft);			// Parse string data received from server into separate part-word and score variables
- 		//printf("test: %s\n", arg1PartWord);						// Test parsing the buffer string from server worked
-		//printf("Try A Guess: %s Lives Left: %d\n", arg1PartWord, arg2LivesLeft);	
+ 
+	    	write (1, i_line, count);							// Display the data string received from the server on screen
+
+//		sscanf(i_line, "%s %d", &(*arg1PartWord), &arg2LivesLeft);
+		//printf("test: %s\n", arg1PartWord);
+		//printf("Try A Guess: %s Lives Left: %d\n", arg1PartWord, arg2LivesLeft);
+	
 /**/		amputate(arg2LivesLeft);							// Display graphical represenation of lives left
-		printf("%s\n", arg1PartWord);
-//	    	write (1, i_line, count);							// Display the data string received from the server on screen
+
+ 	    	// write (1, i_line, count);							// Display line from server on screen
  	    	count = read (0, o_line, LINESIZE);						// 0 = STDIN
  	    	write (sock, o_line, count);							// Send client input to server
  	}
 
 /**/	printf("Game Over!\n");									// 19/09/2017 Add simple game over message to test prog terminates
-}
+ }
