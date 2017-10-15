@@ -1,7 +1,3 @@
-/* include fig01 */
-//#include	"unp.h"
-
-
 //#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -153,4 +149,3 @@ int main(int argc, char **argv)
 		}
 	}
 }
-/* end fig02 */

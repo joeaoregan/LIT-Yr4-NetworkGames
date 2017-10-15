@@ -7,10 +7,13 @@ This is a group assignment for the 4th year Networked Games module. The group co
   * Samantha Marah
   * Jason Foley
 
+## Features:
+
 This online text based version of Hangman includes the following features:
   * TCP server socket using fork()
   * TCP server socket using select()
   * Modular design with Hangman.h and DrawHangman.h files containing functions common to the different socket versions
+
 Features yet to be implemented include:
   * A client that handles asynchronous data inputs from the network / server, and from the keyboard / user correctly
   * Server & Client that operate using Datagram sockets and UDP

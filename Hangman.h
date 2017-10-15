@@ -3,20 +3,21 @@
 
 #include <syslog.h>
 
-#define	MAX_CLIENTS	5									/* 2nd argument to listen() */
-#define	MAXLINE		4096									/* max text line length */
+#define	MAX_CLIENTS 5										/* 2nd argument to listen() */
+#define	MAXLINE	4096										/* max text line length */
 
-# define LINESIZE 80										/* Maximum size in the world of Any string */
-# define HANGMAN_TCP_PORT 1066
+#define LINESIZE 80										/* Maximum size in the world of Any string */
+#define HANGMAN_TCP_PORT 1066
 
+char* TCP_PORT = "1066";
 
-char *word [] = {
+char* word [] = {
   #include "words"
 };
 
-# define NUM_OF_WORDS (sizeof (word) / sizeof (word [0]))
+#define NUM_OF_WORDS (sizeof (word) / sizeof (word [0]))
 
-# define MAX_LIVES 12
+#define MAX_LIVES 12
 
 void play_hangman(int in, int out);								// Function delcaration for play_hangman
 

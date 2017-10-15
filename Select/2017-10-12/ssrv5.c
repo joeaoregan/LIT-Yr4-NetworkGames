@@ -82,7 +82,6 @@ int main(int argc, char **argv) {
 			if (--nready <= 0) continue;						/* no more readable descriptors */
 		}
 
-
 		srand(time(NULL));
 
 		for (i = 0; i <= maxi; i++) {							/* check all clients for data */
@@ -135,10 +134,6 @@ void play_hangman (int in, int out) {
 
   snprintf (outbuf, sizeof(outbuf), "%s %d \n", part_word, lives);				// Convert to text string. Set outbuf to the part word & the lives left, with protection against buffer overflow
   write (out, outbuf, strlen(outbuf));								// Send to client
-
-
-
-
 
   while (game_state == 'I') {									// Loop until game is complete
     /* Get a letter from player guess */

@@ -68,10 +68,9 @@ void str_cli(FILE *fp, int sockfd)
 	}
 }
 
-
-static int	read_cnt;
-static char	*read_ptr;
-static char	read_buf[LINESIZE];
+static int read_cnt;
+static char *read_ptr;
+static char read_buf[LINESIZE];
 
 static ssize_t my_read(int fd, char *ptr)
 {
