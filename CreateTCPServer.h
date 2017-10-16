@@ -33,13 +33,10 @@ int createTCPServerSocket(const char *port) {
     server = socket(servAddr->ai_family, servAddr->ai_socktype, servAddr->ai_protocol);
     if (server < 0) continue;       							// Socket creation failed; try next address
 
-    // Bind to the local address and set socket to list
-    if ((bind(server, servAddr->ai_addr, servAddr->ai_addrlen) == 0) &&
-        (listen(server, MAX_CLIENTS) == 0)) {
-
+    if ((bind(server, servAddr->ai_addr, servAddr->ai_addrlen) == 0) &&			// Bind to the local address 
+        (listen(server, MAX_CLIENTS) == 0)) {						// Set socket to listen
     
-    	printf("Server now running on port: %s \n", port);
-
+//    	printf("Server now running on port: %s \n", port);				// Previous code to display port number
 
       // Print local address of socket
       struct sockaddr_storage localAddr;
@@ -47,7 +44,7 @@ int createTCPServerSocket(const char *port) {
       if (getsockname(server, (struct sockaddr *) &localAddr, &addrSize) < 0)
  //       DieWithSystemMessage("getsockname() failed");
 		printf("getsockname() failed");
-      fputs("Binding to ", stdout);
+      fputs("Server now running on ", stdout);
       displayAddress((struct sockaddr *) &localAddr, stdout);				// Display the address/port for the socket
       fputc('\n', stdout);
       break;       									// Bind and list successful

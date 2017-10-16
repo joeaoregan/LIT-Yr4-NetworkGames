@@ -29,6 +29,6 @@ void displayAddress(const struct sockaddr* address, FILE* stream){
 		fputs("[invalid address]", stream); 				// Unable to convert
 	else {
 		fprintf(stream, "%s", addressBuffer);
-		if (port != 0) fprintf(stream, "-%u", port);			// Zero not valid in socket address
+		if (port != 0) fprintf(stream, "/%u", port);			// Zero not valid in socket address
 	}
 }

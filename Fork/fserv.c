@@ -1,7 +1,7 @@
  /* 
 	Network server for hangman game
 
- 	File: hangserver.c
+ 	File: fserv.c
 
 	Concurrent Hangman Server: handles multiple clients at a time by forking a child copy of the server for each new client connection
 	The Unix fork function is the simplest technique for a concurrent server, creating one cheild process for each client.
@@ -10,7 +10,8 @@
 	Joe O'Regan 	K00203642
 	Samantha Marah	K00200782
 	Jason Foley 	K00186690
-
+	
+	14/10/2017	Added separate files to handle creating the socket, and displaying the address and port number
 	08/10/2017	Added forking capability for server. 
 			Game is exactly the same for each client, so moved random number seeding to while loop
 			Displays the word the client was guessing on the server side
@@ -21,81 +22,55 @@
 */
 
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
+#include <sys/socket.h>										// sockaddr, accept(), bind(), listen()
+#include <netinet/in.h>										// sockaddr_in 
 #include <stdio.h>										// printf()
 #include <syslog.h>										// syslog()
-#include <signal.h>
-#include <errno.h>
+#include <signal.h>										// signal()
+#include <errno.h>										// Defines errno int, set by system calls/library functions, to indicate an error
 #include <string.h>										// 23/09/2017 Warning for strcpy, bzero()
 #include <stdlib.h>										// 23/09/2017 Warning for exit
 #include <unistd.h>										// 23/09/2017 gethostname(), write(), read(), close()
 #include <arpa/inet.h>										// 23/09/2017 inet_ntop()
 #include <sys/wait.h>										// 08/10/2017 wait()
-#include <time.h>
-#include "../DrawHangman.h"
-#include "../Hangman.h"
-#include "../CreateTCPServer.h"
+#include <time.h>										// Seed the random number
+#include "../DrawHangman.h"									// Display the hangman graphics
+#include "../Hangman.h"										// Hangman game functions
+#include "../CreateTCPServer.h"									// Create a TCP Server Socket
 
 extern time_t time ();										// Seed the random number
 char clntName[INET_ADDRSTRLEN];									// Client address string
-struct sockaddr_in server, client;
-#define CLI_PORT ntohs(client.sin_port)
-
-char* service = "1066";
+struct sockaddr_in client;									// Client address structure
+#define CLI_PORT ntohs(client.sin_port)								// The port number the client is using to connect to the server
 
 void main ()											// No command line arguments
 {
-	int sock, fd, client_len;								// Socket, client socket, and length of client socket
-	//socklen_t client_len;									// int type in sys/socket.h that is at least 32 bits
+	int sock, fd;										// Socket, client socket, and length of client socket
+	socklen_t client_len;									// int type in sys/socket.h, socklen_t: unsigned opaque integral type of length of at least 32 bits
 /* FORK VARIABLES */
 /**/	pid_t childpid;										// pid_t: signed int data type, capable of representing  a process ID. 
-/**/	socklen_t clilen;									// socklen_t: unsigned opaque integral type of length of at least 32 bits
 	//struct sockaddr_in cliaddr, servaddr;							// Internet socket address structures
 /**/	void sig_chld(int);									// Signal handling function, catches SIGCHLD signal from terminating process
 
 /**/ 	//srand ((int) time ((long *) 0)); 							// Randomize the seed - Moved inside while loop, so each client connection generates a different whole_word
 
-//	sock = createTCPServerSocket((char*)HANGMAN_TCP_PORT);
-	sock = createTCPServerSocket(TCP_PORT);
-/*
- 	sock = socket (AF_INET, SOCK_STREAM, 0);						// 0 or IPPROTO_TCP	// Create the socket
+	sock = createTCPServerSocket(TCP_PORT);							// Functionality to create socket moved to separate file CreateTCPServer.h
 
- 	if (sock < 0) { 									// This error checking is the code Stevens wraps in his Socket Function etc
- 		perror ("creating stream socket");
- 		exit (1);
- 	}
-
-*/
-/**//*	bzero(&server, sizeof(server));								// Set the entire address structure to 0, easier to remember than memset, seems to work fine without this
- 	server.sin_family = AF_INET;								// IPv4 address
- 	server.sin_addr.s_addr = htonl(INADDR_ANY);						// Server IP
- 	server.sin_port = htons(HANGMAN_TCP_PORT);						// Server port
-
- 	if (bind(sock, (struct sockaddr *) & server, sizeof(server)) < 0) {			// socket(), bind(), listen() -> Server prepared to accept connection
- 		perror ("binding socket");
-	 	exit (2);
- 	}
-
- 	listen (sock, 5);									// socket(), bind(), listen() -> server passive open
-*/	
 	// signal(<signal name>, <point to signal handler function>);
 	signal(SIGCHLD, sig_chld);								// SIGCHLD signal is sent to the parent of a child process when it exits, is interuppted, or resumes after interruption
 
 	drawHangman();										// Draw the hangman graphic
 
-//	printf("Server now running on port: %d \n", ntohs(server.sin_port));			// Display port number
-
  	while (1) {
  		client_len = sizeof (client);							// Size of the client socket
- 		if ((fd = accept (sock, (struct sockaddr *) &client, &client_len)) <0) {	// P41 A new descriptor is returned by accept() for each client that connects to our server
- 			perror ("accepting connection");
- 			exit (3);
+ 		if ((fd = accept (sock, (struct sockaddr *) &client, &client_len)) < 0) {	// P41 A new descriptor is returned by accept() for each client that connects to our server
+ 			perror ("accepting connection");					// Display the error message, if server can't connect
+ 			exit (3);								// close the server
  		}
 
 /* DISPLAY CLIENT ADDRESS AND PORT */
-/**/		if (inet_ntop(AF_INET, &client.sin_addr.s_addr, clntName,sizeof(clntName)) != NULL){
-/**/  			printf("Handling client %s/%d \n", clntName, ntohs(client.sin_port));
+/**/		if (inet_ntop(AF_INET, &client.sin_addr.s_addr, clntName,sizeof(clntName)) != NULL){ 	// inet_ntop() - Convert IP address to human readable form
+/**/  			printf("Handling client %s/%d \n", clntName, ntohs(client.sin_port));	// Display the client IP address and port number
 /**/		}
 
 /* RANDOM NUMBER SEED - DIFFERENT WORD FOR EACH CLIENT CONNECTION */
@@ -107,7 +82,6 @@ void main ()											// No command line arguments
 	fork returns 0 for a child, and the childs process ID for the parent */
 /**/		if ( (childpid = fork()) == 0) {						// Creating child process of Server to handle client. Assigning unique process ID to the child.
 /**/			close(sock);								// close listening socket
-/**/			//srand(time(NULL));							// Test random seed - didn't work
  			play_hangman (fd, fd);							// Play the game
 /**/			exit(0);								// Process termination
 /**/		}
@@ -171,18 +145,18 @@ void play_hangman (int in, int out)
 	P185 5.11 Correct version of sig_child calls waitpid
 */
 void sig_chld(int signo) {									// Signal handler catches SIGCHLD signal from terminating process
-	pid_t pid;
-	int stat;
+	pid_t pid;										// The child process ID
+	int stat;										// The status of the child
 
 	//pid = wait(&stat);									// Call to wait() handles the terminated child
 	//printf("Child %d has terminated\n", pid);						// Diagnostic tool - Shows when the child terminates
 	
 	// Handle zombies, preventing them from being left around, 
-	// waitpid can be called in a loop, wait can't
+	// waitpid can be called in a loop, wait can't, no way to stop wait from blocking
 	// A SIGCHLD handler must be coded correctly using waitpid, 
 	// to prevent any zombies from being left around
 	while ((pid = waitpid(-1, &stat, WNOHANG)) > 0)						// Calling wait insufficient for preventing zombies, WNOHANG: tells waitpid not to block if child running that has not terminated.
-		printf("Child %d terminated\n", pid);						// wait() can't be called in a loop, no way to stop wait from blocking
+		printf("Child %d terminated\n", pid);						// Display the process ID of the terminated child
 	
 	return;											// return not necessary here (void) - Reminder that return may interrupt a system call
 }

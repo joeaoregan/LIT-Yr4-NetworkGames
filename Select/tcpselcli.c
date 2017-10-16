@@ -1,3 +1,14 @@
+ /* 
+	Client for hangman select server
+
+ 	File: tcpselcli.c
+
+	Team 1:
+	Joe O'Regan 	K00203642
+	Samantha Marah	K00200782
+	Jason Foley 	K00186690
+*/
+
 //#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -20,15 +31,16 @@ ssize_t readline(int fd, void *vptr, size_t maxlen);
 // Parse server data to these variables
 char arg1PartWord[20];
 int arg2LivesLeft;
+int count;
 
 int main(int argc, char **argv)
 {
 	int			sockfd;
 	struct sockaddr_in	servaddr;
 
-	if (argc != 2)
+	if (argc != 2)								// If there is not 2 arguments entered
 		//err_quit("usage: tcpcli <IPaddress>");
-		printf("usage: tcpcli <IPaddress>");
+		printf("usage: tcpcli <IPaddress>");				// Display error message
 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -42,30 +54,60 @@ int main(int argc, char **argv)
 	drawHangman();								// Draw hangman Graphic
 	printf("Client Connecting On Port: %d \n", ntohs(servaddr.sin_port));	// Display port number
 
-	str_cli(stdin, sockfd);		/* do it all */
+	str_cli(stdin, sockfd);							/* do it all */
 
-	exit(0);
+	exit(0);								// Terminate the program, and close TCP socket
 }
-
 
 void str_cli(FILE *fp, int sockfd)
 {
 	char sendline[LINESIZE], recvline[LINESIZE];
 
-	while (fgets(sendline, LINESIZE, fp) != NULL) {
+/*============= Server sending 1st, not normal, might have to change ===========*/
+/*============= display first hangman graphic before entering guess ============*/
+	if (readline(sockfd, recvline, LINESIZE) == 0)				// If no data received from server
+		//err_quit("str_cli: server terminated prematurely");
+		printf("str_cli: server terminated prematurely");		// Display error message
+	
+		//printf("\ntest1\n");
+		sscanf(recvline, "%s %d", &(*arg1PartWord), &arg2LivesLeft);	// Separate the part word and guesses 
+		//printf("\ntest2\n");
+		//fputs(recvline, stdout);
+		amputate(arg2LivesLeft);					// Display hangman graphic & guesses left
+		fputs(arg1PartWord, stdout);					// Display the part word without the guesses
+		//printf("\ntest3\n");
+		printf("\nEnter Your Guess:\t");
+		//printf("\ntest4\n");
+/*==============================================================================*/
 
-		write(sockfd, sendline, strlen(sendline));
+	while (fgets(sendline, LINESIZE, fp) != NULL) {				// Get character guess input from the player
 
-		if (readline(sockfd, recvline, LINESIZE) == 0)
+		write(sockfd, sendline, strlen(sendline));			// Send the character entered to the server
+
+		if (readline(sockfd, recvline, LINESIZE) == 0)			// If no data received
 			//err_quit("str_cli: server terminated prematurely");
-			printf("str_cli: server terminated prematurely");
+			printf("str_cli: server terminated prematurely");	// Display error message
 
-		sscanf(recvline, "%s %d", &(*arg1PartWord), &arg2LivesLeft);
+		sscanf(recvline, "%s %d", &(*arg1PartWord), &arg2LivesLeft);	// Separate the part word and guesses
 
-		amputate(arg2LivesLeft);
+		amputate(arg2LivesLeft);					// Display hangman graphic & guesses left
 
-		fputs(recvline, stdout);
+		//fputs(recvline, stdout);					// Display the part word and the guesses
+		fputs(arg1PartWord, stdout);					// Display the part word without the guesses
+		//printf("\nEnter Your Guess:\t");
+		fputs("\n", stdout);
 	}
+
+	while ((count = read (sockfd, sendline, LINESIZE)) > 0) {
+		sscanf(recvline, "%s %d", &(*arg1PartWord), &arg2LivesLeft);	// Parse string data received from server into separate part-word and score variables
+ 		amputate(arg2LivesLeft);					// Display graphical represenation of lives left
+		printf("%s\n", arg1PartWord);
+	    	write (1, recvline, count);					// Display the data string received from the server on screen
+ 	    	count = read (0, sendline, LINESIZE);				// 0 = STDIN
+ 	    	write (sockfd, sendline, count);				// Send client input to server
+ 	}
+
+	printf("Game Over!\n");		
 }
 
 static int read_cnt;

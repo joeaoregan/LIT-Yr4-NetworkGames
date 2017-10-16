@@ -22,7 +22,7 @@
 #include <netdb.h>
 #include <string.h>		// 19/09/2017 Warning for memcpy
 #include <stdlib.h>		// 19/09/2017 Warning for exit
-#include <unistd.h>		// 24/09/2017 write(), read()
+#include <unistd.h>		// 24/09/2017 gethostname(), write(), read(), close()
 #include "../Hangman.h"		// 11/10/2017 Hangamen header file
 #include "../DrawHangman.h"	// 11/10/2017 Draw Hangman Graphic
 

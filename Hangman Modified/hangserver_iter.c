@@ -43,8 +43,8 @@ void main ()												// No command line arguments
 
  	sock = socket (AF_INET, SOCK_STREAM, 0);							// 0 or IPPROTO_TCP	// Create the socket
  	if (sock <0) { 											// This error checking is the code Stevens wraps in his Socket Function etc
- 		perror ("creating stream socket");
- 		exit (1);
+ 		perror ("creating stream socket");							// Display an error message
+ 		exit (1);										// Exit
  	}
 
  	server.sin_family = AF_INET;									// IPv4 address
@@ -52,8 +52,8 @@ void main ()												// No command line arguments
  	server.sin_port = htons(HANGMAN_TCP_PORT);							// Server port
 
  	if (bind(sock, (struct sockaddr *) & server, sizeof(server)) <0) {				// socket(), bind(), listen() -> Server prepared to accept connection
- 		perror ("binding socket");
-	 	exit (2);
+ 		perror ("binding socket");								// Display an error
+	 	exit (2);										// exit
  	}
 
  	listen (sock, 5);										// socket(), bind(), listen() -> server passive open
@@ -64,14 +64,14 @@ void main ()												// No command line arguments
 
  	while (1) {
  		client_len = sizeof (client);
- 		if ((fd = accept (sock, (struct sockaddr *) &client, &client_len)) <0) {
- 			perror ("accepting connection");
- 			exit (3);
+ 		if ((fd = accept (sock, (struct sockaddr *) &client, &client_len)) <0) {		// Create the listening socket, and if its return value is less than 0
+ 			perror ("accepting connection");						// Display an error
+ 			exit (3);									// exit
  		}
 
 		// Display Client address and port
-		if (inet_ntop(AF_INET, &client.sin_addr.s_addr, clntName,sizeof(clntName)) != NULL){
-  			printf("Handling client %s/%d\n", clntName, ntohs(client.sin_port));
+		if (inet_ntop(AF_INET, &client.sin_addr.s_addr, clntName,sizeof(clntName)) != NULL){	// Convert the address to a string, and store in clntName
+  			printf("Handling client %s/%d\n", clntName, ntohs(client.sin_port));		// Display the client IP address and port number
 		}
 
  		play_hangman (fd, fd);									// Play the game
@@ -93,7 +93,7 @@ void main ()												// No command line arguments
  	word_length = strlen(whole_word);								// Get length of word
 
  	/* No letters are guessed Initially */
- 	for (i = 0; i <word_length; i++)
+ 	for (i = 0; i < word_length; i++)								// For every character in the word
  		part_word[i]='-';									// Display hyphens to indicate size of word
  	
 	part_word[i] = '\0';										// Add string terminating character
