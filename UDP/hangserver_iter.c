@@ -1,5 +1,17 @@
- /* Network server for hangman game */
- /* File: hangserver.c */
+  /* 
+	Network server for hangman game
+
+ 	File: hangserver_iter.c
+
+	Network server for hangman game
+
+	Team 1:
+	Joe O'Regan 	K00203642
+	Samantha Marah	K00200782
+	Jason Foley 	K00186690
+	
+	17/10/2017 	Added includes to remove warning messages
+*/
 
  #include <sys/types.h>
  #include <sys/socket.h>
@@ -9,6 +21,9 @@
  #include <syslog.h>
  #include <signal.h>
  #include <errno.h>
+#include <string.h>				// 17/10/2017 Warning for strcpy, bzero()
+#include <stdlib.h>				// 17/10/2017 Warning for exit
+#include <unistd.h>				// 17/10/2017 gethostname(), write(), read(), close()
 
  extern time_t time ();
 
@@ -20,7 +35,9 @@
  # define MAXLEN 80 /* Maximum size in the world of Any string */
  # define HANGMAN_TCP_PORT 1066
 
- main ()
+void play_hangman (int in, int out);
+
+int main ()					// Needs to be int main()
  {
  	int sock, fd, client_len;
  	struct sockaddr_in server, client;
@@ -58,7 +75,7 @@
 
  /* ---------------- Play_hangman () ---------------------*/
 
- play_hangman (int in, int out)
+ void play_hangman (int in, int out)
  {
  	char * whole_word, part_word [MAXLEN],
  	guess[MAXLEN], outbuf [MAXLEN];
@@ -69,7 +86,7 @@
  	char hostname[MAXLEN];
 
  	gethostname (hostname, MAXLEN);
- 	sprintf(outbuf, "Playing hangman on host% s: \n \n", hostname);
+ 	sprintf(outbuf, "Playing hangman on host%s: \n \n", hostname);
  	write(out, outbuf, strlen (outbuf));
 
  	/* Pick a word at random from the list */
