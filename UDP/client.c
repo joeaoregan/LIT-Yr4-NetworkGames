@@ -1,9 +1,3 @@
-/*
-	client.c
-
-	Sends 10 messages to the server
-*/
-
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdio.h>
@@ -11,13 +5,12 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <string.h>
-#include <stdlib.h>			// 23/09/2017 Warning for exit()
+#include <stdlib.h>			// Warning for exit()
 #include "HandleErrors.h"		// Error handling functions header file
 
 #define LINESIZE 80			// Buffer length
 #define NPACK 10			// Number of packets to send
 #define HANGMAN_TCP_PORT 1066		// Server Port Number
-//#define SRV_IP "999.999.999.999"
 #define SRV_IP "127.0.0.1"		// IP Address of server
 
 int main(void) {
@@ -37,11 +30,10 @@ int main(void) {
 		exit(1);
 	}
 
-	for (i = 0; i < NPACK; i++) {
-		printf("Sending packet %d\n", i);		
-		sprintf(buf, "Packet %d", i);
-		if (sendto(s, buf, LINESIZE, 0, &si_other, slen) == -1) displayErrMsg("sendto()");
-	}
+	read (0, o_line, LINESIZE);			// 0 = STDIN
+	//printf("Sending letter: %s\n", o_line);		
+	sprintf(buf, "%s", o_line);
+	if (sendto(s, buf, LINESIZE, 0, &si_other, slen) == -1) displayErrMsg("sendto()");
 
 	close(s);
 	return 0;

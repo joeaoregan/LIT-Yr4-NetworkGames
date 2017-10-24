@@ -1,9 +1,3 @@
-/*
-	server.c
-
-	Receives 10 messages from the client
-*/
-
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdio.h>
@@ -17,6 +11,11 @@
 #define LINESIZE 80			// Length of the buffer
 #define NPACK 10			// Number of packets to send
 #define HANGMAN_TCP_PORT 1066		// Port number to connect on
+
+ int maxlives = 12;
+ char *word [] = {
+ #include "words"			// Add the words from words file to an array
+ };
 
 int main(void) {
 	struct sockaddr_in si_me, si_other;
@@ -34,10 +33,11 @@ int main(void) {
 
 	if (bind(sock, &si_me, sizeof(si_me)) == -1) displayErrMsg("bind");
 
-	for (i = 0; i < NPACK; i++) {
+	//for (i = 0; i < NPACK; i++) {
 		if (recvfrom(sock, buf, LINESIZE, 0, &si_other, &slen)==-1) displayErrMsg("recvfrom()");
-		printf("Message from %s:%d\nReceived: %s\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port), buf);
-	}
+		//printf("Guess from %s:%d\nLetter: %c\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port), buf[0]);
+		printf("Guess from %s:%d\nReceived: %s\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port), buf);
+	//}
 
 	close(sock);
 	return 0;
