@@ -22,6 +22,7 @@ char* word [] = {										// Array of words, one word will be selected randomly
 #define MAX_LIVES 12										// The number of guesses the player can make
 
 void play_hangman(int in, int out);								// Function delcaration for play_hangman
+char checkGameState(char* word, char* part, int lives);
 
 // Display end of game message if game complete
 void checkGameOver(int state, char* outbuffer, char* word, int o, char* clname, int clport) {
@@ -55,6 +56,7 @@ char* selectRandomWord(char* clname, int clport) {
 
 // Check if a correct guess has been made or not
 int correctGuess(char* word, char* part, char* guess) {
+  printf("part word before: %s\n", part);
   int i, good_guess = 0;									// Set/reset good_guess to false
     for (i = 0; i < strlen(word); i++) {
       if (guess [0] == word [i]) {								// If the guess from client is a match
@@ -62,6 +64,7 @@ int correctGuess(char* word, char* part, char* guess) {
         part[i] = word[i];									// Fill the guessed letter in correct position
       }
     }
+  printf("part word after: %s\n", part);
 
   return good_guess;										// Return 1 if good guess, and 0 if the letter isn't in the whole word
 }
@@ -75,6 +78,17 @@ void displayHostname(int o, char* buf) {
   //snprintf(buf, sizeof(buf), "Playing hangman on host: %s \n \n", hostname);			// Set outbuf to server hostname, with protection against buffer overflow
   snprintf(buf, LINESIZE, "Playing hangman on host: %s \n \n", hostname);			// Set outbuf to server hostname, with protection against buffer overflow
   write(o, buf, strlen(buf));									// Send outbuf to client
+}
+
+
+char checkGameState(char* word, char* part, int lives) {
+	if (strcmp (word, part) == 0)			// If all letters guessed correctly
+		return 'W'; 
+	else if (lives <= 0) {			// If client has run out of guesses
+		return 'L';
+		//strcpy (arrPart[i], arrWords[i]); 	/* User Show the word */
+	}
+	return 'I';	
 }
 
 #endif	/* __HANGMAN_H */

@@ -59,6 +59,9 @@ int main(int argc, char **argv)
 	exit(0);								// Terminate the program, and close TCP socket
 }
 
+/*
+	P228 (6.7) UNP book, str_cli function, using select and shutdown
+*/
 void str_cli(FILE *fp, int sockfd)
 {
 	char sendline[LINESIZE], recvline[LINESIZE];
@@ -110,13 +113,14 @@ void str_cli(FILE *fp, int sockfd)
 	printf("Game Over!\n");		
 }
 
+/*
+	my_read() and readline() from lib folder in unpv13e
+*/
 static int read_cnt;
 static char *read_ptr;
 static char read_buf[LINESIZE];
 
-static ssize_t my_read(int fd, char *ptr)
-{
-
+static ssize_t my_read(int fd, char *ptr) {
 	if (read_cnt <= 0) {
 again:
 		if ( (read_cnt = read(fd, read_buf, sizeof(read_buf))) < 0) {
@@ -133,8 +137,7 @@ again:
 	return(1);
 }
 
-ssize_t readline(int fd, void *vptr, size_t maxlen)
-{
+ssize_t readline(int fd, void *vptr, size_t maxlen) {
 	ssize_t	n, rc;
 	char	c, *ptr;
 

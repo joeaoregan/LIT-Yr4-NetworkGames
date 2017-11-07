@@ -29,7 +29,7 @@
 #include <signal.h>										// signal()
 #include <errno.h>										// Defines errno int, set by system calls/library functions, to indicate an error
 #include <string.h>										// 23/09/2017 Warning for strcpy, bzero()
-#include <stdlib.h>										// 23/09/2017 Warning for exit
+#include <stdlib.h>										// 23/09/2017 Warning for exit()
 #include <unistd.h>										// 23/09/2017 gethostname(), write(), read(), close()
 #include <arpa/inet.h>										// 23/09/2017 inet_ntop()
 #include <sys/wait.h>										// 08/10/2017 wait()
@@ -55,7 +55,7 @@ void main ()											// No command line arguments
 /**/ 	//srand ((int) time ((long *) 0)); 							// Randomize the seed - Moved inside while loop, so each client connection generates a different whole_word
 
 	sock = createTCPServerSocket(TCP_PORT);							// Functionality to create socket moved to separate file CreateTCPServer.h
-
+	// The UNP books signal() function calls POSIX sigaction
 	// signal(<signal name>, <point to signal handler function>);
 	signal(SIGCHLD, sig_chld);								// SIGCHLD signal is sent to the parent of a child process when it exits, is interuppted, or resumes after interruption
 

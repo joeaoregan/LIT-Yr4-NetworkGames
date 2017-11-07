@@ -38,8 +38,20 @@ struct sockaddr_in	cliaddr, servaddr;	// Client address string
 //struct sockaddr_in server, client;		// OK - Internet socket address structures
 #define CLI_PORT ntohs(cliaddr.sin_port)
 
-int main(int argc, char **argv)
-{
+// maybe use a linked list of structs
+struct sessionData {				// Store the game state
+	char* fullWord;				// Store the current full word
+	char* partWord;				// Store the current part word
+	int numLives;				// Store the number of guesses left
+	int gameState;				// Store the game state for the connection
+	int wordSize;				// ??? the size of the word
+};
+
+int main(int argc, char **argv) {
+	
+	//struct sessionData states[20];	// hold state for 20 connections 
+	struct sessionData state[FD_SETSIZE];	
+
 	int		i, maxi, maxfd, listenfd, connfd, sockfd;
 	int		nready, arrClient[FD_SETSIZE];
 	ssize_t		n;
@@ -48,20 +60,6 @@ int main(int argc, char **argv)
 	socklen_t	clilen;
 
 	listenfd = createTCPServerSocket(TCP_PORT);									// Create the socket
-/*
-	listenfd = socket(AF_INET, SOCK_STREAM, 0);
-
-	bzero(&servaddr, sizeof(servaddr));
-	servaddr.sin_family      = AF_INET;
-	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	servaddr.sin_port        = htons(HANGMAN_TCP_PORT);
-
-	bind(listenfd, (struct sockaddr *) &servaddr, sizeof(servaddr));						// Assign the address to the socket
-
-	listen(listenfd, LISTENQ);
-	
-	printf("Server now running on port: %d \n", ntohs(servaddr.sin_port));						// Display port number
-*/
 
 	drawHangman();													// Draw the hangman graphic
 /*======================================================================================================================*/
@@ -117,7 +115,7 @@ int main(int argc, char **argv)
 
 					/* No letters are guessed Initially */
 					//for (j = 0; j < word_length; j++)
-					for (j = 0; j < length[i]; j++)
+/*init part word*/			for (j = 0; j < length[i]; j++)
 						part_word[j]='-';							// Display hyphens to indicate size of word
 						//arrPart[i][j]='-';							// Display hyphens to indicate size of word
 				 	
@@ -128,6 +126,19 @@ int main(int argc, char **argv)
 /*arr state*/				arrStates[i] = 'I';								// Set the current clients state
 					printf("test part word: %s\n", arrPart[i]);
 
+	
+
+					state[i].fullWord = arrWords[i];
+					state[i].partWord = arrPart[i];
+					state[i].numLives = MAX_LIVES;
+					state[i].gameState = 'I';
+					state[i].wordSize = strlen(state[i].partWord);
+
+					printf("\nState %d fullWord: %s partWord: %s numLives %d gameState %c wordSize %d\n\n", 
+						i,state[i].fullWord,state[i].partWord,state[i].numLives,state[i].gameState,state[i].wordSize);
+
+
+
 
 
 /*================================ Server sending 1st, not normal, might have to change ================================*/
@@ -136,7 +147,6 @@ int main(int argc, char **argv)
  					write (connfd, buf, strlen(buf));						// Send to client
 
 /*======================================================================================================================*/
-
 					break;
 				}
 			if (i == FD_SETSIZE) printf("too many clients");						// err_quit("too many clients");
@@ -147,7 +157,6 @@ int main(int argc, char **argv)
 
 			if (--nready <= 0) continue;									/* no more readable descriptors */
 		}
-
 /* FOR EACH CLIENT */
 		for (i = 0; i <= maxi; i++) {										/* check all clients for data */
 			if ( (sockfd = arrClient[i]) < 0) continue;							// Handle the next client in the array
@@ -168,32 +177,35 @@ int main(int argc, char **argv)
 					arrStates[i] = 'I';								// game_state for each client
 					arrBuf[i][0] = '\0';
 				} else {
-/*======================================================================================================================*/
-/* 							Hangman Code							*/
-/*======================================================================================================================*/
-	    				write (1, arrBuf[i], n);								// Display client guess on server side
 
+/*======================================================================================================================*/
+/*THIS IS WHERE IT IS BROKE				Hangman Code							*/
+/*======================================================================================================================*/
+
+	    				write (1, arrBuf[i], n);							// Display client guess on server side
 /* GET FOR EACH CLIENT */
+					//printf("part 0: %s part1 %s\n", arrPart[0], arrPart[1]);
+					//printf("Client %d part word Before checking guess: %s\n", i, arrPart[i]);
+
 					if (!correctGuess(arrWords[i], arrPart[i], arrBuf[i]))				// If it's an incorrect guess,
 						arrLives[i]--;								// decrement the number of lives
 
-					if (strcmp (arrWords[i], arrPart[i]) == 0)					// If all letters guessed correctly
- 						arrStates[i] = 'W'; 
-					else if (arrLives[i] <= 0) {							// If client has run out of guesses
-			 			arrStates[i] = 'L'; 							/* L ==> User Lost */
-			 			strcpy (arrPart[i], arrWords[i]); 					/* User Show the word */
-			 		}
-			
-					//checkGameOver(arrStates[i],outbuf,arrWords[i], sockfd, clntName, CLI_PORT); 	// If game is finished, display win/lose message
+					if((arrStates[i] = checkGameState(arrWords[i], arrPart[i], arrLives[i])) == 'L')
+			 			strcpy (arrPart[i], arrWords[i]); 					// Show the player the word if they lose
 /* WRITE BACK TO CLIENT*/	
-					//if (arrStates[i] == 'I') {
-    					//snprintf (buf, sizeof(buf), "%s %d \n", arrPart[i], arrLives[i]);
     					sprintf (arrBuf[i], "%s %d \n", arrPart[i], arrLives[i]);			// Add the part-word and number of guesses left to the buffer string
-					//if (arrStates[i] == 'I') 
 					write (sockfd, arrBuf[i], strlen (arrBuf[i]));					// Send the string to the client
 
-					printf("part word: %s lives: %d state: %c\n", arrPart[i], arrLives[i], arrStates[i]);	// Test the current client state
-					//}
+
+
+
+
+					printf("Client %d part word: %s full word: %s lives: %d state: %c buffer: %s\n", 
+					i, arrPart[i], arrWords[i],arrLives[i], arrStates[i], arrBuf[i]);		// Test the current client state
+
+
+
+
 /* FINISH GAME */
 
 					//printf("buf: %s, sockfd: %ld, word: %s\n", outbuf, sizeof(sockfd), arrWords[i]);
@@ -208,3 +220,16 @@ int main(int argc, char **argv)
 		}
 	}
 }
+
+/*
+guess[0] = arrBuf[i][0];
+int good_guess = 0;
+ 	for (int g = 0; g < strlen(arrWords[i]); g++) {
+ 		if (guess [0] == arrWords[i][g]) {
+ 			good_guess = 1;
+ 			arrPart[i][g] = arrWords[i][g];
+ 		}
+ 	}
+ 	if (!good_guess) arrLives[i]--;
+*/
+
