@@ -153,4 +153,11 @@ void amputate(int lives) {
 	else printf("The word was:\t\t");							// The actual word if player loses
 }
 
+
+void selectLives(int lives) {
+	printf("\nRemaining Guesses:\t%d\n", lives);						// Guesses remaining
+	if (lives > 0) printf("Word To Guess:\t\t");						// The part word string while game is playing OR
+	else printf("The word was:\t\t");							// The actual word if player loses
+}
+
 #endif	/* __DRAW_HANGMAN_H */

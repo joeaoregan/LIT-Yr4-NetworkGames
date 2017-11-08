@@ -1,9 +1,7 @@
 /*	
 	Joe O'Regan
 	K00203642
-
-	08/11/2017 	Added struct for holding session state for each client
-			Client had been causing problems with buffers overwriting
+	08/11/2017 	add struct for holding session state for each client
 */
 
 #include <sys/socket.h>				// sockaddr, accept(), bind(), listen()

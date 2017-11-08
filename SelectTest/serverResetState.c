@@ -1,9 +1,7 @@
 /*	
 	Joe O'Regan
 	K00203642
-
-	08/11/2017 	Added struct for holding session state for each client
-			Client had been causing problems with buffers overwriting
+	08/11/2017 	add struct for holding session state for each client
 */
 
 #include <sys/socket.h>				// sockaddr, accept(), bind(), listen()
@@ -30,11 +28,24 @@ struct sessionData {				// Store the game state, maybe use a linked list of stru
 	char partWord[LINESIZE];		// Store the current part word
 	int lives;				// Store the number of guesses left for each client
 	int gameState;				// Store the game state for the connection
-	char bufIn[LINESIZE];			// BUFFER
-	char bufOut[LINESIZE];			// BUFFER
-	char ip[INET_ADDRSTRLEN];		// client IP
-	int port;				// client port
+	char bufIn[LINESIZE];			// In buffer
+	char bufOut[LINESIZE];			// Out Buffer
+	char ip[INET_ADDRSTRLEN];		// IP Address
+	int port;				// Port number
 };
+
+// Set reset a clients session
+void setClientData(struct sessionData client, int reset){
+	if (reset == 1) {
+		client.sock = -1;	// Clear client from client index
+		client.partWord[0] = '\0';		// part word for each client
+		client.bufIn[0] = '\0';			// Clear client from client index
+	}
+	client.word = "";			// whole word for each client
+	client.lives = MAX_LIVES;		// lives for each client
+	client.gameState = 'I';			// game state for each client
+	// IP & Port set during connection
+}
 
 int main(int argc, char **argv) {	
 	struct 		sessionData client[FD_SETSIZE];	
@@ -72,20 +83,18 @@ int main(int argc, char **argv) {
 			
 			// Add client to clients array
 			for (i = 0; i < FD_SETSIZE; i++) {										
-				if (client[i].sock < 0) {									// If the array position is empty
-					client[i].sock = connfd;	
+				if (client[i].sock < 0) {								// If the array position is empty
+					client[i].sock = connfd;							/* save descriptor */	
 /**/					// Store and display the client IP and Port 
 					if (inet_ntop(AF_INET, &cliaddr.sin_addr.s_addr, client[i].ip,sizeof(client[i].ip)) != NULL){	// inet_ntop() - Convert IP address to human readable form
-  						printf("Handling client %s/%d \n", client[i].ip, CLI_PORT);				// Display the client IP address and port number
+  						printf("Handling client %s/%d \n", client[i].ip, CLI_PORT);		// Display the client IP address and port number
 						client[i].port = CLI_PORT;
-					}							/* save descriptor */
+					}
 /*====================================== initialise the variables for each client ======================================*/
 /* CHOOSE WORD */ 			client[i].word = selectRandomWord(clntName, CLI_PORT);				// Select a random word from the list of words
 					/* No letters are guessed Initially */
 /*init part word*/			for (j = 0; j < strlen(client[i].word); j++) client[i].partWord[j]='-';		// Display hyphens to indicate size of word				 	
-					client[i].partWord[j] = '\0';		
-					client[i].lives = MAX_LIVES;
-					client[i].gameState = 'I';
+					setClientData(client[i],0);							// Option 0: only set the state
 					printf("\nState %d Word: %s partWord: %s lives %d gameState %c\n\n", i,client[i].word,client[i].partWord,client[i].lives,client[i].gameState);
 /*================================ Server sending 1st, not normal, might have to change ================================*/
 /*================================ display first hangman graphic before entering guess =================================*/
@@ -115,13 +124,8 @@ int main(int argc, char **argv) {
 						/* 4connection closed by client */
 						close(sockfd);								// Close the connection to the client
 						FD_CLR(sockfd, &allset);						// Remove the socket from the set
-						// Reset Client and Client State
-						client[i].sock = -1;							// Clear client from client index
-						client[i].word = "";							// whole word for each client
-						client[i].partWord[0] = '\0';						// part word for each client
-						client[i].lives = MAX_LIVES;						// lives for each client
-						client[i].gameState = 'I';						// game state for each client
-						client[i].bufIn[0] = '\0';						// Clear client from client index
+						
+						setClientData(client[i],1);						// Option 1: Reset Client and Client State
 					} else {
 /*======================================================================================================================*/
 /*  						    Hangman Code							*/

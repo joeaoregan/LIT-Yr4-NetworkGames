@@ -42,6 +42,24 @@ void checkGameOver(int state, char* outbuffer, char* word, int o, char* clname, 
   }
 }
 
+int gameOverSelect(int state, char* outbuffer, char* word, int o, char* clname, int clport) {
+  if (state == 'W') {
+  //printf("checkGameOver(): arrStates %c outbuffer %s\n", state, outbuffer);
+    printf("Client %s/%d has guessed \"%s\" correctly!\n", clname, clport, word);		// Display win message
+    snprintf (outbuffer, LINESIZE, "Player Has Guessed \"%s\" Correctly!\n", word);		// Set win message to return to client
+    write (o, outbuffer, strlen (outbuffer));	
+    return 1;
+  }
+  else if (state == 'L') {
+  //printf("checkGameOver(): arrStates %c outbuffer %s\n", state, outbuffer);
+    printf("Client %s/%d is a loser!\n", clname, clport);					// Display lose message
+    snprintf (outbuffer, LINESIZE, "Player Has Run Out Of Guesses!\n");				// Set lose message to return to client, with protection against buffer overflow
+    write (o, outbuffer, strlen (outbuffer));							// Send outbuf info to client
+    return 1;
+  }
+  return 0;
+}
+
 // Pick a word at random from the word list
 char* selectRandomWord(char* clname, int clport) {  
   char* the_word;										// The word for the client to guess
@@ -56,7 +74,7 @@ char* selectRandomWord(char* clname, int clport) {
 
 // Check if a correct guess has been made or not
 int correctGuess(char* word, char* part, char* guess) {
-  printf("part word before: %s\n", part);
+  //printf("part word before: %s\n", part);
   int i, good_guess = 0;									// Set/reset good_guess to false
     for (i = 0; i < strlen(word); i++) {
       if (guess [0] == word [i]) {								// If the guess from client is a match
@@ -64,7 +82,7 @@ int correctGuess(char* word, char* part, char* guess) {
         part[i] = word[i];									// Fill the guessed letter in correct position
       }
     }
-  printf("part word after: %s\n", part);
+  //printf("part word after: %s\n", part);
 
   return good_guess;										// Return 1 if good guess, and 0 if the letter isn't in the whole word
 }

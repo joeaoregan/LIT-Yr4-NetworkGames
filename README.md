@@ -1,6 +1,6 @@
 # Year 4: Networked Games CA
 # Hangman
-## 14/10/2017
+## 08/11/2017
 
 This is a group assignment for the 4th year Networked Games module. The group consists of:
   * Joe O'Regan
@@ -11,7 +11,8 @@ This is a group assignment for the 4th year Networked Games module. The group co
 
 This online text based version of Hangman includes the following features:
   * TCP server socket using fork()
-  * TCP server socket using select()
+  * TCP server socket using select(), handles more than one client
+  * UDP client and server sending and receiving data, and removing gibberish
   * Modular design with Hangman.h and DrawHangman.h files containing functions common to the different socket versions
 
 Features yet to be implemented include:

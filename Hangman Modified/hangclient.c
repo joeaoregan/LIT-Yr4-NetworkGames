@@ -26,8 +26,7 @@
 #include "../Hangman.h"		// 11/10/2017 Hangamen header file
 #include "../DrawHangman.h"	// 11/10/2017 Draw Hangman Graphic
 
- int main (int argc, char * argv [])
- {
+ int main (int argc, char * argv []) {
  	struct sockaddr_in server; /* Server's address assembled here */
  	struct hostent * host_info;
  	int sock, count;									// The socket, and the size of the data to receive
