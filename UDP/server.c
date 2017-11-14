@@ -97,7 +97,7 @@ void play_hangman (int in, int out) {
 
  	sprintf (outbuf, "%s %d \n", part_word, lives);
 	
-	send(out, outbuf, strlen(outbuf), 0);	
+	sendto(out, outbuf, strlen(outbuf), 0, (struct sockaddr*) &si_other, sizeof si_other);	
 
 	do {						
 		if (recvfrom(in, guess, LINESIZE, 0, (struct sockaddr *) &si_other, &slen) == -1){	// cast sockaddr_in to sockaddr
