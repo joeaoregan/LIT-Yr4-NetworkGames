@@ -9,6 +9,8 @@
 #define LINESIZE 80										// Maximum size in the world of Any string
 #define HANGMAN_TCP_PORT 1066									// The port number the server will run on
 
+#define SRV_IP "127.0.0.1"									// IPv4 Address of server on local machine
+
 char* TCP_PORT = "1066";									// The port number the server will run on, for createTCPServerSocket() function
 
 char* word [] = {										// Array of words, one word will be selected randomly to guess
