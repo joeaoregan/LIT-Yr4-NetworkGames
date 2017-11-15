@@ -1,5 +1,7 @@
+// 20171115 Fixed client continuing to connect
 // 20171114 Joe: Fixed warning messages by casting sockaddr_in to struct sockaddr*
-// 		 And moved HandleErrors to parent folder		
+// 		 And moved HandleErrors to parent folder	
+// 		Added random word selection	
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -9,7 +11,8 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
-#include "../HandleErrors.h"	// Moved HandleErrors.h to parent folder
+#include <time.h>					// Seed the random number
+#include "../HandleErrors.h"				// Moved HandleErrors.h to parent folder
 #include "../Hangman.h"
 #include "../DrawHangman.h"
 
@@ -35,13 +38,14 @@ int main(void) {
 	if (bind(sock, (struct sockaddr *) &si_me, sizeof(si_me)) == -1) displayErrMsg("Bind Failed");
 	printf("\nSocket Binding Completed\n");
 
+
 	drawHangman();
 
 	printf("\nWaiting For Data...\n");
 
-	//while(1) {
+	while(1) {
 		fflush(stdout);
-			
+		srand(time(NULL));
 // RECEIVE USERNAME
 		if((byteCount = recvfrom(sock, buf, LINESIZE, 0, (struct sockaddr *) &si_other, &slen)) == -1) {	// Server receives 1st
 			displayErrMsg("recvfrom() Failed");
@@ -62,7 +66,7 @@ int main(void) {
 */
 		play_hangman(sock,sock);
 		printf("Finished Play Hangman\n");
-	//}
+	}
 		
 	close(sock);			
 
@@ -82,11 +86,12 @@ void play_hangman (int in, int out) {
  	sprintf(outbuf, "Playing hangman on host %s: \n \n", hostname);			
  	write(out, outbuf, strlen (outbuf));						
  	
- 	whole_word = word[rand() % NUM_OF_WORDS];
+ 	//whole_word = word[rand() % NUM_OF_WORDS];
+	whole_word = selectRandomWord("Client", 0000);	// FIX THIS LATER - CLIENT IP AND PORT
  	word_length = strlen(whole_word);
- 	syslog (LOG_USER | LOG_INFO, "Server chose hangman word %s", whole_word);
+ 	//syslog (LOG_USER | LOG_INFO, "Server chose hangman word %s", whole_word);
 
-	printf("Word chosen: %s\n", whole_word);
+	//printf("Word chosen: %s\n", whole_word);
  	
  	for (i = 0; i < word_length; i++) {
 		part_word[i] = '-';

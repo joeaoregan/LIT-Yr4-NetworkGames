@@ -1,3 +1,7 @@
+// 20171115 Fixed client continuing to connect, 
+// 		add command line parameter check
+// 
+
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdio.h>
@@ -19,7 +23,7 @@
 	char* blah = "blah";					// output buffer
  	char * server_name;	
 
-	server_name = (argc == 1) ?  SRV_IP : argv[1];		// Can enter ./cli to run on localhost, or specify and address
+	server_name = (argc == 1) ?  SRV_IP : argv[1];		// Can enter ./cli to run on localhost, or specify an address
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)  displayErrMsg("Socket Failed");
 
@@ -41,15 +45,13 @@
 	}
 
 // PLAY THE GAME
-	while(partword[0] != 'b') {
+	while(partword[0] != 'b') {				// change to check lives, as this will exit on word beginning with b
 // RECEIVE THE PART WORD
 		partword[0]='\0';
-		//printf("partword: %s\n", partword);
 
 		byteCount = recvfrom(s, partword, LINESIZE, 0, (struct sockaddr *) &si_other, &slen);	 	
 
-		partword[byteCount-1] = '\0'; 		// bytecount -1 to remove \n or \r or whatever is giving new line							
-		//printf("Received:  %s, strlen: %lu, bytes (including strings null-terminator): %d\n", partword, strlen(partword), byteCount);
+		partword[byteCount-1] = '\0'; 			// bytecount -1 to remove \n or \r or whatever is giving new line		
 		printf("Received:  %s", partword);	
 
 // SEND GUESS
@@ -58,8 +60,7 @@
 
 		if (sendto(s, format, strlen(guess), 0,(struct sockaddr *) &si_other, slen) == -1) {
 			 displayErrMsg("sendto() Failed");
-		}
-		//printf("partword >> %s <<\n",partword);	// test part word is ok to exit loop								
+		}							
 	}
 
 	printf("Client Finished\n");

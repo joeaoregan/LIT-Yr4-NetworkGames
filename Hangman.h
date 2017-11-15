@@ -64,9 +64,8 @@ int gameOverSelect(int state, char* outbuffer, char* word, int o, char* clname, 
 
 // Pick a word at random from the word list
 char* selectRandomWord(char* clname, int clport) {  
-  char* the_word;										// The word for the client to guess
+  char* the_word = word[rand() % NUM_OF_WORDS];							// Select random word from words array for client to guess
 
-  the_word = word[rand() % NUM_OF_WORDS];							// Select random word from words array
   syslog (LOG_USER | LOG_INFO, "server chose hangman word %s", the_word);			// Message logging
 
   printf("Word: \"%s\" Randomly Selected For Client: %s/%d\n", the_word, clname, clport);	// Display the word selected for the client on the server
