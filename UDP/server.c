@@ -19,9 +19,7 @@ struct sockaddr_in si_other;
 int slen = sizeof(si_other);
 
 int main(void) {
-	int sock;
-	int i;
-	int byteCount;
+	int sock, i, byteCount;
 	char buf[LINESIZE];
 
 	if ((sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) displayErrMsg("Socket Failed");
@@ -39,44 +37,45 @@ int main(void) {
 
 	drawHangman();
 
-	while(1) {
-		printf("\nWaiting For Data...\n");
+	printf("\nWaiting For Data...\n");
+
+	//while(1) {
 		fflush(stdout);
 			
-
-		if((byteCount = recvfrom(sock, buf, LINESIZE, 0, (struct sockaddr *) &si_other, &slen)) == -1) {
+// RECEIVE USERNAME
+		if((byteCount = recvfrom(sock, buf, LINESIZE, 0, (struct sockaddr *) &si_other, &slen)) == -1) {	// Server receives 1st
 			displayErrMsg("recvfrom() Failed");
 		}
+
+/* 	IGNORE FOR NOW, NOT IMPORTANT YET...
+	WILL NEED THIS LATER TO SEND CONTINUE/MESSAGE WHEN STATE STORED AND MATCHING RECV ON CLIENT, 
+	SEND ON CLIENT TO ACKNOWLEDGE, AND RECV ON SERVER TO GET ANSWER AND PROCEED
 
 		printf("Guess from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
 		buf[byteCount-1] = '\0'; 
 		printf("Received %d bytes: %s", byteCount, buf);
 	
 
-		if (sendto(sock, buf, strlen(buf), 0, (struct sockaddr *) &si_other, slen) == -1) {
+		if (sendto(sock, buf, strlen(buf), 0, (struct sockaddr *) &si_other, slen) == -1) {			// Then sends part word??? W
 			displayErrMsg("sendto() Failed");
-		}
+		}		
+*/
+		play_hangman(sock,sock);
+		printf("Finished Play Hangman\n");
+	//}
+		
+	close(sock);			
 
-		play_hangman(sock,sock);			
-	}
-
-	close(sock);
 
 	return 0;
 }
 
-
 /* ---------------- Play_hangman () ---------------------*/
-
 void play_hangman (int in, int out) {
 	printf("\nBegin Playing\n");
 
- 	char * whole_word, part_word [LINESIZE],
- 	guess[LINESIZE], outbuf[LINESIZE];
-
- 	int lives = MAX_LIVES;							
- 	int game_state = 'I';							
- 	int i, good_guess, word_length;
+ 	char * whole_word, part_word [LINESIZE],guess[LINESIZE], outbuf[LINESIZE];
+ 	int lives = MAX_LIVES, game_state = 'I', i, good_guess, word_length;
  	char hostname[LINESIZE];
 
  	gethostname (hostname, LINESIZE);
@@ -94,12 +93,10 @@ void play_hangman (int in, int out) {
 	}
  
 	part_word[i] = '\0';
-
- 	sprintf (outbuf, "%s %d \n", part_word, lives);
-	
+ 	sprintf (outbuf, "%s %d \n", part_word, lives);	
 	sendto(out, outbuf, strlen(outbuf), 0, (struct sockaddr*) &si_other, sizeof si_other);	
 
-	do {						
+	while (game_state == 'I') {						
 		if (recvfrom(in, guess, LINESIZE, 0, (struct sockaddr *) &si_other, &slen) == -1){	// cast sockaddr_in to sockaddr
 			 displayErrMsg("recvfrom() Failed");
 		}
@@ -125,5 +122,15 @@ void play_hangman (int in, int out) {
  		sprintf (outbuf, "%s %d \n", part_word, lives);	
 		sendto(out, outbuf, LINESIZE, 0, (struct sockaddr *) &si_other, slen);			// cast sockaddr_in to sockaddr
 
-	} while(game_state == 'I'); 	
+		printf("Game State %c\n", game_state);
+	}	
+
+	// Send x to exit
+	outbuf[0] = 'b';
+	outbuf[1] = 'y';
+	outbuf[2] = 'e';
+	outbuf[3] = '\0';
+	sprintf (outbuf, "%s\n", "bye");	
+	sendto(out, outbuf, LINESIZE, 0, (struct sockaddr *) &si_other, slen);			// cast sockaddr_in to sockaddr
+	//close(in);
 }
