@@ -1,3 +1,4 @@
+// 20171116 CreateUDPSocket.h - abstracts the UDP socket creation code
 // 20171115 Fixed client continuing to connect
 // 20171114 Joe: Fixed warning messages by casting sockaddr_in to struct sockaddr*
 // 		 And moved HandleErrors to parent folder	
@@ -15,41 +16,47 @@
 #include "../HandleErrors.h"				// Moved HandleErrors.h to parent folder
 #include "../Hangman.h"
 #include "../DrawHangman.h"
+#include "../CreateUDPSocket.h"
 
-struct sockaddr_in si_me;
-struct sockaddr_in si_other;
+//struct sockaddr_in srvAddr;
+struct sockaddr_in cliAddr;
 
-int slen = sizeof(si_other);
+int slen = sizeof(cliAddr);
 
 int main(void) {
 	int sock, i, byteCount;
 	char buf[LINESIZE];
+/*
+	if ((sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) displayErrMsg("Socket Failed");	// Create a UDP socket, if this fails display an error message
+	else printf("\nSocket Created\n");
 
-	if ((sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) displayErrMsg("Socket Failed");
+	memset((char *) &srvAddr, 0, sizeof(srvAddr));
 
-	printf("\nSocket Created\n");
+	srvAddr.sin_family = AF_INET;
+	srvAddr.sin_port = htons(HANGMAN_UDP_PORT);
+	srvAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-	memset((char *) &si_me, 0, sizeof(si_me));
-
-	si_me.sin_family = AF_INET;
-	si_me.sin_port = htons(HANGMAN_TCP_PORT);
-	si_me.sin_addr.s_addr = htonl(INADDR_ANY);
-
-	if (bind(sock, (struct sockaddr *) &si_me, sizeof(si_me)) == -1) displayErrMsg("Bind Failed");
+	if (bind(sock, (struct sockaddr *) &srvAddr, sizeof(srvAddr)) == -1) displayErrMsg("Bind Failed");
 	printf("\nSocket Binding Completed\n");
-
+*/
+	sock = createUDPServer();
 
 	drawHangman();
 
 	printf("\nWaiting For Data...\n");
 
 	while(1) {
+
 		fflush(stdout);
 		srand(time(NULL));
 // RECEIVE USERNAME
-		if((byteCount = recvfrom(sock, buf, LINESIZE, 0, (struct sockaddr *) &si_other, &slen)) == -1) {	// Server receives 1st
+		if((byteCount = recvfrom(sock, buf, LINESIZE, 0, (struct sockaddr *) &cliAddr, &slen)) == -1) {	// Server receives 1st
 			displayErrMsg("recvfrom() Failed");
 		}
+		
+		buf[byteCount-1] = '\0';
+
+		printf("Username received: %s\n",buf);
 
 /* 	IGNORE FOR NOW, NOT IMPORTANT YET...
 	WILL NEED THIS LATER TO SEND CONTINUE/MESSAGE WHEN STATE STORED AND MATCHING RECV ON CLIENT, 
@@ -58,18 +65,17 @@ int main(void) {
 		printf("Guess from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
 		buf[byteCount-1] = '\0'; 
 		printf("Received %d bytes: %s", byteCount, buf);
-	
+
 
 		if (sendto(sock, buf, strlen(buf), 0, (struct sockaddr *) &si_other, slen) == -1) {			// Then sends part word??? W
 			displayErrMsg("sendto() Failed");
 		}		
 */
 		play_hangman(sock,sock);
-		printf("Finished Play Hangman\n");
+		printf("Finished Play Hangman\n");		
 	}
-		
-	close(sock);			
 
+	close(sock);	
 
 	return 0;
 }
@@ -99,10 +105,10 @@ void play_hangman (int in, int out) {
  
 	part_word[i] = '\0';
  	sprintf (outbuf, "%s %d \n", part_word, lives);	
-	sendto(out, outbuf, strlen(outbuf), 0, (struct sockaddr*) &si_other, sizeof si_other);	
+	sendto(out, outbuf, strlen(outbuf), 0, (struct sockaddr*) &cliAddr, sizeof cliAddr);	
 
 	while (game_state == 'I') {						
-		if (recvfrom(in, guess, LINESIZE, 0, (struct sockaddr *) &si_other, &slen) == -1){	// cast sockaddr_in to sockaddr
+		if (recvfrom(in, guess, LINESIZE, 0, (struct sockaddr *) &cliAddr, &slen) == -1){	// cast sockaddr_in to sockaddr
 			 displayErrMsg("recvfrom() Failed");
 		}
 
@@ -125,7 +131,7 @@ void play_hangman (int in, int out) {
  		}
 
  		sprintf (outbuf, "%s %d \n", part_word, lives);	
-		sendto(out, outbuf, LINESIZE, 0, (struct sockaddr *) &si_other, slen);			// cast sockaddr_in to sockaddr
+		sendto(out, outbuf, LINESIZE, 0, (struct sockaddr *) &cliAddr, slen);			// cast sockaddr_in to sockaddr
 
 		printf("Game State %c\n", game_state);
 	}	
@@ -136,6 +142,6 @@ void play_hangman (int in, int out) {
 	outbuf[2] = 'e';
 	outbuf[3] = '\0';
 	sprintf (outbuf, "%s\n", "bye");	
-	sendto(out, outbuf, LINESIZE, 0, (struct sockaddr *) &si_other, slen);			// cast sockaddr_in to sockaddr
+	sendto(out, outbuf, LINESIZE, 0, (struct sockaddr *) &cliAddr, slen);			// cast sockaddr_in to sockaddr
 	//close(in);
 }

@@ -1,3 +1,4 @@
+// 20171116 CreateUDPSocket.h - abstracts the UDP socket creation code
 // 20171115 Fixed client continuing to connect, 
 // 		add command line parameter check
 // 
@@ -12,6 +13,7 @@
 #include <stdlib.h>
 #include "../HandleErrors.h"
 #include "../Hangman.h"
+#include "../CreateUDPSocket.h"
 
  int main (int argc, char * argv []) {				// Added arguments to specify another IP address other than the default localhost/127.0.0.1
 	struct sockaddr_in si_other;
@@ -21,20 +23,25 @@
 	char partword[LINESIZE];
  	char format[LINESIZE];
 	char* blah = "blah";					// output buffer
- 	char * server_name;	
+// 	char * server_name;	
 
-	server_name = (argc == 1) ?  SRV_IP : argv[1];		// Can enter ./cli to run on localhost, or specify an address
+//	server_name = (argc == 1) ?  SRV_IP : argv[1];		// Can enter ./cli to run on localhost, or specify an address
+
+/*
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)  displayErrMsg("Socket Failed");
 
 	memset((char *) &si_other, 0, sizeof(si_other));
 	si_other.sin_family = AF_INET;
-	si_other.sin_port = htons(HANGMAN_TCP_PORT);
+	si_other.sin_port = htons(HANGMAN_UDP_PORT);
 
 	if (inet_aton(server_name, &si_other.sin_addr) == 0 )  {
 		fprintf(stderr, "inet_aton() failed\n");
 		exit(1);
 	}
+*/
+	s = createUDPClient((argc == 1) ? SRV_IP : argv[1]);
+	si_other = getServerAddress((argc == 1) ? SRV_IP : argv[1]);
 
 	printf("Playing Hangman\nPlease Enter Your Username: ");
 	fgets(guess, LINESIZE, stdin);
