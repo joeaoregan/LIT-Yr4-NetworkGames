@@ -33,32 +33,8 @@
  	int sock, count;									// The socket, and the size of the data to receive
  	char i_line[LINESIZE];									// input buffer (linesize definition (80) moved to Hangman.h headf file)
  	char o_line[LINESIZE];									// output buffer
- //	char * server_name;									// The name for the server, input as a command line argument
- 	
-//	server_name = (argc == 1) ?  SRV_IP : argv[1];						// Get server name from the command line.  If none, use 'localhost' - fixed ternary operator was "=" instead of "=="
 
-/*
- // CREATE THE SOCKET
- 	sock = socket (AF_INET, SOCK_STREAM, 0);
- 	if (sock < 0) displayErrMsgStatus("Creating Stream Socket", 1);	
-
- 	host_info = gethostbyname(server_name);
- 	if (host_info == NULL) {
- 	  fprintf (stderr, "%s: unknown host:%s \n", argv [0], server_name);
- 	  exit (2);
- 	}
-
-// SET UP THE SERVER'S SOCKET ADDRESS, AND CONNECT
- 	server.sin_family = host_info->h_addrtype;
- 	memcpy ((char *) & server.sin_addr, host_info->h_addr, host_info->h_length);
- 	server.sin_port = htons(TCP_PORT_NUM);
-
- 	if (connect (sock, (struct sockaddr *) & server, sizeof server) < 0)			// If the connection fails
-		displayErrMsgStatus("Connecting To Server", 3);					// Display the error message, and exit with status 3
-
- 	printf ("Connected to server: %s \n", server_name);					// 19/09/2017 Change formatting		
-*/
-	server = createTCPClientSocket(&sock, (argc == 1) ?  SRV_IP : argv[1]);
+	server = createTCPClientSocket(&sock, (argc == 1) ?  SRV_IP : argv[1]);			// Create the connection between the client and the server
 	drawHangman();										// Draw Hangman Graphic Representation of Number of Lives Left
 
 	/* -------------------------------CONNECTED TO THE SERVER---------------------------------
@@ -67,19 +43,20 @@
 	----------------------------------------------------------------------------------------*/
 
 /* PARSE VARIABLES */
-	char arg1PartWord[20];
-	int arg2LivesLeft;
+//	char arg1PartWord[20];
+//	int arg2LivesLeft;
 /* SERVER SENDS ITS NAME */
 	count = read (sock, i_line, 34);							// Read from server
 	write (1, i_line, count);								// Display on screen
 
- 	while ((count = read (sock, i_line, LINESIZE)) > 0) {
+ 	while ((count = read (sock, i_line, LINESIZE)) > 0) {					// while there is input from the server
 /* PARSE INPUT FROM SERVER */
-		sscanf(i_line, "%s %d", &(*arg1PartWord), &arg2LivesLeft);			// Parse string data received from server into separate part-word and score variables
-		amputate(arg2LivesLeft);							// Display graphical represenation of lives left
-		printf("%s\n", arg1PartWord);
+//		sscanf(i_line, "%s %d", &(*arg1PartWord), &arg2LivesLeft);			// Parse string data received from server into separate part-word and score variables
+//		amputate(arg2LivesLeft);							// Display graphical represenation of lives left
+		amputate(i_line);							// Parse the input from server and Display graphical represenation of lives left
+//		printf("%s\n", arg1PartWord);
 //	    	write (1, i_line, count);							// Display the data string received from the server on screen
- 	    	count = read (0, o_line, LINESIZE);						// 0 = STDIN
+ 	    	count = read (0, o_line, LINESIZE);						// 0 = STDIN, get input from client
  	    	write (sock, o_line, count);							// Send client input to server
  	}
 

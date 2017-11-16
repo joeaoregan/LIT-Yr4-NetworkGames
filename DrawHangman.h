@@ -27,7 +27,7 @@ char *altFeet[]={"  |     // \\\\_","  |     // \\\\", "  |        \\\\", "  |"}
 
 // Function Declarations
 void drawHangman();
-void amputate(int lives);
+//void amputate(int lives);
 
 // Draw the full hangman intro on Client and Server Sockets
 void drawHangman() {
@@ -38,8 +38,16 @@ void drawHangman() {
 	printf("A Game By:\n  * Joe O'Regan\n  * Samantha Marah\n  * Jason Foley\n");		// Game Creators
 }
 
+
 // This function displays the graphical version of the lives remaining
-void amputate(int lives) {
+// First parsing the string from the server, to separate the part word and number of lives left
+//void amputate(int lives) {
+void amputate(char* input) {
+	char partWord[20];
+	int lives;
+
+	sscanf(input, "%s %d", &(*partWord), &lives);						// Parse string data received from server into separate part-word and score variables
+
 	printf("\n");										// Start on new line
 	if (lives == 12) {									// Full
 	  for (int h = 2; h < 9; ++h) {
@@ -149,8 +157,8 @@ void amputate(int lives) {
 	}
 
 	printf("\nRemaining Guesses:\t%d\n", lives);						// Guesses remaining
-	if (lives > 0) printf("Word To Guess:\t\t");						// The part word string while game is playing OR
-	else printf("The word was:\t\t");							// The actual word if player loses
+	if (lives > 0) printf("Word To Guess:\t\t%s\n", partWord);				// The part word string while game is playing OR
+	else printf("The word was:\t\t%s\n", partWord);						// The actual word if player loses
 }
 
 

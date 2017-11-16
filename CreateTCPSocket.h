@@ -82,11 +82,15 @@ struct sockaddr_in createTCPClientSocket(int* sock, char* server_name) {		/* CRE
  //	}
 
 /* SET UP THE SERVER'S SOCKET ADDRESS, AND CONNECT */
+	bzero(&servAddr, sizeof(servAddr));						// Zero out the address
+
+	//servaddr.sin_family = AF_INET;
  	servAddr.sin_family = host_info->h_addrtype;
  	memcpy ((char *) & servAddr.sin_addr, host_info->h_addr, host_info->h_length);
  	servAddr.sin_port = htons(TCP_PORT_NUM);
+	//inet_pton(AF_INET, (argc == 1) ?  SRV_IP : argv[1], &servaddr.sin_addr);
 
- 	if (connect ((*sock), (struct sockaddr *) &servAddr, sizeof servAddr) < 0)		// If the connection fails
+ 	if (connect ((*sock), (struct sockaddr *) &servAddr, sizeof servAddr) < 0)	// If the connection fails
 		displayErrMsgStatus("Connecting To Server", 3);				// Display the error message, and exit with status 3
 
  	printf ("Connected to server: %s \n", server_name);	

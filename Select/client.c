@@ -35,16 +35,6 @@ int main(int argc, char **argv) {
 	int			sockfd;
 	struct sockaddr_in	servaddr;
 
-/*
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-
-	bzero(&servaddr, sizeof(servaddr));
-	servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htons(TCP_PORT_NUM);
-	inet_pton(AF_INET, (argc == 1) ?  SRV_IP : argv[1], &servaddr.sin_addr);		// Added ternery operator to inet_pton, to use default localhost, or command line IP argument
-
-	connect(sockfd, (struct sockaddr *) &servaddr, sizeof(servaddr));			// XXX
-*/
 	servaddr = createTCPClientSocket(&sockfd, (argc == 1) ?  SRV_IP : argv[1]);
 
 
