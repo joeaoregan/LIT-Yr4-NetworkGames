@@ -36,7 +36,7 @@
 #include <time.h>										// Seed the random number
 #include "../DrawHangman.h"									// Display the hangman graphics
 #include "../Hangman.h"										// Hangman game functions
-#include "../CreateTCPServer.h"									// Create a TCP Server Socket
+#include "../CreateTCPSocket.h"									// Create a TCP Server Socket
 
 extern time_t time ();										// Seed the random number
 char clntName[INET_ADDRSTRLEN];									// Client address string
@@ -54,20 +54,24 @@ void main ()											// No command line arguments
 
 /**/ 	//srand ((int) time ((long *) 0)); 							// Randomize the seed - Moved inside while loop, so each client connection generates a different whole_word
 
-	sock = createTCPServerSocket(TCP_PORT);							// Functionality to create socket moved to separate file CreateTCPServer.h
+	sock = createTCPServerSocket();								// Functionality to create socket moved to separate file CreateTCPServer.h
 	// The UNP books signal() function calls POSIX sigaction
 	// signal(<signal name>, <point to signal handler function>);
 	signal(SIGCHLD, sig_chld);								// SIGCHLD signal is sent to the parent of a child process when it exits, is interuppted, or resumes after interruption
 
 	drawHangman();										// Draw the hangman graphic
 
- 	while (1) {
+ 	while (1) {										// Infinite loop
  		client_len = sizeof (client);							// Size of the client socket
- 		if ((fd = accept (sock, (struct sockaddr *) &client, &client_len)) < 0) {	// P41 A new descriptor is returned by accept() for each client that connects to our server
+ 		if ((fd = accept (sock, (struct sockaddr *) &client, &client_len)) < 0)		// P41 A new descriptor is returned by accept() for each client that connects to our server
+			displayErrMsgStatus("Accepting Connection", 3);				// Display the error message, and exit with status 3
+
+/*
+		{
  			perror ("accepting connection");					// Display the error message, if server can't connect
  			exit (3);								// close the server
  		}
-
+*/
 /* DISPLAY CLIENT ADDRESS AND PORT */
 /**/		if (inet_ntop(AF_INET, &client.sin_addr.s_addr, clntName,sizeof(clntName)) != NULL){ 	// inet_ntop() - Convert IP address to human readable form
 /**/  			printf("Handling client %s/%d \n", clntName, ntohs(client.sin_port));	// Display the client IP address and port number

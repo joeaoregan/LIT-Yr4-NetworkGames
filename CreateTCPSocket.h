@@ -3,6 +3,8 @@
 
 	Reconfigured version of SetupTCPServerSocket() function from TCPServerUtility.c
 	from TCP/IP Sockets in C book, to work with TCP Hangman fork() server
+
+	16/11/2017 Added HandleErrors.h for error handling
 */
 
 #include <sys/socket.h>
@@ -12,8 +14,14 @@
 #include <string.h>
 #include "Hangman.h"
 #include "AddressFunctions.h"
+#include "HandleErrors.h"								// Display error messages
 
-int createTCPServerSocket(const char *port) {
+#define SRV_IP "127.0.0.1"								// IPv4 Address of server on local machine
+#define TCP_PORT_NUM 1066								// The port number the server will run on
+#define	MAX_CLIENTS 5									// 2nd argument to listen(), the maximum number of client connections
+char* TCP_PORT = "1066";								// The port number the server will run on, for createTCPServerSocket() function
+
+int createTCPServerSocket() {
   // Construct the server address structure
   struct addrinfo addrCriteria;                   					// Criteria for address match
   memset(&addrCriteria, 0, sizeof(addrCriteria)); 					// Zero out structure
@@ -23,7 +31,7 @@ int createTCPServerSocket(const char *port) {
   addrCriteria.ai_protocol = IPPROTO_TCP;         					// Only TCP protocol
 
   struct addrinfo *servAddr; 								// List of server addresses
-  int rtnVal = getaddrinfo(NULL, port, &addrCriteria, &servAddr);
+  int rtnVal = getaddrinfo(NULL, TCP_PORT, &addrCriteria, &servAddr);
   if (rtnVal != 0)    
     printf("getaddrinfo() failed %s\n", gai_strerror(rtnVal));				// DieWithUserMessage("getaddrinfo() failed", gai_strerror(rtnVal));
 
@@ -34,19 +42,18 @@ int createTCPServerSocket(const char *port) {
     if (server < 0) continue;       							// Socket creation failed; try next address
 
     if ((bind(server, servAddr->ai_addr, servAddr->ai_addrlen) == 0) &&			// Bind to the local address 
-        (listen(server, MAX_CLIENTS) == 0)) {						// Set socket to listen
+      (listen(server, MAX_CLIENTS) == 0)) {						// Set socket to listen
     
-//    	printf("Server now running on port: %s \n", port);				// Previous code to display port number
-
       // Print local address of socket
       struct sockaddr_storage localAddr;
       socklen_t addrSize = sizeof(localAddr);
-      if (getsockname(server, (struct sockaddr *) &localAddr, &addrSize) < 0)
- //       DieWithSystemMessage("getsockname() failed");
-		printf("getsockname() failed");
+      if (getsockname(server, (struct sockaddr *) &localAddr, &addrSize) < 0) 
+		displayErrMsg("getsockname() failed");
+
       fputs("Server now running on ", stdout);
       displayAddress((struct sockaddr *) &localAddr, stdout);				// Display the address/port for the socket
-      fputc('\n', stdout);
+      fputc('\n', stdout);								// Add new line
+
       break;       									// Bind and list successful
     }
 

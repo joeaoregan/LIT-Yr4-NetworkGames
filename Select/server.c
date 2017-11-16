@@ -17,7 +17,7 @@
 #include <time.h>
 #include "../Hangman.h"				// 13/10/2017 Hangman functions
 #include "../DrawHangman.h"			// Display the hangman graphics
-#include "../CreateTCPServer.h"			// Create a TCP Server Socket
+#include "../CreateTCPSocket.h"			// Create a TCP Server Socket
 
 char clntName[INET_ADDRSTRLEN];			// Client address string
 struct sockaddr_in	cliaddr, servaddr;	// Client address string
@@ -72,13 +72,13 @@ int main(int argc, char **argv) {
 			
 			// Add client to clients array
 			for (i = 0; i < FD_SETSIZE; i++) {										
-				if (client[i].sock < 0) {									// If the array position is empty
+				if (client[i].sock < 0) {								// If the array position is empty
 					client[i].sock = connfd;	
 /**/					// Store and display the client IP and Port 
 					if (inet_ntop(AF_INET, &cliaddr.sin_addr.s_addr, client[i].ip,sizeof(client[i].ip)) != NULL){	// inet_ntop() - Convert IP address to human readable form
   						printf("Handling client %s/%d \n", client[i].ip, CLI_PORT);				// Display the client IP address and port number
 						client[i].port = CLI_PORT;
-					}							/* save descriptor */
+					}										/* save descriptor */
 /*====================================== initialise the variables for each client ======================================*/
 /* CHOOSE WORD */ 			client[i].word = selectRandomWord(clntName, CLI_PORT);				// Select a random word from the list of words
 					/* No letters are guessed Initially */

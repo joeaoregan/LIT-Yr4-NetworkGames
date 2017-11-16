@@ -17,6 +17,7 @@
 #include <arpa/inet.h>					// 23/09/2017 inet_ntop()
 #include "../Hangman.h"					// 11/10/2017 Hangamen header file
 #include "../DrawHangman.h"				// 11/10/2017 Draw Hangman Graphic
+#include "../CreateTCPSocket.h"
 	
 void str_echo(int sockfd);
 void str_cli(FILE *fp, int sockfd);
@@ -39,21 +40,21 @@ void getInput(int sock, char* recv);
 int main(int argc, char **argv) {
 	int			sockfd;
 	struct sockaddr_in	servaddr;
-
-	if (argc != 2)
-		//err_quit("usage: tcpcli <IPaddress>");
+/*
+	if (argc != 2) displayErrMsg("Usage: cli <IP						// Added terneray operator to inet_pton, to use default localhost, or command line IP argument
+		//err_quit("usage: tcpcli <IPaddress>");	
 		printf("usage: tcpcli <IPaddress>");
-
+*/
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
 	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htons(HANGMAN_TCP_PORT);
-	inet_pton(AF_INET, argv[1], &servaddr.sin_addr);	// XXX
+	servaddr.sin_port = htons(TCP_PORT_NUM);
+	inet_pton(AF_INET, (argc == 1) ?  SRV_IP : argv[1], &servaddr.sin_addr);		// XXX
 
-	connect(sockfd, (struct sockaddr *) &servaddr, sizeof(servaddr));	// XXX
+	connect(sockfd, (struct sockaddr *) &servaddr, sizeof(servaddr));			// XXX
 
-	str_cli(stdin, sockfd);		/* do it all */
+	str_cli(stdin, sockfd);									/* do it all */
 
 	exit(0);
 }
@@ -85,9 +86,9 @@ readline
 void getInput(int sock, char* recv){
 	if (readline(sock, recv, LINESIZE) == 0) printf("str_cli: server terminated prematurely");
 
-	sscanf(recv, "%s %d", &(*arg1PartWord), &arg2LivesLeft);	// Separate the part word and guesses
-	selectLives(arg2LivesLeft);					// Display hangman graphic & guesses left
-	fputs(arg1PartWord, stdout);					// Display the part word without the guesses
+	sscanf(recv, "%s %d", &(*arg1PartWord), &arg2LivesLeft);				// Separate the part word and guesses
+	selectLives(arg2LivesLeft);								// Display hangman graphic & guesses left
+	fputs(arg1PartWord, stdout);								// Display the part word without the guesses
 	fputs("\n", stdout);
 }
 
@@ -101,8 +102,7 @@ static ssize_t my_read(int fd, char *ptr) {
 	if (read_cnt <= 0) {
 again:
 		if ( (read_cnt = read(fd, read_buf, sizeof(read_buf))) < 0) {
-			if (errno == EINTR)
-				goto again;
+			if (errno == EINTR) goto again;
 			return(-1);
 		} else if (read_cnt == 0)
 			return(0);

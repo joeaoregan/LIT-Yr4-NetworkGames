@@ -27,29 +27,28 @@
 #include <arpa/inet.h>											// 23/09/2017 inet_ntop()
 #include "../DrawHangman.h"
 #include "../Hangman.h"
+#include "../CreateTCPSocket.h"
+#include "../HandleErrors.h"
 
 extern time_t time ();			
 
 char clntName[INET_ADDRSTRLEN];										// Client address string
-struct sockaddr_in server, client;
+struct sockaddr_in server, client;									// Made global to display client name outside main
 #define CLI_PORT ntohs(client.sin_port)
 
 void main ()												// No command line arguments
 {
- 	int sock, fd, client_len;
- 	//struct sockaddr_in server, client;								// Made global to display client name outside main
+ 	int sock, fd, client_len;							
 
- 	srand ((int) time ((long *) 0)); 								/* randomize the seed */
-
+ 	srand ((int) time ((long *) 0)); 								// randomize the seed
+/*
  	sock = socket (AF_INET, SOCK_STREAM, 0);							// 0 or IPPROTO_TCP	// Create the socket
- 	if (sock <0) { 											// This error checking is the code Stevens wraps in his Socket Function etc
- 		perror ("creating stream socket");							// Display an error message
- 		exit (1);										// Exit
- 	}
+	if (sock < 0) displayErrMsg("Creating Stream Socket");						// This error checking is the code Stevens wraps in his Socket Function etc
 
  	server.sin_family = AF_INET;									// IPv4 address
  	server.sin_addr.s_addr = htonl(INADDR_ANY);							// Server IP
- 	server.sin_port = htons(HANGMAN_TCP_PORT);							// Server port
+ 	server.sin_port = htons(TCP_PORT);								// Server port
+
 
  	if (bind(sock, (struct sockaddr *) & server, sizeof(server)) <0) {				// socket(), bind(), listen() -> Server prepared to accept connection
  		perror ("binding socket");								// Display an error
@@ -57,6 +56,8 @@ void main ()												// No command line arguments
  	}
 
  	listen (sock, 5);										// socket(), bind(), listen() -> server passive open
+*/
+	sock = createTCPServerSocket();
 
 	drawHangman();											// Draw the hangman graphic
 
@@ -64,11 +65,14 @@ void main ()												// No command line arguments
 
  	while (1) {
  		client_len = sizeof (client);
- 		if ((fd = accept (sock, (struct sockaddr *) &client, &client_len)) <0) {		// Create the listening socket, and if its return value is less than 0
+ 		if ((fd = accept (sock, (struct sockaddr *) &client, &client_len)) < 0) 
+			displayErrMsgStatus("Accepting Connection", 3);					// Display error message, and exit with return status 3
+/*
+		 {		// Create the listening socket, and if its return value is less than 0
  			perror ("accepting connection");						// Display an error
  			exit (3);									// exit
  		}
-
+*/
 		// Display Client address and port
 		if (inet_ntop(AF_INET, &client.sin_addr.s_addr, clntName,sizeof(clntName)) != NULL){	// Convert the address to a string, and store in clntName
   			printf("Handling client %s/%d\n", clntName, ntohs(client.sin_port));		// Display the client IP address and port number
@@ -101,9 +105,8 @@ void main ()												// No command line arguments
  	sprintf (outbuf, "%s %d \n", part_word, lives);							// Set outbuf to the part word & the lives left
  	write (out, outbuf, strlen(outbuf));								// Send to client
 
- 	while (game_state == 'I')									// Loop until game is complete
- 	/* Get a letter from player guess */
- 	{
+ 	while (game_state == 'I') {									// Loop until game is complete
+		// Get a letter from player guess
 		while (read (in, guess, LINESIZE) <0) {							// Read guess from client
  			if (errno != EINTR)								// Check for error
  				exit (4);

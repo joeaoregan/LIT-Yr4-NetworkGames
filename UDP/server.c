@@ -26,19 +26,7 @@ int slen = sizeof(cliAddr);
 int main(void) {
 	int sock, i, byteCount;
 	char buf[LINESIZE];
-/*
-	if ((sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) displayErrMsg("Socket Failed");	// Create a UDP socket, if this fails display an error message
-	else printf("\nSocket Created\n");
 
-	memset((char *) &srvAddr, 0, sizeof(srvAddr));
-
-	srvAddr.sin_family = AF_INET;
-	srvAddr.sin_port = htons(HANGMAN_UDP_PORT);
-	srvAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-
-	if (bind(sock, (struct sockaddr *) &srvAddr, sizeof(srvAddr)) == -1) displayErrMsg("Bind Failed");
-	printf("\nSocket Binding Completed\n");
-*/
 	sock = createUDPServer();
 
 	drawHangman();

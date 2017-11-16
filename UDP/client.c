@@ -15,57 +15,40 @@
 #include "../Hangman.h"
 #include "../CreateUDPSocket.h"
 
- int main (int argc, char * argv []) {				// Added arguments to specify another IP address other than the default localhost/127.0.0.1
+ int main (int argc, char * argv []) {					// Added arguments to specify another IP address other than the default localhost/127.0.0.1
 	struct sockaddr_in si_other;
  	int s, i, byteCount;
 	int slen=sizeof(si_other);
-	char guess[LINESIZE];
+	char userInput[LINESIZE];
 	char partword[LINESIZE];
- 	char format[LINESIZE];
-	char* blah = "blah";					// output buffer
-// 	char * server_name;	
+// 	char format[LINESIZE];
+	char* blah = "blah";						// output buffer
 
-//	server_name = (argc == 1) ?  SRV_IP : argv[1];		// Can enter ./cli to run on localhost, or specify an address
-
-/*
-
-	if ((s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)  displayErrMsg("Socket Failed");
-
-	memset((char *) &si_other, 0, sizeof(si_other));
-	si_other.sin_family = AF_INET;
-	si_other.sin_port = htons(HANGMAN_UDP_PORT);
-
-	if (inet_aton(server_name, &si_other.sin_addr) == 0 )  {
-		fprintf(stderr, "inet_aton() failed\n");
-		exit(1);
-	}
-*/
 	s = createUDPClient((argc == 1) ? SRV_IP : argv[1]);
 	si_other = getServerAddress((argc == 1) ? SRV_IP : argv[1]);
 
 	printf("Playing Hangman\nPlease Enter Your Username: ");
-	fgets(guess, LINESIZE, stdin);
-	sprintf(format, "%s", guess);
+	fgets(userInput, LINESIZE, stdin);				// Enter username
+//	sprintf(format, "%s", userInput);				// copying a string to a string, not sure why???		
 
-	if (sendto(s, format, strlen(guess), 0,(struct sockaddr *) &si_other, slen) == -1) {
+	if (sendto(s, userInput, strlen(userInput), 0,(struct sockaddr *) &si_other, slen) == -1) {
 		displayErrMsg("sendto() Failed");
 	}
 
 // PLAY THE GAME
-	while(partword[0] != 'b') {				// change to check lives, as this will exit on word beginning with b
+	while(partword[0] != 'b') {					// change to check lives, as this will exit on word beginning with b
 // RECEIVE THE PART WORD
-		partword[0]='\0';
+		partword[0]='\0';					// Reset the part-word string
 
 		byteCount = recvfrom(s, partword, LINESIZE, 0, (struct sockaddr *) &si_other, &slen);	 	
-
-		partword[byteCount-1] = '\0'; 			// bytecount -1 to remove \n or \r or whatever is giving new line		
-		printf("Received:  %s", partword);	
+		partword[byteCount-1] = '\0'; 				// bytecount -1 to remove \n or \r or whatever is giving new line		
+		printf("Received:  %s", partword);			// Display the string received from the server	
 
 // SEND GUESS
-		fgets(guess, LINESIZE, stdin);
-		sprintf(format, "%s", guess);
+		fgets(userInput, LINESIZE, stdin);
+//		sprintf(format, "%s", userInput);			// should be no need to do this?
 
-		if (sendto(s, format, strlen(guess), 0,(struct sockaddr *) &si_other, slen) == -1) {
+		if (sendto(s, userInput, strlen(userInput), 0,(struct sockaddr *) &si_other, slen) == -1) {
 			 displayErrMsg("sendto() Failed");
 		}							
 	}
