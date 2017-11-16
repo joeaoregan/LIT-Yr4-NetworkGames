@@ -66,3 +66,30 @@ int createTCPServerSocket() {
 
   return server;
 }
+
+struct sockaddr_in createTCPClientSocket(int* sock, char* server_name) {		/* CREATE THE SOCKET */
+	struct sockaddr_in servAddr;
+ 	struct hostent * host_info;
+ 	
+	 /* CREATE THE SOCKET */
+ 	(*sock) = socket(AF_INET, SOCK_STREAM, 0);
+ 	if (sock < 0) displayErrMsgStatus("Creating Stream Socket", 1);	
+
+ 	host_info = gethostbyname(server_name);
+ //	if (host_info == NULL) {
+ //	  fprintf (stderr, "%s: unknown host:%s \n", argv [0], server_name);
+ //	  exit (2);
+ //	}
+
+/* SET UP THE SERVER'S SOCKET ADDRESS, AND CONNECT */
+ 	servAddr.sin_family = host_info->h_addrtype;
+ 	memcpy ((char *) & servAddr.sin_addr, host_info->h_addr, host_info->h_length);
+ 	servAddr.sin_port = htons(TCP_PORT_NUM);
+
+ 	if (connect ((*sock), (struct sockaddr *) &servAddr, sizeof servAddr) < 0)		// If the connection fails
+		displayErrMsgStatus("Connecting To Server", 3);				// Display the error message, and exit with status 3
+
+ 	printf ("Connected to server: %s \n", server_name);	
+
+	return servAddr;
+}

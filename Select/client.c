@@ -29,30 +29,24 @@ char arg1PartWord[20];
 int arg2LivesLeft;
 int count;
 
-void show1(char* msg){
-	printf("\nMessage Received Outside Loop: %s", msg);
-}
-void show2(char* msg){
-	printf("\nMessage Received Inside Loop: %s", msg);
-}
 void getInput(int sock, char* recv);
 
 int main(int argc, char **argv) {
 	int			sockfd;
 	struct sockaddr_in	servaddr;
+
 /*
-	if (argc != 2) displayErrMsg("Usage: cli <IP						// Added terneray operator to inet_pton, to use default localhost, or command line IP argument
-		//err_quit("usage: tcpcli <IPaddress>");	
-		printf("usage: tcpcli <IPaddress>");
-*/
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
 	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_port = htons(TCP_PORT_NUM);
-	inet_pton(AF_INET, (argc == 1) ?  SRV_IP : argv[1], &servaddr.sin_addr);		// XXX
+	inet_pton(AF_INET, (argc == 1) ?  SRV_IP : argv[1], &servaddr.sin_addr);		// Added ternery operator to inet_pton, to use default localhost, or command line IP argument
 
 	connect(sockfd, (struct sockaddr *) &servaddr, sizeof(servaddr));			// XXX
+*/
+	servaddr = createTCPClientSocket(&sockfd, (argc == 1) ?  SRV_IP : argv[1]);
+
 
 	str_cli(stdin, sockfd);									/* do it all */
 
@@ -63,18 +57,11 @@ void str_cli(FILE *fp, int sockfd) {
 	char	sendline[LINESIZE], recvline[LINESIZE];
 
 	getInput(sockfd,recvline);
-/*
-	while (fgets(sendline, LINESIZE, fp) != NULL) {
-		write(sockfd, sendline, strlen(sendline));
-readline
-		getInput(sockfd,recvline);
-	}
-*/
-//	while ((count = read(sockfd, recvline, LINESIZE)) > 0) {
+
 	while (fgets(sendline, LINESIZE, fp) != NULL) {
  	    	write (sockfd, sendline, strlen(sendline));					// Send client input to server
 
-		count = read (sockfd, recvline, LINESIZE);	
+		count = read (sockfd, recvline, LINESIZE);					// Receive line from the server
 		sscanf(recvline, "%s %d", &(*arg1PartWord), &arg2LivesLeft);			// Parse string data received from server into separate part-word and score variables
 		selectLives(arg2LivesLeft);							// Display graphical represenation of lives left
 		printf("%s\n", arg1PartWord);
@@ -98,9 +85,8 @@ static char	*read_ptr;
 static char	read_buf[LINESIZE];
 
 static ssize_t my_read(int fd, char *ptr) {
-
 	if (read_cnt <= 0) {
-again:
+again:												// Return to this point
 		if ( (read_cnt = read(fd, read_buf, sizeof(read_buf))) < 0) {
 			if (errno == EINTR) goto again;
 			return(-1);
