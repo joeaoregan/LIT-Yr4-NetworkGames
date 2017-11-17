@@ -29,7 +29,7 @@ int main(void) {
 
 	sock = createUDPServer();
 
-	drawHangman();
+	//drawHangman();
 
 	printf("\nWaiting For Data...\n");
 
@@ -57,15 +57,16 @@ void play_hangman (int in, int out) {
  	char hostname[LINESIZE];
 	ssize_t byteCount;
 
- //	gethostname (hostname, LINESIZE);
-//	sprintf(outbuf, "Playing hangman on host %s: \n \n", hostname);			
- //	write(0, outbuf, strlen (outbuf));					// XXX	 	
+ 	gethostname (hostname, LINESIZE);
+//	sprintf(outbuf, "Playing hangman on host %s: \n", hostname);			
+ //	write(0, outbuf, strlen(outbuf));					// XXX	 
+	printf("Playing hangman on host %s: \n", hostname);
 /*RECEIVE USERNAME*/
 	if((byteCount = recvfrom(in, guess, LINESIZE, 0, (struct sockaddr *) &cliAddr, &slen)) == 0) {	// Server receives 1st
 		displayErrMsg("recvfrom() Failed");
 	}		
 	printf("byteCount: %ld\n", byteCount);
-	//guess[byteCount-1] = '\0';
+	guess[byteCount-1] = '\0';
 	printf("Username received: %s\n",guess);
 /*GET RANDOM WORD*/
 	whole_word = selectRandomWord("Client", 0000);				// XXX FIX THIS LATER - CLIENT IP AND PORT
@@ -82,18 +83,28 @@ void play_hangman (int in, int out) {
 
  
 	part_word[i] = '\0';
- 	sprintf (outbuf, "%s %d \n", part_word, lives);	
+	outbuf[0] = '\0';
+	printf("sendto 1 outbuf before sprintf: %sXX\n", outbuf);
+ 	sprintf (outbuf, "%s %d\n", part_word, lives);	
+//	printf("sendto 1 outbuf after sprintf: %sXXX", outbuf);
+//	printf("strlen(outbuf): %lu\n", strlen(outbuf));
 	sendto(out, outbuf, strlen(outbuf), 0, (struct sockaddr*) &cliAddr, sizeof cliAddr);	
 
 	while (game_state == 'I') {	
-		guess[0] = '\0';
-		if (byteCount = recvfrom(in, guess, LINESIZE, 0, (struct sockaddr *) &cliAddr, &slen) == -1){	// cast sockaddr_in to sockaddr
+//		guess[0] = '\0';
+
+		if ((byteCount = recvfrom(in, guess, LINESIZE, 0, (struct sockaddr *) &cliAddr, &slen)) == -1){	// cast sockaddr_in to sockaddr
 			 displayErrMsg("recvfrom() Failed");
 		}
-		printf("byteCount: %ld\n", byteCount);
-		guess[byteCount-2] = '\0';
 
-		printf("Client Sent: %s\n", guess);
+		guess[1] = '\0';	// only need 1st character
+//printf("byteCount: %ld\n", byteCount);
+//printf("recvfrom - guess: %sXXX bytecount: %ld\n", guess, byteCount);
+printf("Guess: %s ByteCount: %ld\n", guess, byteCount);
+//		guess[byteCount-1] = '\0';
+
+//printf("Client Sent: %s\n", guess);
+		//write(fileno(stdout), guess, byteCount);
 
  		good_guess = 0;
 
@@ -113,14 +124,16 @@ void play_hangman (int in, int out) {
  			strcpy (part_word, whole_word); 
  		}
 
- 		sprintf (outbuf, "%s %d \n", part_word, lives);	
-		sendto(out, outbuf, LINESIZE, 0, (struct sockaddr *) &cliAddr, slen);			// cast sockaddr_in to sockaddr
+//printf("sendto 2 outbuf before sprintf: %s\n", outbuf);
+ 		sprintf (outbuf, "%s %d\n", part_word, lives);	
+//printf("sendto 2 outbuf after sprintf: %s", outbuf);
+		sendto(out, outbuf, strlen(outbuf), 0, (struct sockaddr *) &cliAddr, slen);			// cast sockaddr_in to sockaddr
 
 //		printf("Game State %c\n", game_state);
 	}	
 	
 	// Send x to exit
 	sprintf (outbuf, "%s\n", "bye");	
-	sendto(out, outbuf, LINESIZE, 0, (struct sockaddr *) &cliAddr, slen);			// cast sockaddr_in to sockaddr
+	sendto(out, outbuf, strlen(outbuf), 0, (struct sockaddr *) &cliAddr, slen);			// cast sockaddr_in to sockaddr
 	close(in);
 }

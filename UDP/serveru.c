@@ -38,7 +38,7 @@ int main(void) {
 		fflush(stdout);
 		srand(time(NULL));
 // RECEIVE USERNAME
-		if((byteCount = recvfrom(sock, buf, LINESIZE, 0, (struct sockaddr *) &cliAddr, &slen)) == -1) {	// Server receives 1st
+		if((byteCount = recvfrom(sock, buf, LINESIZE, 0, (struct sockaddr *) &cliAddr, &slen)) == -1) {		// Server receives 1st, recvfrom returns -1 if error
 			displayErrMsg("recvfrom() Failed");
 		}
 		
