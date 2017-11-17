@@ -1,5 +1,7 @@
 //tcpserv04
 
+// 17/11/2017 Added socket connection code from CreateTCPSocket.h
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -14,10 +16,10 @@
 #include <signal.h>					// SIGCHLD
 #include <sys/types.h>					// waitpid()
 #include <sys/wait.h>
+#include "../CreateTCPSocket.h"
 
-#define SERV_PORT 1066
-#define LISTENQ 5
-
+//#define SERV_PORT 1066
+//#define LISTENQ 5
 
 void str_echo(int sockfd);
 void sig_chld(int signo);
@@ -26,10 +28,10 @@ int main(int argc, char **argv) {
 	int listenfd, connfd;
 	pid_t childpid;
 	socklen_t clilen;
-	struct sockaddr_in cliaddr, servaddr;
+	//struct sockaddr_in cliaddr, servaddr;
+	struct sockaddr_in cliaddr;
 	void sig_chld(int);
-
-	//listenfd = Socket(AF_INET, SOCK_STREAM, 0);
+/*
 	listenfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (listenfd < 0) displayErrMsg("Creating Stream Socket");
 
@@ -38,34 +40,28 @@ int main(int argc, char **argv) {
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	servaddr.sin_port        = htons(SERV_PORT);
 
-	//Bind(listenfd, (SA *) &servaddr, sizeof(servaddr));
 	if (bind(listenfd, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0) displayErrMsg("Bind()");
 
-	//Listen(listenfd, LISTENQ);
 	listen(listenfd, LISTENQ);
+*/
+	listenfd = createTCPServerSocket();
 
-	//Signal(SIGCHLD, sig_chld);							/* must call waitpid() */
-	signal(SIGCHLD, sig_chld);							/* must call waitpid() */
+	signal(SIGCHLD, sig_chld);								/* must call waitpid() */
 
 	for ( ; ; ) {
 		clilen = sizeof(cliaddr);
-		//if ( (connfd = accept(listenfd, (SA *) &cliaddr, &clilen)) < 0) {
 		if ( (connfd = accept(listenfd, (struct sockaddr *) &cliaddr, &clilen)) < 0) {
 			if (errno == EINTR) continue;						/* back to for() */
-			//else err_sys("accept error");
-			else displayErrMsg("accept error");
+			else displayErrMsg("Accept() Error");
 		}
 
-		//if ( (childpid = Fork()) == 0) {					/* child process */
-		if ( (childpid = fork()) == 0) {					/* child process */
-			//Close(listenfd);						/* close listening socket */
-			close(listenfd);						/* close listening socket */
-			str_echo(connfd);						/* process the request */
+		if ( (childpid = fork()) == 0) {						/* child process */
+			close(listenfd);							/* close listening socket */
+			str_echo(connfd);							/* process the request */
 			exit(0);
 		}
 
-		//Close(connfd);							/* parent closes connected socket */
-		close(connfd);								/* parent closes connected socket */
+		close(connfd);									/* parent closes connected socket */
 	}
 }
 
@@ -75,11 +71,9 @@ void str_echo(int sockfd) {
 
 again:
 	while ( (n = read(sockfd, buf, LINESIZE)) > 0)
-		//Writen(sockfd, buf, n);
 		write(sockfd, buf, n);
 
 	if (n < 0 && errno == EINTR) goto again;
-	//else if (n < 0) err_sys("str_echo: read error");
 	else if (n < 0) displayErrMsg("str_echo: read error");
 }
 
@@ -88,6 +82,6 @@ void sig_chld(int signo) {
 	int stat;
 
 	while ( (pid = waitpid(-1, &stat, WNOHANG)) > 0) 
-		printf("child %d terminated\n", pid);
+		printf("Child %d terminated\n", pid);
 	return;
 }

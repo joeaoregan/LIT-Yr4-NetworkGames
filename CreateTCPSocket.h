@@ -16,6 +16,8 @@
 #include "AddressFunctions.h"
 #include "HandleErrors.h"								// Display error messages
 
+#define	max(a,b) ((a) > (b) ? (a) : (b))						// Return the largest of 2 numbers
+
 #define SRV_IP "127.0.0.1"								// IPv4 Address of server on local machine
 #define TCP_PORT_NUM 1066								// The port number the server will run on
 #define	MAX_CLIENTS 5									// 2nd argument to listen(), the maximum number of client connections
