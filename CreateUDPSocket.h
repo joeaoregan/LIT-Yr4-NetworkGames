@@ -17,13 +17,14 @@
 #include "HandleErrors.h"											// Display Error messages
 
 #define HANGMAN_UDP_PORT 1068											// The port number the server will run on
+#define SRV_IP "127.0.0.1"								// IPv4 Address of server on local machine
 
 int createUDPServer() {
 	struct sockaddr_in srvAddr;
 	int server;
 
 	if ((server = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) displayErrMsg("Socket CreationFailed");	// Create a UDP socket, if this fails display an error message
-	else printf("\nSocket Created\n");
+	else printf("Socket Created\nPlaying Hangman");
 
 	memset((char *) &srvAddr, 0, sizeof(srvAddr));
 

@@ -29,7 +29,7 @@ int main(void) {
 
 	sock = createUDPServer();
 
-	drawHangman();
+//	drawHangman();
 
 	printf("\nWaiting For Data...\n");
 
@@ -78,7 +78,7 @@ void play_hangman (int in, int out) {
 
  	gethostname (hostname, LINESIZE);
  	sprintf(outbuf, "Playing hangman on host %s: \n \n", hostname);			
- 	write(out, outbuf, strlen (outbuf));						
+ 	write(0, outbuf, strlen (outbuf));						
  	
  	//whole_word = word[rand() % NUM_OF_WORDS];
 	whole_word = selectRandomWord("Client", 0000);	// FIX THIS LATER - CLIENT IP AND PORT

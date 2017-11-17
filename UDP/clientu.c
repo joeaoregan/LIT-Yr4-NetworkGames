@@ -21,15 +21,12 @@
 	int slen=sizeof(si_other);
 	char userInput[LINESIZE];
 	char partword[LINESIZE];
-// 	char format[LINESIZE];
-	char* blah = "blah";						// output buffer
 
 	s = createUDPClient((argc == 1) ? SRV_IP : argv[1]);
 	si_other = getServerAddress((argc == 1) ? SRV_IP : argv[1]);
 
-	printf("Playing Hangman\nPlease Enter Your Username: ");
-	fgets(userInput, LINESIZE, stdin);				// Enter username
-//	sprintf(format, "%s", userInput);				// copying a string to a string, not sure why???		
+	printf("Please Enter Your Username: ");
+	fgets(userInput, LINESIZE, stdin);				// Enter username		
 
 	if (sendto(s, userInput, strlen(userInput), 0,(struct sockaddr *) &si_other, slen) == -1) {
 		displayErrMsg("sendto() Failed");
@@ -46,7 +43,6 @@
 
 // SEND GUESS
 		fgets(userInput, LINESIZE, stdin);
-//		sprintf(format, "%s", userInput);			// should be no need to do this?
 
 		if (sendto(s, userInput, strlen(userInput), 0,(struct sockaddr *) &si_other, slen) == -1) {
 			 displayErrMsg("sendto() Failed");
@@ -56,5 +52,6 @@
 	printf("Client Finished\n");
 
 	close(s);
+
 	return 0;
 }
