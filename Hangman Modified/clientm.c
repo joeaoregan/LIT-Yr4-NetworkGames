@@ -53,7 +53,7 @@
 /* PARSE INPUT FROM SERVER */
 //		sscanf(i_line, "%s %d", &(*arg1PartWord), &arg2LivesLeft);			// Parse string data received from server into separate part-word and score variables
 //		amputate(arg2LivesLeft);							// Display graphical represenation of lives left
-		amputate(i_line);							// Parse the input from server and Display graphical represenation of lives left
+		amputate(i_line);								// Parse the input from server and Display graphical represenation of lives left
 //		printf("%s\n", arg1PartWord);
 //	    	write (1, i_line, count);							// Display the data string received from the server on screen
  	    	count = read (0, o_line, LINESIZE);						// 0 = STDIN, get input from client

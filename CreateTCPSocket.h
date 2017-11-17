@@ -1,5 +1,5 @@
 /*
-	CreateTCPServer.h
+	CreateTCPSocket.h
 
 	Reconfigured version of SetupTCPServerSocket() function from TCPServerUtility.c
 	from TCP/IP Sockets in C book, to work with TCP Hangman fork() server
