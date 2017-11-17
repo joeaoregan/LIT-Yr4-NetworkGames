@@ -1,3 +1,12 @@
+/* 	
+	Joe O'Regan K00203642
+	17/11/2017
+
+	svrtest.c
+
+	Test Asynchronous UDP Client
+*/
+// 20171117 Asynchronous UDP client sends and receives, and terminates when finished
 // 20171116 CreateUDPSocket.h - abstracts the UDP socket creation code
 // 20171115 Fixed client continuing to connect
 // 20171114 Joe: Fixed warning messages by casting sockaddr_in to struct sockaddr*
@@ -29,7 +38,7 @@ int main(void) {
 
 	sock = createUDPServer();
 
-	//drawHangman();
+	drawHangman();
 
 	printf("\nWaiting For Data...\n");
 
@@ -79,32 +88,19 @@ void play_hangman (int in, int out) {
 	part_word[i] = '\0';
 	guess[0] = '\0';
 
-//	printf("test 2, recv username, random word selected\n");		// XXX
-
- 
 	part_word[i] = '\0';
 	outbuf[0] = '\0';
 	printf("sendto 1 outbuf before sprintf: %sXX\n", outbuf);
  	sprintf (outbuf, "%s %d\n", part_word, lives);	
-//	printf("sendto 1 outbuf after sprintf: %sXXX", outbuf);
-//	printf("strlen(outbuf): %lu\n", strlen(outbuf));
 	sendto(out, outbuf, strlen(outbuf), 0, (struct sockaddr*) &cliAddr, sizeof cliAddr);	
 
 	while (game_state == 'I') {	
-//		guess[0] = '\0';
-
 		if ((byteCount = recvfrom(in, guess, LINESIZE, 0, (struct sockaddr *) &cliAddr, &slen)) == -1){	// cast sockaddr_in to sockaddr
 			 displayErrMsg("recvfrom() Failed");
 		}
 
-		guess[1] = '\0';	// only need 1st character
-//printf("byteCount: %ld\n", byteCount);
-//printf("recvfrom - guess: %sXXX bytecount: %ld\n", guess, byteCount);
-printf("Guess: %s ByteCount: %ld\n", guess, byteCount);
-//		guess[byteCount-1] = '\0';
-
-//printf("Client Sent: %s\n", guess);
-		//write(fileno(stdout), guess, byteCount);
+		guess[1] = '\0';										// only need 1st character
+		printf("Guess: %s ByteCount: %ld\n", guess, byteCount);						// Show what was received from the client
 
  		good_guess = 0;
 
@@ -124,16 +120,13 @@ printf("Guess: %s ByteCount: %ld\n", guess, byteCount);
  			strcpy (part_word, whole_word); 
  		}
 
-//printf("sendto 2 outbuf before sprintf: %s\n", outbuf);
  		sprintf (outbuf, "%s %d\n", part_word, lives);	
-//printf("sendto 2 outbuf after sprintf: %s", outbuf);
 		sendto(out, outbuf, strlen(outbuf), 0, (struct sockaddr *) &cliAddr, slen);			// cast sockaddr_in to sockaddr
-
-//		printf("Game State %c\n", game_state);
 	}	
 	
-	// Send x to exit
+	// Send b to exit
 	sprintf (outbuf, "%s\n", "bye");	
 	sendto(out, outbuf, strlen(outbuf), 0, (struct sockaddr *) &cliAddr, slen);			// cast sockaddr_in to sockaddr
 	close(in);
+	shutdown(out, SHUT_RD);
 }
