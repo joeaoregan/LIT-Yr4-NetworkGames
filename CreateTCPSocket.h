@@ -1,5 +1,14 @@
-/*
-	CreateTCPSocket.h
+ /* 
+ 	File: 		CreateTCPSocket.h
+	Version: 	Functions to create and connect TCP sockets
+	Author:		Joe O'Regan
+
+	Year 4 Networked Games Assignment
+
+	Team 1:
+	Joe O'Regan 	K00203642
+	Samantha Marah	K00200782
+	Jason Foley 	K00186690
 
 	Reconfigured version of SetupTCPServerSocket() function from TCPServerUtility.c
 	from TCP/IP Sockets in C book, to work with TCP Hangman fork() server
@@ -98,4 +107,17 @@ struct sockaddr_in createTCPClientSocket(int* sock, char* server_name) {		/* CRE
  	printf ("Connected to server: %s \n", server_name);	
 
 	return servAddr;
+}
+
+
+// Display Client address and port
+char* displayNameAndPort(struct sockaddr_in cli, char* name) {
+//	char name[INET_ADDRSTRLEN];							// Client address string
+
+	//if (inet_ntop(AF_INET, &cli.sin_addr.s_addr, name,sizeof(name)) != NULL){	// sizeof(name) not working here, INET_ADDRSTRLEN is the length of an address string
+	if (inet_ntop(AF_INET, &cli.sin_addr.s_addr, name, INET_ADDRSTRLEN) != NULL){	// Convert the address to a string, and store in clntName
+		printf("Handling client %s/%d\n", name, ntohs(cli.sin_port));		// Display the client IP address and port number
+	}
+
+	return name;	
 }

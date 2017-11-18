@@ -17,7 +17,7 @@ char* word [] = {										// Array of words, one word will be selected randomly
 void play_hangman(int in, int out);								// Function delcaration for play_hangman
 char checkGameState(char* word, char* part, int lives);
 
-// Display end of game message if game complete
+// Display end of game message if game complete, with Client IP and Address
 void checkGameOver(int state, char* outbuffer, char* word, int o, char* clname, int clport) {
   if (state == 'W') {
     printf("Client %s/%d has guessed \"%s\" correctly!\n", clname, clport, word);		// Display win message
@@ -31,6 +31,19 @@ void checkGameOver(int state, char* outbuffer, char* word, int o, char* clname, 
   }
 }
 
+// Display end of game message if game complete
+void checkGameOver2(int state, char* outbuffer, char* word, int o) {
+  if (state == 'W') {
+    printf("Client has guessed \"%s\" correctly!\n",  word);		// Display win message
+    snprintf (outbuffer, LINESIZE, "Player Has Guessed \"%s\" Correctly!\n", word);		// Set win message to return to client
+    write (o, outbuffer, strlen (outbuffer));							// Send outbuf info to client
+  }
+  else if (state == 'L') {
+    printf("Client is a loser!\n");					// Display lose message
+    snprintf (outbuffer, LINESIZE, "Player Has Run Out Of Guesses!\n");				// Set lose message to return to client, with protection against buffer overflow
+    write (o, outbuffer, strlen (outbuffer));							// Send outbuf info to client
+  }
+}
 
 int gameOverSelect(int state, char* outbuffer, char* word, int o, char* clname, int clport) {
   if (state == 'W') {
@@ -48,13 +61,24 @@ int gameOverSelect(int state, char* outbuffer, char* word, int o, char* clname, 
   return 0;
 }
 
-// Pick a word at random from the word list
+// Pick a word at random from the word list, displaying the Client IP & Port
 char* selectRandomWord(char* clname, int clport) {  
   char* the_word = word[rand() % NUM_OF_WORDS];							// Select random word from words array for client to guess
 
   syslog (LOG_USER | LOG_INFO, "server chose hangman word %s", the_word);			// Message logging
 
   printf("Word: \"%s\" Randomly Selected For Client: %s/%d\n", the_word, clname, clport);	// Display the word selected for the client on the server
+
+  return the_word;										// Return the selected word
+}
+
+// Pick a word at random from the word list
+char* randomWord() {  
+  char* the_word = word[rand() % NUM_OF_WORDS];							// Select random word from words array for client to guess
+
+ // syslog (LOG_USER | LOG_INFO, "server chose hangman word %s", the_word);			// Message logging
+
+  printf("Word: \"%s\" Randomly Selected\n", the_word);						// Display the word selected for the client on the server
 
   return the_word;										// Return the selected word
 }

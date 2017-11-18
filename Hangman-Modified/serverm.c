@@ -1,14 +1,19 @@
  /* 
-	Network server for hangman game
+ 	File: 		serverm.c
+	Version: 	Modified version of Hangman Server
+	Author:		Joe O'Regan
 
- 	File: hangserver.c
+	Year 4 Networked Games Assignment
+
+	Network server for hangman game
 
 	Team 1:
 	Joe O'Regan 	K00203642
 	Samantha Marah	K00200782
 	Jason Foley 	K00186690
 
-	23/09/2017 	Added includes to get rid of compile warnings (wasn't necessary)
+	18/11/2017	Moved play_hangman functionality to TCPPlayHangman.h
+	23/09/2017 	Added includes to get rid of compile warnings
 			Client IP and Port number is displayed when a connection is made
 			Win/Lose message displayed, and sent to Client to display
 			Added hangman graphic
@@ -29,6 +34,7 @@
 #include "../Hangman.h"
 #include "../CreateTCPSocket.h"
 #include "../HandleErrors.h"
+#include "../TCPPlayHangman.h"										// 18/11/2017 Moved hang_man() function to separate file
 
 extern time_t time ();			
 
@@ -41,22 +47,7 @@ void main ()												// No command line arguments
  	int sock, fd, client_len;							
 
  	srand ((int) time ((long *) 0)); 								// randomize the seed
-/*
- 	sock = socket (AF_INET, SOCK_STREAM, 0);							// 0 or IPPROTO_TCP	// Create the socket
-	if (sock < 0) displayErrMsg("Creating Stream Socket");						// This error checking is the code Stevens wraps in his Socket Function etc
 
- 	server.sin_family = AF_INET;									// IPv4 address
- 	server.sin_addr.s_addr = htonl(INADDR_ANY);							// Server IP
- 	server.sin_port = htons(TCP_PORT);								// Server port
-
-
- 	if (bind(sock, (struct sockaddr *) & server, sizeof(server)) <0) {				// socket(), bind(), listen() -> Server prepared to accept connection
- 		perror ("binding socket");								// Display an error
-	 	exit (2);										// exit
- 	}
-
- 	listen (sock, 5);										// socket(), bind(), listen() -> server passive open
-*/
 	sock = createTCPServerSocket();
 
 	drawHangman();											// Draw the hangman graphic
@@ -65,14 +56,9 @@ void main ()												// No command line arguments
 
  	while (1) {
  		client_len = sizeof (client);
- 		if ((fd = accept (sock, (struct sockaddr *) &client, &client_len)) < 0) 
+ 		if ((fd = accept (sock, (struct sockaddr *) &client, &client_len)) < 0) 		// Create the listening socket, and if its return value is less than 0
 			displayErrMsgStatus("Accepting Connection", 3);					// Display error message, and exit with return status 3
-/*
-		 {		// Create the listening socket, and if its return value is less than 0
- 			perror ("accepting connection");						// Display an error
- 			exit (3);									// exit
- 		}
-*/
+
 		// Display Client address and port
 		if (inet_ntop(AF_INET, &client.sin_addr.s_addr, clntName,sizeof(clntName)) != NULL){	// Convert the address to a string, and store in clntName
   			printf("Handling client %s/%d\n", clntName, ntohs(client.sin_port));		// Display the client IP address and port number
@@ -87,7 +73,7 @@ void main ()												// No command line arguments
 
  void play_hangman (int in, int out)
  {
- 	char * whole_word, part_word [LINESIZE],
+ 	char * whole_word, part_word [LINESIZE],							// LINESIZE is declared in Hangman.c replacing MAXLEN
  	guess[LINESIZE], outbuf [LINESIZE];
  	int i, word_length, lives = MAX_LIVES, game_state = 'I';					// Iterator, length of whole_word, correct guesses, game state
  	
