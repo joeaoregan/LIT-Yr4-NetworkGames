@@ -26,19 +26,11 @@
 			Added hangman graphic
 */
 
-#include <sys/types.h>
-#include <sys/socket.h>									// sockaddr, accept(), bind(), listen()
-#include <netinet/in.h>									// sockaddr_in 
 #include <stdio.h>									// printf()
-#include <syslog.h>									// syslog()
-#include <signal.h>									// signal()
-#include <errno.h>									// Defines errno int, set by system calls/library functions, to indicate an error
 #include <string.h>									// 23/09/2017 Warning for strcpy, bzero()
 #include <stdlib.h>									// 23/09/2017 Warning for exit()
 #include <unistd.h>									// 23/09/2017 gethostname(), write(), read(), close()
-#include <arpa/inet.h>									// 23/09/2017 inet_ntop()
-#include <sys/wait.h>									// 08/10/2017 wait()
-#include <time.h>									// Seed the random number
+#include <sys/wait.h>									// 08/10/2017 wait(), waitpid(), signal(), SIGCHLD
 #include "../DrawHangman.h"								// Display the hangman graphics
 #include "../Hangman.h"									// Hangman game functions
 #include "../CreateTCPSocket.h"								// Create a TCP Server Socket
@@ -49,17 +41,13 @@ char cliName[INET_ADDRSTRLEN];								// Client address string
 struct sockaddr_in client;								// Client address structure
 #define CLI_PORT ntohs(client.sin_port)							// The port number the client is using to connect to the server
 
-void main ()										// No command line arguments
-{
+void main () {										// No command line arguments
 	int sock, fd;									// Socket, client socket, and length of client socket
 	socklen_t client_len;								// int type in sys/socket.h, socklen_t: unsigned opaque integral type of length of at least 32 bits
 
-/* FORK VARIABLES */
+	/* FORK VARIABLES */
 	pid_t childpid;									// pid_t: signed int data type, capable of representing  a process ID. 
-	//struct sockaddr_in cliaddr, servaddr;						// Internet socket address structures
 	void sig_chld(int);								// Signal handling function, catches SIGCHLD signal from terminating process
-
-	//srand ((int) time ((long *) 0)); 						// Randomize the seed - Moved inside while loop, so each client connection generates a different whole_word
 
 	sock = createTCPServerSocket();							// Functionality to create socket moved to separate file CreateTCPServer.h
 	// The UNP books signal() function calls POSIX sigaction
@@ -73,76 +61,29 @@ void main ()										// No command line arguments
  		if ((fd = accept (sock, (struct sockaddr *) &client, &client_len)) < 0)	// P41 A new descriptor is returned by accept() for each client that connects to our server
 			displayErrMsgStatus("Accepting Connection", 3);			// Display the error message, and exit with status 3
 
-/* DISPLAY CLIENT ADDRESS AND PORT */
+		/* DISPLAY CLIENT ADDRESS AND PORT */
 		displayNameAndPort(client, cliName);					// Display the Client IP and Port number
 
-/* RANDOM NUMBER SEED - DIFFERENT WORD FOR EACH CLIENT CONNECTION */
-/**/		srand(time(NULL));							// 08/10/2017 Seed/Reseed the random number. Moved to while loop so each client receives a different word
+		/* RANDOM NUMBER SEED - DIFFERENT WORD FOR EACH CLIENT CONNECTION */
+		srand(time(NULL));							// 08/10/2017 Seed/Reseed the random number. Moved to while loop so each client receives a different word
 
-/* FORK - CREATE NEW CHILD PROCESS TO HANDLE THE CLIENT CONNECTION */
-/* 	The original server forks child process copies itself to handle incoming clients
-	Each child process has its own process ID
-	fork returns 0 for a child, and the childs process ID for the parent */
-/**/		if ( (childpid = fork()) == 0) {					// Creating child process of Server to handle client. Assigning unique process ID to the child.
-/**/			close(sock);							// close listening socket
- //			play_hangman (fd, fd);						// XXX Play the game
-			playHangmanTCP(fd, fd, cliName, CLI_PORT);			// Play the game
-/**/			exit(0);							// Process termination
-/**/		}
+		/*--- FORK - CREATE NEW CHILD PROCESS TO HANDLE THE CLIENT CONNECTION ----
+			The original server forks child process copies itself to handle incoming clients
+			Each child process has its own process ID
+			fork returns 0 for a child, and the childs process ID for the parent 
+		*/
+		if ( (childpid = fork()) == 0) {					// Creating child process of Server to handle client. Assigning unique process ID to the child.
+			close(sock);							// close listening socket
+			playHangmanTCP(fd, fd, cliName, CLI_PORT);			// Play the game - playHangmanTCP() located in TCPPlayHangman.h
+			exit(0);							// Process termination
+		}
+
  		close (fd);								// Close the connection to client when the game has finished playing
  	}
 }
 
-/* ---------------- Play_hangman () ---------------------*/
 
-void play_hangman (int in, int out)
-{
-/**/	char * whole_word, part_word [LINESIZE],					// LINESIZE is declared in Hangman.c replacing MAXLEN
-/**/	guess[LINESIZE], outbuf [LINESIZE];				
- 	int i, word_length, lives = MAX_LIVES, game_state = 'I';			// Iterator, length of whole_word, correct guesses, game state
- 	
-/**/  	displayHostname(out, outbuf);							// Function in Hangman.h: Display the name of the server
-
-/* RANDOM WORD SELECTION FUNCTION */
-// 	whole_word = whole_word = selectRandomWord(clntName, CLI_PORT);			// Function in Hangman.h: Select random word from words array
- 	word_length = strlen(whole_word);						// Get length of word
-
- 	/* No letters are guessed Initially */
- 	for (i = 0; i <word_length; i++)
- 		part_word[i]='-';							// Display hyphens in place of letters, to indicate size of word
- 	
-	part_word[i] = '\0';								// Add string terminating character
-
- 	sprintf (outbuf, "%s %d \n", part_word, lives);					// Set outbuf to the part word & the lives left, creating a string to send to the client
- 	write (out, outbuf, strlen(outbuf));						// Send outbuf string to client
-
- 	while (game_state == 'I')							// Loop until game is complete
- 	/* Get a letter from player guess */
- 	{
-/**/		while (read (in, guess, LINESIZE) <0) {					// Read guess from client
- 			if (errno != EINTR)						// P182 Check for EINTR error if stuck in slow system call, and exit if restart signal not recieved
- 				exit (4);
- 			printf ("re-read the startin \n");
- 		} 									// Re-start read () if interrupted by signal
-
-/* CHECK GUESS FUNCTION */
-/**/   		if (!correctGuess(whole_word, part_word, guess)) lives--;		// Functionality moved to Hangman.h. Incorrect guess: decrement number of lives. Good guess: copy the letter to the part word
-
- 		if (strcmp (whole_word, part_word) == 0)				// If all letters guessed correctly
- 			game_state = 'W'; 						// W ==> User Won 
- 		else if (lives == 0) {							// If client has run out of guesses
- 			game_state = 'L'; 						// L ==> User Lost
- 			strcpy (part_word, whole_word); 				// User Show the word
- 		}
- 		sprintf (outbuf, "%s %d \n", part_word, lives);				// Set the part_word and lives to be sent
- 		write (out, outbuf, strlen (outbuf));					// Send outbuf info to client
-
-/* DISPLAY WIN/LOSE MESSAGE */	
-//   		checkGameOver(game_state, outbuf, whole_word, out, clntName, CLI_PORT); // Hangman.h function: If game is finished, display win/lose message
- 	}
- }
-
-/* HANDLE ZOMBIES */
+/*----------------------------------- HANDLE ZOMBIES -----------------------------------*/
 /*	P180 Zombies - Signal handler to catch SIGCHLD 
 	(SIGCHLD default disposition is to be ignored)
 	Needs to be done before we fork the first child, and needs to be done once

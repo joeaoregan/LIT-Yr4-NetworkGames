@@ -121,4 +121,11 @@ char checkGameState(char* word, char* part, int lives) {
 	return 'I';	
 }
 
+char initPartWord(char* partWord, int length) {
+	int i;											// For loop index
+ 	for (i = 0; i < length; i++) partWord[i]='-';						// Set every character in the partword to a hyphern
+ 	
+	partWord[i] = '\0';									// Set the string terminator
+}
+
 #endif	/* __HANGMAN_H */

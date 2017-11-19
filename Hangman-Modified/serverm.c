@@ -25,11 +25,9 @@
 #include <string.h>									// 23/09/2017 strcpy(), strlen()
 #include <stdlib.h>									// 23/09/2017 exit()
 #include <unistd.h>									// 23/09/2017 gethostname(), write(), read(), close()
-#include <arpa/inet.h>									// 23/09/2017 inet_ntop()
 #include "../DrawHangman.h"								// Functions to draw the games graphics
 #include "../Hangman.h"									// Functions to play the game
 #include "../CreateTCPSocket.h"								// 16/11/2017 Functions to handle socket creation and connection
-#include "../HandleErrors.h"								// Error handling functions
 #include "../TCPPlayHangman.h"								// 18/11/2017 Moved hang_man() function to separate file
 
 extern time_t time();									// Time used to seed random numbers	

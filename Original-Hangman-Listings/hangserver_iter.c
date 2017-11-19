@@ -75,11 +75,13 @@
  	word_length = strlen(whole_word);
  	syslog (LOG_USER | LOG_INFO, "server chose hangman word %s", whole_word);
 
- 	/* No letters are guessed Initially */
+ 	/* No letters are guessed Initially 
  	for (i = 0; i <word_length; i++)
  		part_word[i]='-';
  	
 	part_word[i] = '\0';
+*/
+	initPartWord(part_word, word_length);
 
  	sprintf (outbuf, "%s %d \n", part_word, lives);
  	write (out, outbuf, strlen(outbuf));

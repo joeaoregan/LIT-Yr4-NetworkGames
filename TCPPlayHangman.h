@@ -20,7 +20,7 @@
 #ifndef	__PLAY_HANGMAN_TCP
 #define	__PLAY_HANGMAN_TCP
 
-#include <errno.h>										// EINTR
+#include <errno.h>										// EINTR, Defines errno int, set by system calls/library functions, to indicate error
 
 /*--------------------------------------- PLAY HANGMAN -----------------------------------------*/
 
@@ -38,9 +38,12 @@ void playHangmanTCP(int in, int out, char* name, int port) {
 
  	/*--------------- INITIALISE PART WORD: No letters are guessed Initially ---------------*/
 
+/*
  	for (i = 0; i <word_length; i++)
  		part_word[i]='-';								// Display hyphens in place of letters, to indicate size of word 	
 	part_word[i] = '\0';									// Add string terminating character
+*/
+	initPartWord(part_word, word_length);							// Hangman.h -> Display hyphens in place of letters, to indicate size of word 
 	
 	/*----------------------------------- SEND PART WORD  ----------------------------------*/
 

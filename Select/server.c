@@ -6,15 +6,11 @@
 			Client had been causing problems with buffers overwriting
 */
 
-#include <sys/socket.h>				// sockaddr, accept(), bind(), listen()
-#include <netinet/in.h>				// sockaddr_in 
-#include <stdio.h>				// printf()
-#include <errno.h>				// Defines errno int, set by system calls/library functions, to indicate an error
+#include <stdio.h>				// printf(), snprintf()
 #include <string.h>				// 23/09/2017 Warning for strcpy, bzero()
-#include <stdlib.h>				// 23/09/2017 Warning for exit
+#include <stdlib.h>				// 23/09/2017 exit(), rand(), srand()
 #include <unistd.h>				// 23/09/2017 gethostname(), write(), read(), close()
-#include <arpa/inet.h>				// 23/09/2017 inet_ntop()
-#include <time.h>
+#include <time.h>				// time()
 #include "../Hangman.h"				// 13/10/2017 Hangman functions
 #include "../DrawHangman.h"			// Display the hangman graphics
 #include "../CreateTCPSocket.h"			// Create a TCP Server Socket
@@ -35,6 +31,8 @@ struct sessionData {				// Store the game state, maybe use a linked list of stru
 	char ip[INET_ADDRSTRLEN];		// client IP
 	int port;				// client port
 };
+
+void closeSocketConnection(struct sessionData cli);
 
 int main(int argc, char **argv) {	
 	struct 		sessionData client[FD_SETSIZE];	
@@ -64,11 +62,6 @@ int main(int argc, char **argv) {
 		if (FD_ISSET(listenfd, &rset)) {									/* new client connection */
 			clilen = sizeof(cliaddr);									// Size of the client address
 			connfd = accept(listenfd, (struct sockaddr *) &cliaddr, &clilen);				// Accept a connection on connfd socket
-
-			// Display client details when it connects
-			//if (inet_ntop(AF_INET, &cliaddr.sin_addr.s_addr, clntName,sizeof(clntName)) != NULL){		// inet_ntop() - Convert IP address to human readable form
-  			//	printf("Handling client %s/%d \n", clntName, CLI_PORT);					// Display the client IP address and port number
-			//}
 			
 			// Add client to clients array
 			for (i = 0; i < FD_SETSIZE; i++) {										
@@ -82,8 +75,10 @@ int main(int argc, char **argv) {
 /*====================================== initialise the variables for each client ======================================*/
 /* CHOOSE WORD */ 			client[i].word = selectRandomWord(clntName, CLI_PORT);				// Select a random word from the list of words
 					/* No letters are guessed Initially */
-/*init part word*/			for (j = 0; j < strlen(client[i].word); j++) client[i].partWord[j]='-';		// Display hyphens to indicate size of word				 	
-					client[i].partWord[j] = '\0';		
+/*init part word			for (j = 0; j < strlen(client[i].word); j++) client[i].partWord[j]='-';		// Display hyphens to indicate size of word				 	
+					client[i].partWord[j] = '\0';	
+*/
+					initPartWord(client[i].partWord, strlen(client[i].word));			// Hangman.h -> Display hyphens in place of letters, to indicate size of word 	
 					client[i].lives = MAX_LIVES;
 					client[i].gameState = 'I';
 					printf("\nState %d Word: %s partWord: %s lives %d gameState %c\n\n", i,client[i].word,client[i].partWord,client[i].lives,client[i].gameState);
@@ -116,12 +111,15 @@ int main(int argc, char **argv) {
 						close(sockfd);								// Close the connection to the client
 						FD_CLR(sockfd, &allset);						// Remove the socket from the set
 						// Reset Client and Client State
+/*(
 						client[i].sock = -1;							// Clear client from client index
 						client[i].word = "";							// whole word for each client
 						client[i].partWord[0] = '\0';						// part word for each client
 						client[i].lives = MAX_LIVES;						// lives for each client
 						client[i].gameState = 'I';						// game state for each client
 						client[i].bufIn[0] = '\0';						// Clear client from client index
+*/
+						closeSocketConnection(client[i]);
 					} else {
 /*======================================================================================================================*/
 /*  						    Hangman Code							*/
@@ -137,8 +135,12 @@ int main(int argc, char **argv) {
 /* WRITE BACK TO CLIENT*/			sprintf(client[i].bufOut, "%s %d \n", client[i].partWord, client[i].lives);// Add the part-word and number of guesses left to the buffer string
 						write(sockfd, client[i].bufOut, strlen(client[i].bufOut));		// Send the string to the client
 
-/* WIN MSG ONLY */				//if (gameOverSelect(client[i].gameState,client[i].bufOut,client[i].word, sockfd, clntName, CLI_PORT)) close(sockfd);							// If game is finished, display win/lose message
-/* WIN MSG ONLY */				gameOverSelect(client[i].gameState,client[i].bufOut,client[i].word, sockfd, clntName, CLI_PORT);
+/* WIN MSG ONLY */				if (gameOverSelect(client[i].gameState,client[i].bufOut,client[i].word, sockfd, clntName, CLI_PORT)) {
+							close(sockfd);
+							FD_CLR(sockfd, &allset);						// Remove the socket from the set
+							closeSocketConnection(client[i]);						// If game is finished, display win/lose message
+						}
+/* WIN MSG ONLY */				//  gameOverSelect(client[i].gameState,client[i].bufOut,client[i].word, sockfd, clntName, CLI_PORT);
 					}
 				}	// CHANGED POSITION end when game state not = I
 				if (--nready <= 0) break;
@@ -146,3 +148,15 @@ int main(int argc, char **argv) {
 		}
 	}
 }
+
+
+void closeSocketConnection(struct sessionData cli) {
+	cli.sock = -1;							// Clear client from client index
+	cli.word = "";							// whole word for each client
+	cli.partWord[0] = '\0';						// part word for each client
+	cli.lives = MAX_LIVES;						// lives for each client
+	cli.gameState = 'I';						// game state for each client
+	cli.bufIn[0] = '\0';						// Clear client from client index
+}
+
+

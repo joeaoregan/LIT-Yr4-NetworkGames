@@ -16,11 +16,11 @@
 	16/11/2017 Added HandleErrors.h for error handling
 */
 
-#include <sys/socket.h>
-#include <unistd.h>
-#include <arpa/inet.h>
+#include <sys/socket.h>									// sockaddr, accept(), bind(), listen()
+#include <unistd.h>									// gethostname(), write(), read(), close()
+#include <arpa/inet.h>									// inet_ntop()
 #include <netdb.h>
-#include <string.h>
+#include <string.h>									// strcpy(), bzero()
 #include "Hangman.h"
 #include "AddressFunctions.h"
 #include "HandleErrors.h"								// Display error messages

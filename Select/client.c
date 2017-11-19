@@ -7,12 +7,10 @@
 			FIX: Displays final message twice
 */
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <stdio.h>					// printf()
-#include <errno.h>
+#include <stdio.h>					// printf(), snprintf()
+#include <errno.h>					// errno, EINTR
 #include <string.h>					// 23/09/2017 Warning for strcpy, bzero()
-#include <stdlib.h>					// 23/09/2017 Warning for exit
+#include <stdlib.h>					// 23/09/2017 exit(), rand()
 #include <unistd.h>					// 23/09/2017 gethostname(), write(), read(), close()
 #include <arpa/inet.h>					// 23/09/2017 inet_ntop()
 #include "../Hangman.h"					// 11/10/2017 Hangamen header file
@@ -20,7 +18,6 @@
 #include "../CreateTCPSocket.h"
 	
 void str_echo(int sockfd);
-void str_cli(FILE *fp, int sockfd);
 static ssize_t my_read(int fd, char *ptr);
 ssize_t readline(int fd, void *vptr, size_t maxlen);
 
@@ -32,36 +29,50 @@ int count;
 void getInput(int sock, char* recv);
 
 int main(int argc, char **argv) {
-	int			sockfd;
-	struct sockaddr_in	servaddr;
+	int sockfd;
+	struct sockaddr_in servaddr;
+	char sendline[LINESIZE], recvline[LINESIZE];
 
-	servaddr = createTCPClientSocket(&sockfd, (argc == 1) ?  SRV_IP : argv[1]);
+	servaddr = createTCPClientSocket(&sockfd, (argc == 1) ?  SRV_IP : argv[1]);		// Create socket and make connection
 
+//	getInput(sockfd, recvline);
+//	if (read(sockfd, recvline, LINESIZE) == 0) 						// Get input from Server
+//		displayErrMsg("str_cli: server terminated prematurely");
 
-	str_cli(stdin, sockfd);									/* do it all */
+//	sscanf(recvline, "%s %d", &(*arg1PartWord), &arg2LivesLeft);				// Separate the part word and guesses
+//	selectLives(arg2LivesLeft);								// Display hangman graphic & guesses left
+//	fputs(arg1PartWord, stdout);								// Display the part word without the guesses
+//	fputs("\n", stdout);
 
-	exit(0);
-}
-
-void str_cli(FILE *fp, int sockfd) {
-	char	sendline[LINESIZE], recvline[LINESIZE];
-
-	getInput(sockfd,recvline);
-
-	while (fgets(sendline, LINESIZE, fp) != NULL) {
- 	    	write (sockfd, sendline, strlen(sendline));					// Send client input to server
-
-		count = read (sockfd, recvline, LINESIZE);					// Receive line from the server
+//	while (fgets(sendline, LINESIZE, stdin) != NULL) {					// Get input from keyboard	
+ //	    	write(sockfd, sendline, strlen(sendline));					// Send client input to server		
+	while (1) {						
+//	while (read(sockfd, recvline, LINESIZE) != 0) {					
+		if (read(sockfd, recvline, LINESIZE) == 0) break;				// Receive line from the server
+//		if (read(sockfd, recvline, LINESIZE) == 0) 					// Get input from Server
+//			displayErrMsg("str_cli: server terminated prematurely");
+/*
 		sscanf(recvline, "%s %d", &(*arg1PartWord), &arg2LivesLeft);			// Parse string data received from server into separate part-word and score variables
+
 		selectLives(arg2LivesLeft);							// Display graphical represenation of lives left
 		printf("%s\n", arg1PartWord);
+*/
+		parseWordAndLives(recvline);							// Display the remaining guesses and part word
+
+		// Get input from keyboard
+		fgets(sendline, LINESIZE, stdin);
+ 	    	write(sockfd, sendline, strlen(sendline));					// Send client input to server
  	}
 
-	write(1,"Game Over!\n",LINESIZE);	
+//	write(1,"Game Over!\n",LINESIZE);
+	printf("%sGAME OVER!%s\n",RED,NORM);
+//	displayErrMsgStatus("Server terminated prematurely", 0);
+	//exit(0);	
 }
-
+/*
 void getInput(int sock, char* recv){
-	if (readline(sock, recv, LINESIZE) == 0) printf("str_cli: server terminated prematurely");
+	if (read(sock, recv, LINESIZE) == 0) 							// Get input from Server
+		displayErrMsg("str_cli: server terminated prematurely");
 
 	sscanf(recv, "%s %d", &(*arg1PartWord), &arg2LivesLeft);				// Separate the part word and guesses
 	selectLives(arg2LivesLeft);								// Display hangman graphic & guesses left
@@ -98,14 +109,15 @@ ssize_t readline(int fd, void *vptr, size_t maxlen) {
 	for (n = 1; n < maxlen; n++) {
 		if ( (rc = my_read(fd, &c)) == 1) {
 			*ptr++ = c;
-			if (c == '\n') break;		/* newline is stored, like fgets() */
+			if (c == '\n') break;		// newline is stored, like fgets()
 		} else if (rc == 0) {
 			*ptr = 0;
-			return(n - 1);			/* EOF, n - 1 bytes were read */
+			return(n - 1);			// EOF, n - 1 bytes were read
 		} else
-			return(-1);			/* error, errno set by read() */
+			return(-1);			// error, errno set by read()
 	}
 
-	*ptr = 0;					/* null terminate like fgets() */
+	*ptr = 0;					// null terminate like fgets()
 	return(n);
 }
+*/
