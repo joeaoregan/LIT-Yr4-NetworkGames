@@ -36,13 +36,6 @@ int main(int argc, char **argv) {
 	servaddr = createTCPClientSocket(&sockfd, (argc == 1) ?  SRV_IP : argv[1]);		// Create socket and make connection
 
 //	getInput(sockfd, recvline);
-//	if (read(sockfd, recvline, LINESIZE) == 0) 						// Get input from Server
-//		displayErrMsg("str_cli: server terminated prematurely");
-
-//	sscanf(recvline, "%s %d", &(*arg1PartWord), &arg2LivesLeft);				// Separate the part word and guesses
-//	selectLives(arg2LivesLeft);								// Display hangman graphic & guesses left
-//	fputs(arg1PartWord, stdout);								// Display the part word without the guesses
-//	fputs("\n", stdout);
 
 //	while (fgets(sendline, LINESIZE, stdin) != NULL) {					// Get input from keyboard	
  //	    	write(sockfd, sendline, strlen(sendline));					// Send client input to server		
@@ -51,12 +44,7 @@ int main(int argc, char **argv) {
 		if (read(sockfd, recvline, LINESIZE) == 0) break;				// Receive line from the server
 //		if (read(sockfd, recvline, LINESIZE) == 0) 					// Get input from Server
 //			displayErrMsg("str_cli: server terminated prematurely");
-/*
-		sscanf(recvline, "%s %d", &(*arg1PartWord), &arg2LivesLeft);			// Parse string data received from server into separate part-word and score variables
 
-		selectLives(arg2LivesLeft);							// Display graphical represenation of lives left
-		printf("%s\n", arg1PartWord);
-*/
 		parseWordAndLives(recvline);							// Display the remaining guesses and part word
 
 		// Get input from keyboard
@@ -66,6 +54,12 @@ int main(int argc, char **argv) {
 
 //	write(1,"Game Over!\n",LINESIZE);
 	printf("%sGAME OVER!%s\n",RED,NORM);
+//	count = read(sockfd, recvline, LINESIZE);				// Receive line from the server
+	read(sockfd, recvline, LINESIZE);				// Receive line from the server
+//	recvline[count] = '\0';
+//	snprintf (recvline, strlen(recvline), "Player Has Run Out Of Guesses!\n");
+//	printf("%s count: %d\n",recvline, count);
+	write(0, recvline, strlen(recvline));
 //	displayErrMsgStatus("Server terminated prematurely", 0);
 	//exit(0);	
 }

@@ -182,7 +182,7 @@ void amputate(char* input) {
 
 // Used in TCP select client
 void selectLives(int lives) {
-	printf("\n%sRemaining Guesses:%s\t%d\n", CYAN, NORM, lives);				// Guesses remaining
+	printf("%sRemaining Guesses:%s\t%d\n", CYAN, NORM, lives);				// Guesses remaining
 	if (lives > 0) printf("%sWord To Guess:%s\t\t", CYAN, NORM);				// The part word string while game is playing OR
 	else printf("%sThe word was:%s\t\t", RED, NORM);					// The actual word if player loses
 }
@@ -193,7 +193,7 @@ void parseWordAndLives(char* input) {
 
 	sscanf(input, "%s %d", &(*word), &lives);						// Parse string data received from server into separate part-word and score variables
 
-	printf("\n%sRemaining Guesses:%s\t%d\n", CYAN, NORM, lives);				// Guesses remaining
+	printf("%sRemaining Guesses:%s\t%d\n", CYAN, NORM, lives);				// Guesses remaining
 	if (lives > 0) printf("%sWord To Guess:%s\t\t%s\n", CYAN, NORM, word);			// The part word string while game is playing OR
 	else printf("%sThe word was:%s\t\t%s\n", RED, NORM, word);				// The actual word if player loses
 }

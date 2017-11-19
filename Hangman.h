@@ -34,31 +34,35 @@ void checkGameOver(int state, char* outbuffer, char* word, int o, char* clname, 
 // Display end of game message if game complete
 void checkGameOver2(int state, char* outbuffer, char* word, int o) {
   if (state == 'W') {
-    printf("Client has guessed \"%s\" correctly!\n",  word);		// Display win message
+    printf("Client has guessed \"%s\" correctly!\n",  word);					// Display win message
     snprintf (outbuffer, LINESIZE, "Player Has Guessed \"%s\" Correctly!\n", word);		// Set win message to return to client
     write (o, outbuffer, strlen (outbuffer));							// Send outbuf info to client
   }
   else if (state == 'L') {
-    printf("Client is a loser!\n");					// Display lose message
+    printf("Client is a loser!\n");								// Display lose message
     snprintf (outbuffer, LINESIZE, "Player Has Run Out Of Guesses!\n");				// Set lose message to return to client, with protection against buffer overflow
     write (o, outbuffer, strlen (outbuffer));							// Send outbuf info to client
   }
 }
 
 int gameOverSelect(int state, char* outbuffer, char* word, int o, char* clname, int clport) {
-  if (state == 'W') {
+  if (state == 'I') return 0;
+
+  else if (state == 'W') {
     printf("Client %s/%d has guessed \"%s\" correctly!\n", clname, clport, word);		// Display win message
     snprintf (outbuffer, LINESIZE, "Player Has Guessed \"%s\" Correctly!\n", word);		// Set win message to return to client
     write (o, outbuffer, strlen (outbuffer));	
-    return 1;
+   // return 1;
   }
   else if (state == 'L') {
     printf("Client %s/%d is a loser!\n", clname, clport);					// Display lose message
-    snprintf (outbuffer, LINESIZE, "Player Has Run Out Of Guesses!\n");				// Set lose message to return to client, with protection against buffer overflow
+    snprintf(outbuffer, LINESIZE, "Player Has Run Out Of Guesses!\n");				// Set lose message to return to client, with protection against buffer overflow
     write (o, outbuffer, strlen (outbuffer));							// Send outbuf info to client
-    return 1;
+  //  return 1;
   }
-  return 0;
+  //return 0;
+    //write (o, outbuffer, strlen (outbuffer));	
+    return 1;
 }
 
 // Pick a word at random from the word list, displaying the Client IP & Port
@@ -112,11 +116,11 @@ void displayHostname(int o, char* buf) {
 
 
 char checkGameState(char* word, char* part, int lives) {
-	if (strcmp (word, part) == 0)			// If all letters guessed correctly
+	if (strcmp (word, part) == 0)								// If all letters guessed correctly
 		return 'W'; 
-	else if (lives <= 0) {			// If client has run out of guesses
+	else if (lives <= 0) {									// If client has run out of guesses
 		return 'L';
-		//strcpy (arrPart[i], arrWords[i]); 	/* User Show the word */
+		//strcpy (arrPart[i], arrWords[i]); 						/* User Show the word */
 	}
 	return 'I';	
 }

@@ -32,7 +32,7 @@ struct sessionData {				// Store the game state, maybe use a linked list of stru
 	int port;				// client port
 };
 
-void closeSocketConnection(struct sessionData cli);
+void closeSocketConnection(struct sessionData* cli);
 
 int main(int argc, char **argv) {	
 	struct 		sessionData client[FD_SETSIZE];	
@@ -110,16 +110,8 @@ int main(int argc, char **argv) {
 						/* 4connection closed by client */
 						close(sockfd);								// Close the connection to the client
 						FD_CLR(sockfd, &allset);						// Remove the socket from the set
-						// Reset Client and Client State
-/*(
-						client[i].sock = -1;							// Clear client from client index
-						client[i].word = "";							// whole word for each client
-						client[i].partWord[0] = '\0';						// part word for each client
-						client[i].lives = MAX_LIVES;						// lives for each client
-						client[i].gameState = 'I';						// game state for each client
-						client[i].bufIn[0] = '\0';						// Clear client from client index
-*/
-						closeSocketConnection(client[i]);
+						
+						closeSocketConnection(&client[i]);					// Reset Client and Client State
 					} else {
 /*======================================================================================================================*/
 /*  						    Hangman Code							*/
@@ -133,12 +125,13 @@ int main(int argc, char **argv) {
 							strcpy (client[i].partWord, client[i].word);			// Show the player the word if they lose
 
 /* WRITE BACK TO CLIENT*/			sprintf(client[i].bufOut, "%s %d \n", client[i].partWord, client[i].lives);// Add the part-word and number of guesses left to the buffer string
-						write(sockfd, client[i].bufOut, strlen(client[i].bufOut));		// Send the string to the client
+						//if (client[i].gameState == 'I') 	// Causes player to be wrote as final word
+							write(sockfd, client[i].bufOut, strlen(client[i].bufOut));		// Send the string to the client
 
 /* WIN MSG ONLY */				if (gameOverSelect(client[i].gameState,client[i].bufOut,client[i].word, sockfd, clntName, CLI_PORT)) {
 							close(sockfd);
-							FD_CLR(sockfd, &allset);						// Remove the socket from the set
-							closeSocketConnection(client[i]);						// If game is finished, display win/lose message
+							FD_CLR(sockfd, &allset);					// Remove the socket from the set
+							closeSocketConnection(&client[i]);				// If game is finished, display win/lose message
 						}
 /* WIN MSG ONLY */				//  gameOverSelect(client[i].gameState,client[i].bufOut,client[i].word, sockfd, clntName, CLI_PORT);
 					}
@@ -150,13 +143,13 @@ int main(int argc, char **argv) {
 }
 
 
-void closeSocketConnection(struct sessionData cli) {
-	cli.sock = -1;							// Clear client from client index
-	cli.word = "";							// whole word for each client
-	cli.partWord[0] = '\0';						// part word for each client
-	cli.lives = MAX_LIVES;						// lives for each client
-	cli.gameState = 'I';						// game state for each client
-	cli.bufIn[0] = '\0';						// Clear client from client index
+void closeSocketConnection(struct sessionData* cli) {
+	(*cli).sock = -1;							// Clear client from client index
+	(*cli).word = "";							// whole word for each client
+	(*cli).partWord[0] = '\0';						// part word for each client
+	(*cli).lives = MAX_LIVES;						// lives for each client
+	(*cli).gameState = 'I';						// game state for each client
+	(*cli).bufIn[0] = '\0';						// Clear client from client index
 }
 
 
