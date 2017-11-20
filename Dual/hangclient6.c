@@ -40,10 +40,11 @@
  	/* Set up the server's socket address, then connect */
 
  	server.sin6_family = AF_INET6;
- 	inet_pton ((char *) & server.sin6_addr, host_info->h_addr, host_info->h_length);
+ 	//inet_pton ((char *) & server.sin6_addr, host_info->h_addr, host_info->h_length);
+  inet_pton (AF_INET6, "::1",(char *) & server.sin6_addr);
  	server.sin6_port = htons (HANGMAN_TCP_PORT);
 
- 	if (connect (sock, (struct sockaddr *) & server, sizeof server) <0) {
+ 	if (connect (sock, (struct sockaddr *) & server, sizeof server)) {
  		perror ("connecting to server");
  		exit (3);
  	}
