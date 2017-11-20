@@ -116,7 +116,8 @@ int main(int argc, char **argv) {
 /*======================================================================================================================*/
 /*  						    Hangman Code							*/
 /*======================================================================================================================*/
-		    				write (1, client[i].bufIn, n);/*OK*/					// Display client guess on server side
+						sprintf(client[i].bufOut, "Client %d guessed: %s\n", i, client[i].bufIn);// XXX Distinguish between clients
+		    				write (1, client[i].bufOut, strlen(client[i].bufOut));			// Display client guess on server side
 /* GET FOR EACH CLIENT */
 /* Decrement */					if (!correctGuess(client[i].word, client[i].partWord, client[i].bufIn)) 
 							client[i].lives--;						// If it's an incorrect guess, decrement the number of lives
@@ -126,7 +127,7 @@ int main(int argc, char **argv) {
 
 /* WRITE BACK TO CLIENT*/			sprintf(client[i].bufOut, "%s %d \n", client[i].partWord, client[i].lives);// Add the part-word and number of guesses left to the buffer string
 						//if (client[i].gameState == 'I') 	// Causes player to be wrote as final word
-							write(sockfd, client[i].bufOut, strlen(client[i].bufOut));		// Send the string to the client
+							write(sockfd, client[i].bufOut, strlen(client[i].bufOut));	// Send the string to the client
 
 /* WIN MSG ONLY */				if (gameOverSelect(client[i].gameState,client[i].bufOut,client[i].word, sockfd, clntName, CLI_PORT)) {
 							close(sockfd);
@@ -144,12 +145,12 @@ int main(int argc, char **argv) {
 
 
 void closeSocketConnection(struct sessionData* cli) {
-	(*cli).sock = -1;							// Clear client from client index
-	(*cli).word = "";							// whole word for each client
-	(*cli).partWord[0] = '\0';						// part word for each client
-	(*cli).lives = MAX_LIVES;						// lives for each client
-	(*cli).gameState = 'I';						// game state for each client
-	(*cli).bufIn[0] = '\0';						// Clear client from client index
+	(*cli).sock = -1;				// Clear client from client index
+	(*cli).word = "";				// whole word for each client
+	(*cli).partWord[0] = '\0';			// part word for each client
+	(*cli).lives = MAX_LIVES;			// lives for each client
+	(*cli).gameState = 'I';				// game state for each client
+	(*cli).bufIn[0] = '\0';				// Clear client from client index
 }
 
 

@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
  //	    	write(sockfd, sendline, strlen(sendline));					// Send client input to server		
 	while (1) {						
 //	while (read(sockfd, recvline, LINESIZE) != 0) {					
-		if (read(sockfd, recvline, LINESIZE) == 0) break;				// Receive line from the server
+		if (read(sockfd, recvline, LINESIZE) == 0) break;				// Receive line from the server, break from loop when the connection is terminated
 //		if (read(sockfd, recvline, LINESIZE) == 0) 					// Get input from Server
 //			displayErrMsg("str_cli: server terminated prematurely");
 

@@ -26,13 +26,13 @@ int createUDPServer() {
 	if ((server = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) displayErrMsg("Socket CreationFailed");	// Create a UDP socket, if this fails display an error message
 	else printf("Socket Created\nPlaying Hangman");
 
-	memset((char *) &srvAddr, 0, sizeof(srvAddr));
+	memset((char *) &srvAddr, 0, sizeof(srvAddr));								// Set/Reset the IP address to 0
 
-	srvAddr.sin_family = AF_INET;
-	srvAddr.sin_port = htons(HANGMAN_UDP_PORT);
-	srvAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	srvAddr.sin_family = AF_INET;										// Specify the address family
+	srvAddr.sin_port = htons(HANGMAN_UDP_PORT);								// Specify the port number
+	srvAddr.sin_addr.s_addr = htonl(INADDR_ANY);								// Use IPv4 address, could be more than one
 
-	if (bind(server, (struct sockaddr *) &srvAddr, sizeof(srvAddr)) == -1) displayErrMsg("Bind Failed");
+	if (bind(server, (struct sockaddr *) &srvAddr, sizeof(srvAddr)) == -1) displayErrMsg("Bind Failed");	// Bind to the 
 	printf("\nSocket Binding Completed\n");
 
 	return server;	
