@@ -31,7 +31,7 @@
  		exit (1);
  	}
 
- 	host_info = gethostbyname(server_name);
+ 	host_info = gethostbyname2(server_name,AF_INET6);
  	if (host_info == NULL) {
  		fprintf (stderr, "%s: unknown host:%s \ n", argv [0], server_name);
  		exit (2);
