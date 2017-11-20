@@ -32,6 +32,27 @@
 #define	MAX_CLIENTS 5									// 2nd argument to listen(), the maximum number of client connections
 char* TCP_PORT = "1066";								// The port number the server will run on, for createTCPServerSocket() function
 
+int createDualStackServerSocket(){
+	struct sockaddr_in6 server;
+	int sock, reuseaddr = 1;
+
+	sock = socket(AF_INET6, SOCK_STREAM, 0);
+	setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof reuseaddr);
+	if (sock < 0) 
+		displayErrMsgStatus("Creating Stream Socket", 1);
+	
+ 	server.sin6_family = AF_INET6;
+ 	server.sin6_addr = in6addr_any;
+ 	server.sin6_port = htons(TCP_PORT_NUM);	// XXX
+
+ 	if (bind(sock, (struct sockaddr *) & server, sizeof(server)) < 0) 
+		displayErrMsgStatus("Binding Socket", 1);
+
+	listen(sock, MAX_CLIENTS);
+
+	return sock;	
+}
+
 int createTCPServerSocket() {
   // Construct the server address structure
   struct addrinfo addrCriteria;                   					// Criteria for address match
@@ -83,7 +104,7 @@ struct sockaddr_in createTCPClientSocket(int* sock, char* server_name) {		/* CRE
  	struct hostent * host_info;
  	
 	 /* CREATE THE SOCKET */
- 	(*sock) = socket(AF_INET, SOCK_STREAM, 0);
+ 	(*sock) = socket(AF_INET, SOCK_STREAM, 0);					// AF_INET = Address Family Internet, SOCK_STREAM = streams
  	if (sock < 0) displayErrMsgStatus("Creating Stream Socket", 1);	
 
  	host_info = gethostbyname(server_name);
@@ -116,7 +137,7 @@ char* displayNameAndPort(struct sockaddr_in cli, char* name) {
 
 	//if (inet_ntop(AF_INET, &cli.sin_addr.s_addr, name,sizeof(name)) != NULL){	// sizeof(name) not working here, INET_ADDRSTRLEN is the length of an address string
 	if (inet_ntop(AF_INET, &cli.sin_addr.s_addr, name, INET_ADDRSTRLEN) != NULL){	// Convert the address to a string, and store in clntName
-		printf("Handling client %s/%d\n", name, ntohs(cli.sin_port));		// Display the client IP address and port number
+		printf("Handling client %s/%d\n", name, ntohs(cli.sin_port));		// Display the client IP address and port number, ntohs = convert from network byte order to host byte order
 	}
 
 	return name;	
