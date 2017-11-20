@@ -23,8 +23,8 @@
 #include <string.h>								// strlen()
 #include <stdlib.h>								// exit()
 #include <unistd.h>								// write(), read(), close()
-#include "../Hangman.h"								// 11/10/2017 Hangamen header file
 #include "../DrawHangman.h"							// 11/10/2017 Functions to Draw Hangman Graphics
+#include "../Hangman.h"								// 11/10/2017 Hangamen header file
 #include "../CreateTCPSocket.h"							// 16/11/2017 Functions to create and connect sockets moved here
 
  int main (int argc, char * argv []) {
@@ -37,7 +37,7 @@
 
 	server = createTCPClientSocket(&sock, (argc == 1) ? SRV_IP : argv[1]);	// Create the connection between the client and the server, use default IP if none entered
 
-	drawHangman();								// Draw Hangman Graphic Representation of Number of Lives Left
+	drawHangmanNew();							// Draw Hangman Graphic Representation of Number of Lives Left
 
 	/* -------------------------------CONNECTED TO THE SERVER-----------------
 	* Take a line containing the part word from the server and display it, 
@@ -54,6 +54,7 @@
 		amputate(inbuf);						// Parse input from Server & Display text/graphic of lives left & partword
  	    	count = read(0, outbuf, LINESIZE);				// 0 = Standard Input. Get input from Client (Enter guess letter)
  	    	write(sock, outbuf, count);					// Send Client input to Server
+		//write(1, outbuf, count);
  	}
 
 	count = read (sock, inbuf, 34);						// Read randomly generated part word from Server

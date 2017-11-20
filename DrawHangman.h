@@ -21,7 +21,7 @@ char *hangman[]= {										// ASCII hangman graphic
 "\x1B[35m  _____________", 
 "\x1B[35m  |/      |",
 "\x1B[35m  | \x1B[33m  ___(\")___",
-"\x1B[35m  | \x1B[33m     |_|",
+"\x1B[35m  | \x1B[33m     |_|   ",
 "\x1B[35m  | \x1B[33m     /^\\",
 "\x1B[35m  | \x1B[33m   _// \\\\_",
 "\x1B[35m__|____________\x1B[0m"};    
@@ -57,6 +57,20 @@ void drawHangman() {
 	printf("%sA Game By:\n  * %sJoe O'Regan\n  %s* %sSamantha Marah\n  %s* %sJason Foley%s\n", CYAN,BLUE,CYAN,BLUE,CYAN,BLUE,NORM);	// Game Creators
 }
 
+void drawHangmanNew() {
+	// Draw hangman
+	printf("  %s%s - ", RED,hangman[0]);
+	printf("%s%s\n", RED,hangman[1]);
+	for (int h = 2; h < 9; ++h){								// Draw hangman ASCII
+	  printf("%s", hangman[h]);
+	  if (h == 3) printf("%s\t  A Game By:\n",CYAN);
+	  else if (h == 4) printf("\t%s  * %sJoe O'Regan\n",CYAN,BLUE);
+	  else if (h == 5) printf("\t%s  * %sJason Foley\n",CYAN,BLUE);
+	  else if (h == 6) printf("\t%s  * %sSamantha Marah%s\n",CYAN,BLUE,NORM);
+	  else printf("\n");
+	}
+	//printf("%sA Game By:\n  * %sJoe O'Regan\n  %s* %sSamantha Marah\n  %s* %sJason Foley%s\n", CYAN,BLUE,CYAN,BLUE,CYAN,BLUE,NORM);	// Game Creators
+}
 
 // This function displays the graphical version of the lives remaining
 // First parsing the string from the server, to separate the part word and number of lives left

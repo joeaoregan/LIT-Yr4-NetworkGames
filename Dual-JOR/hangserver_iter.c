@@ -14,6 +14,7 @@
 #include <string.h> // XXX
 #include <unistd.h> // XXX read(), write()
 
+#include "../DrawHangman.h"
 #include "../CreateTCPSocket.h"	// XXX
 
  extern time_t time ();

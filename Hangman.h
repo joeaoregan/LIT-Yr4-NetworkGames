@@ -71,7 +71,7 @@ char* selectRandomWord(char* clname, int clport) {
 
   syslog (LOG_USER | LOG_INFO, "server chose hangman word %s", the_word);			// Message logging
 
-  printf("Word: \"%s\" Randomly Selected For Client: %s/%d\n", the_word, clname, clport);	// Display the word selected for the client on the server
+  printf("Word: %s\"%s\"%s Randomly Selected For Client: %s/%d\n", RED,the_word,NORM,clname,clport);// Display the word selected for the client on the server
 
   return the_word;										// Return the selected word
 }

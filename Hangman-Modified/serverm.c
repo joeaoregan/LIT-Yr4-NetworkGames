@@ -40,17 +40,16 @@ void main () {										// No command line arguments
 
  	srand ((int) time ((long *) 0)); 						// Randomise the seed
 
-	//sock = createTCPServerSocket();						// Create and bind the TCP socket
 	sock = createDualStackServerSocket();						// Create and bind the TCP socket, with dual stack IPv4 and IPv6 support
 
-	drawHangman();									// Draw the hangman graphic
+	drawHangmanNew();								// Draw the hangman graphic
 
  	while (1) {									// Loop
  		client_len = sizeof(client);
  		if ((fd = accept (sock, (struct sockaddr *) &client, &client_len)) < 0) // Create the listening socket, and if its return value is less than 0
 			displayErrMsgStatus("Accepting Connection", 3);			// Display error message, and exit with return status 3
 
-		displayNameAndPort(client, cliName);					// Display the Client IP and Port number
+		displayNameAndPort(&client, cliName);					// Display the Client IP and Port number
 
  		playHangmanTCP(fd, fd, cliName, CLI_PORT);				// Play the game
 

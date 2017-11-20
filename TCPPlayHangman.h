@@ -29,7 +29,7 @@ void playHangmanTCP(int in, int out, char* name, int port) {
 	guess[LINESIZE], outbuf [LINESIZE];							// Guess input buffer from client, outward buffer to client
  	int i, word_length, lives = MAX_LIVES, game_state = 'I', byteCount;			// Iterator, length of whole_word, correct guesses, game state
  	
-  	displayHostname(out, outbuf);								// Function in Hangman.h: Display the name of the server
+  	displayHostname(out, outbuf);								// Function in Hangman.h: Display the name of the server on the client
 
 	/*----------------------------- RANDOM WORD SELECTION FUNCTION -------------------------*/
 
@@ -59,8 +59,8 @@ void playHangmanTCP(int in, int out, char* name, int port) {
 		while ((byteCount = read(in, guess, LINESIZE)) < 0) {				// Read guess from client
  			if (errno != EINTR) displayErrMsgStatus("Re-read the startin\n", 4);	// P182 Check for EINTR error if stuck in slow system call, & exit if restart signal not recieved. Re-start read() if interrupted by signal
  		} 
-
-		sprintf(outbuf, "Guess received from Client %s/%d %s", name,port,guess);	// Display the guess received, and the ip and port of the client
+		guess[1]='\0';
+		sprintf(outbuf, "Guess received from Client %s/%d %s\n", name,port,guess);	// Display the guess received, and the ip and port of the client
 		write(0, outbuf, strlen(outbuf));
 
 		/*------------------------------CHECK CORRECT GUESS ----------------------------*/

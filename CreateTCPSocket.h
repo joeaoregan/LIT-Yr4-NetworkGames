@@ -37,6 +37,9 @@ int createDualStackServerSocket(){
 	int i, sock, reuseaddr = 1;
 	struct hostent * host_info;							// Can only return IPv4 addresses
 	struct in_addr **addr_list;
+	char* s;
+
+	//char str[INET6_ADDRSTRLEN];
 
 	bzero(&server, sizeof server);							// Zero out structure, could also use memset(), swapping 2 args in bzero will be caught by compiler
 
@@ -63,6 +66,13 @@ int createDualStackServerSocket(){
 		for (i = 0; addr_list[i] != NULL; i++) 
 			printf("%s", inet_ntoa(*addr_list[i]));				// inet_ntoa() converts the address to human readable format
 		printf(":%d\n",TCP_PORT_NUM);
+
+
+		//inet_ntop(AF_INET6, &(server.sin6_addr),str,INET6_ADDRSTRLEN);	// display IPv6 address
+		//printf("%s\n", str);
+
+		//s = get_ip_str((struct sockaddr *)server,s,INET_ADDRSTRLEN);
+
 	}
 
 	return sock;	
@@ -79,13 +89,11 @@ int createTCPServerSocket() {
 
   struct addrinfo *servAddr; 								// List of server addresses
   int rtnVal = getaddrinfo(NULL, TCP_PORT, &addrCriteria, &servAddr);
-  if (rtnVal != 0)    
-    printf("getaddrinfo() failed %s\n", gai_strerror(rtnVal));				// DieWithUserMessage("getaddrinfo() failed", gai_strerror(rtnVal));
+  if (rtnVal != 0) printf("getaddrinfo() failed %s\n", gai_strerror(rtnVal));		// DieWithUserMessage("getaddrinfo() failed", gai_strerror(rtnVal));
 
   int server = -1;									// Initialise the server socket
-  for (struct addrinfo *addr = servAddr; addr != NULL; addr = addr->ai_next) {
-    // Create a TCP socket
-    server = socket(servAddr->ai_family, servAddr->ai_socktype, servAddr->ai_protocol);
+  for (struct addrinfo *addr = servAddr; addr != NULL; addr = addr->ai_next) {   
+    server = socket(servAddr->ai_family, servAddr->ai_socktype, servAddr->ai_protocol); // Create a TCP socket
     if (server < 0) continue;       							// Socket creation failed; try next address
 
     if ((bind(server, servAddr->ai_addr, servAddr->ai_addrlen) == 0) &&			// Bind to the local address 
@@ -147,12 +155,12 @@ struct sockaddr_in createTCPClientSocket(int* sock, char* server_name) {		/* CRE
 
 
 // Display Client address and port
-char* displayNameAndPort(struct sockaddr_in cli, char* name) {
+char* displayNameAndPort(struct sockaddr_in* cli, char* name) {
 //	char name[INET_ADDRSTRLEN];							// Client address string
 
 	//if (inet_ntop(AF_INET, &cli.sin_addr.s_addr, name,sizeof(name)) != NULL){	// sizeof(name) not working here, INET_ADDRSTRLEN is the length of an address string
-	if (inet_ntop(AF_INET, &cli.sin_addr.s_addr, name, INET_ADDRSTRLEN) != NULL){	// Convert the address to a string, and store in clntName
-		printf("Handling client %s/%d\n", name, ntohs(cli.sin_port));		// Display the client IP address and port number, ntohs = convert from network byte order to host byte order
+	if (inet_ntop(AF_INET, &(*cli).sin_addr.s_addr, name, INET_ADDRSTRLEN) != NULL){	// Convert the address to a string, and store in clntName
+		printf("Handling client %s/%d\n", name, ntohs((*cli).sin_port));		// Display the client IP address and port number, ntohs = convert from network byte order to host byte order
 	}
 
 	return name;	

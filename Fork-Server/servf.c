@@ -49,12 +49,13 @@ void main () {										// No command line arguments
 	pid_t childpid;									// pid_t: signed int data type, capable of representing  a process ID. 
 	void sig_chld(int);								// Signal handling function, catches SIGCHLD signal from terminating process
 
-	sock = createTCPServerSocket();							// Functionality to create socket moved to separate file CreateTCPServer.h
+	sock = createTCPServerSocket();						// IPv4 only: Functionality to create socket moved to separate file CreateTCPServer.h
+	//sock = createDualStackServerSocket();						// Create and bind the TCP socket, with dual stack IPv4 and IPv6 support
 	// The UNP books signal() function calls POSIX sigaction
 	// signal(<signal name>, <point to signal handler function>);
 	signal(SIGCHLD, sig_chld);							// SIGCHLD signal is sent to the parent of a child process when it exits, is interuppted, or resumes after interruption
 
-	drawHangman();									// Draw the hangman graphic
+	drawHangmanNew();								// Draw the hangman graphic
 
  	while (1) {									// Infinite loop
  		client_len = sizeof (client);						// Size of the client socket
@@ -62,7 +63,10 @@ void main () {										// No command line arguments
 			displayErrMsgStatus("Accepting Connection", 3);			// Display the error message, and exit with status 3
 
 		/* DISPLAY CLIENT ADDRESS AND PORT */
-		displayNameAndPort(client, cliName);					// Display the Client IP and Port number
+		//displayNameAndPort(&client, cliName);					// Display the Client IP and Port number
+
+		if (inet_ntop(AF_INET, &client.sin_addr.s_addr, cliName, sizeof(cliName)) != NULL)
+			printf("Handling client %s/%d\n", cliName, ntohs(client.sin_port));
 
 		/* RANDOM NUMBER SEED - DIFFERENT WORD FOR EACH CLIENT CONNECTION */
 		srand(time(NULL));							// 08/10/2017 Seed/Reseed the random number. Moved to while loop so each client receives a different word
