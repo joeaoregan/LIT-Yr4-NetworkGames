@@ -28,6 +28,7 @@ void displayAddress(const struct sockaddr* address, FILE* stream){
 	if (inet_ntop(address->sa_family, numericAddress, addressBuffer, sizeof(addressBuffer)) == NULL)
 		fputs("[invalid address]", stream); 				// Unable to convert
 	else {
+		printf("addressBuffer: %s:\n",addressBuffer);			// test value in addressBuffer
 		fprintf(stream, "%s", addressBuffer);
 		if (port != 0) fprintf(stream, "/%u", port);			// Zero not valid in socket address
 	}

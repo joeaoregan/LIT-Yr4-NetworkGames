@@ -40,7 +40,8 @@ void main () {										// No command line arguments
 
  	srand ((int) time ((long *) 0)); 						// Randomise the seed
 
-	sock = createTCPServerSocket();							// Create and bind the TCP socket
+	//sock = createTCPServerSocket();						// Create and bind the TCP socket
+	sock = createDualStackServerSocket();						// Create and bind the TCP socket, with dual stack IPv4 and IPv6 support
 
 	drawHangman();									// Draw the hangman graphic
 

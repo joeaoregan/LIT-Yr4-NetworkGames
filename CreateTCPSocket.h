@@ -19,7 +19,7 @@
 #include <sys/socket.h>									// sockaddr, accept(), bind(), listen()
 #include <unistd.h>									// gethostname(), write(), read(), close()
 #include <arpa/inet.h>									// inet_ntop()
-#include <netdb.h>
+#include <netdb.h>									// gethostbyname()
 #include <string.h>									// strcpy(), bzero()
 #include "Hangman.h"
 #include "AddressFunctions.h"
@@ -34,7 +34,11 @@ char* TCP_PORT = "1066";								// The port number the server will run on, for c
 
 int createDualStackServerSocket(){
 	struct sockaddr_in6 server;
-	int sock, reuseaddr = 1;
+	int i, sock, reuseaddr = 1;
+	struct hostent * host_info;							// Can only return IPv4 addresses
+	struct in_addr **addr_list;
+
+	bzero(&server, sizeof server);							// Zero out structure, could also use memset(), swapping 2 args in bzero will be caught by compiler
 
 	sock = socket(AF_INET6, SOCK_STREAM, 0);
 	setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof reuseaddr);
@@ -43,12 +47,23 @@ int createDualStackServerSocket(){
 	
  	server.sin6_family = AF_INET6;
  	server.sin6_addr = in6addr_any;
- 	server.sin6_port = htons(TCP_PORT_NUM);	// XXX
+ 	server.sin6_port = htons(TCP_PORT_NUM);
 
- 	if (bind(sock, (struct sockaddr *) & server, sizeof(server)) < 0) 
+ 	if (bind(sock, (struct sockaddr *) & server, sizeof(server)) < 0) 		// Bind - Assign the address to the socket
 		displayErrMsgStatus("Binding Socket", 1);
+	if (listen(sock, MAX_CLIENTS) < 0)						// Set socket to listen
+		displayErrMsgStatus("Listen()", 1);
+	else {
+		char hostname[128];
+		if(gethostname(hostname, sizeof hostname) == 0)				// gethostname() returns 0 on success, returns the name of the computer the socket is running on
+			printf("Running Hangman Server on: %s ", hostname);
 
-	listen(sock, MAX_CLIENTS);
+		host_info = gethostbyname(hostname);					// gethostbyname() uses the name of the machine to return the local IP address
+		addr_list = (struct in_addr **) host_info->h_addr_list;
+		for (i = 0; addr_list[i] != NULL; i++) 
+			printf("%s", inet_ntoa(*addr_list[i]));				// inet_ntoa() converts the address to human readable format
+		printf(":%d\n",TCP_PORT_NUM);
+	}
 
 	return sock;	
 }
