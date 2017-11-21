@@ -13,8 +13,8 @@
 #include <stdlib.h>					// 23/09/2017 exit(), rand()
 #include <unistd.h>					// 23/09/2017 gethostname(), write(), read(), close()
 #include <arpa/inet.h>					// 23/09/2017 inet_ntop()
+#include "../DrawHangman.h"				// 11/10/2017 Draw Hangman Graphic (Needs to be before Hangman.h define in both client and server for colour)
 #include "../Hangman.h"					// 11/10/2017 Hangamen header file
-#include "../DrawHangman.h"				// 11/10/2017 Draw Hangman Graphic
 #include "../CreateTCPSocket.h"
 	
 void str_echo(int sockfd);

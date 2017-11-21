@@ -11,8 +11,8 @@
 #include <stdlib.h>				// 23/09/2017 exit(), rand(), srand()
 #include <unistd.h>				// 23/09/2017 gethostname(), write(), read(), close()
 #include <time.h>				// time()
-#include "../Hangman.h"				// 13/10/2017 Hangman functions
 #include "../DrawHangman.h"			// Display the hangman graphics
+#include "../Hangman.h"				// 13/10/2017 Hangman functions
 #include "../CreateTCPSocket.h"			// Create a TCP Server Socket
 
 char clntName[INET_ADDRSTRLEN];			// Client address string
@@ -41,9 +41,18 @@ int main(int argc, char **argv) {
 	fd_set		rset, allset;
 	socklen_t	clilen;
 
+
+// Fix
+
+
 	listenfd = createTCPServerSocket(TCP_PORT);									// Create the socket
 
-	drawHangman();													// Draw the hangman graphic
+
+
+
+
+	//drawHangman();												// Draw the hangman graphic
+	drawHangmanNew();												// Draw the hangman graphic
 	
 	srand(time(NULL));												// Random word each time the server starts
 

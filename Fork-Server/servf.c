@@ -49,8 +49,8 @@ void main () {										// No command line arguments
 	pid_t childpid;									// pid_t: signed int data type, capable of representing  a process ID. 
 	void sig_chld(int);								// Signal handling function, catches SIGCHLD signal from terminating process
 
-	sock = createTCPServerSocket();						// IPv4 only: Functionality to create socket moved to separate file CreateTCPServer.h
-	//sock = createDualStackServerSocket();						// Create and bind the TCP socket, with dual stack IPv4 and IPv6 support
+	//sock = createTCPServerSocket();						// IPv4 only: Functionality to create socket moved to separate file CreateTCPServer.h
+	sock = createDualStackServerSocket();						// Create and bind the TCP socket, with dual stack IPv4 and IPv6 support
 	// The UNP books signal() function calls POSIX sigaction
 	// signal(<signal name>, <point to signal handler function>);
 	signal(SIGCHLD, sig_chld);							// SIGCHLD signal is sent to the parent of a child process when it exits, is interuppted, or resumes after interruption
