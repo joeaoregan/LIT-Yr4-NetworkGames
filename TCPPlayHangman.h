@@ -29,6 +29,10 @@ void sendPartWord(int out, char* outbuf, char* part_word, int lives);				// Func
 int checkGuess(char* buf, char* word, char* part, char* guess, int lives, char* name, int port);
 
 /*--------------------------------------- PLAY HANGMAN -----------------------------------------*/
+/*
+	SERVER TCP:
+	play_hangman() function, altered from original, working with modified, and fork TCP sockets
+*/
 void playHangmanTCP(int in, int out, char* name, int port) {
 	char * whole_word, part_word [LINESIZE],						// LINESIZE is declared in Hangman.c replacing MAXLEN
 	guess[LINESIZE], outbuf [LINESIZE];							// Guess input buffer from client, outward buffer to client
@@ -72,7 +76,7 @@ void playHangmanTCP(int in, int out, char* name, int port) {
 	
 
 /*	
-	SERVER:
+	SERVER TCP:
 	Function to format and send the part word and lives data to client as a string
 	from the server
 */
@@ -86,7 +90,7 @@ void sendPartWord(int out, char* outbuf, char* part_word, int lives) {
 
 
 /*
-	SERVER:
+	SERVER TCP:
 	Check input from client, format it, and display on server side, depending on the guess, 
 	and decrement the number of lives if bad guess
 	Returns the number of lives to be set in the client state.

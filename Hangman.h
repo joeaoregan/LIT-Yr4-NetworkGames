@@ -90,6 +90,7 @@ int parseWordAndLives(char* input, int draw) {
 	if (lives > 0) printf("%sWord To Guess:%s\t\t%s\n", CYAN, NORM, word);			// The part word string while game is playing OR
 	else printf("%sThe word was:%s\t\t%s\n", RED, NORM, word);				// The actual word if player loses
 
+//	printf("lives: %d\n", lives);
 	return lives;										// Return the number of lives, to decide which game over message
 }
 
