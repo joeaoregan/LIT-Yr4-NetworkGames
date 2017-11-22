@@ -85,3 +85,4 @@ void sendGuess(int s, char* guess, struct sockaddr_in server) {
 	if (sendto(s, guess, strlen(guess), 0,(struct sockaddr *) &server, len) == -1)
 		displayErrMsg("sendto() Failed");
 }
+

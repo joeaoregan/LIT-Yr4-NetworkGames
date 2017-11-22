@@ -92,8 +92,8 @@ void sendPartWord(int out, char* outbuf, char* part_word, int lives) {
 	Returns the number of lives to be set in the client state.
 */
 int checkGuess(char* buf, char* word, char* part, char* guess, int lives, char* ip, int port) {
-    if (!correctGuess(word, part, guess)) {
-        lives--;										// Functionality moved to Hangman.h. Incorrect guess: decrement number of lives. Good guess: copy the letter to the part word
+    if (!correctGuess(word, part, guess)) {							// Hangman.h: Good guess: copy letter to part word
+        lives--;										// Incorrect guess: decrement lives. 
         sprintf(buf, "%sBad Guess%s Received From Client %s/%d %s\n",RED,NORM,ip,port,guess);	// Format a bad guess received, adding the ip and port of the client to identify
     }
     else sprintf(buf,"%sGood Guess%s Received From Client %s/%d %s\n",GREEN,NORM,ip,port,guess);// Format a good guess received, adding the ip and port of the client to identify

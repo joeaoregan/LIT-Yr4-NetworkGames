@@ -37,4 +37,31 @@ int checkGuessUDP(char* buf, char* word, char* part, char* guess, int lives) {
     return lives;										// Return the number of guesses/lives remaining
 }
 
+
+/*
+	SERVER:
+	Read in the username sent from the client, and display it on screen
+	perform checks for no user input
+*/
+int getUserNameUDP(int s, char* name, struct sockaddr_in cliAddr) {
+	int count;									// Count of bytes received
+	int len = sizeof(cliAddr);							// Size of IPv4 client address stucture
+	char input[LINESIZE];
+
+	if((count = recvfrom(s,input,LINESIZE,0,(struct sockaddr*) &cliAddr, &len))==-1) {// Server receives 1st, recvfrom returns -1 if error
+		printf("No more input from %s%s%s\n",BLUE,input,NORM);			// Display end of input message
+		return 0;								// Return false, leaving the function without errors, if no more input is received
+	} else {		
+		input[count-1] = '\0';							// Terminate the end of the string (before the '\n' new line character)
+		printf("Username received: %s%s%s\n",BLUE,input,NORM);			// Format and display the username
+	}
+
+	strcpy(name, input);
+
+	printf("input: %s name: %s\n",input, name);
+
+	return 1;									// Return a user name has been created is true
+}
+
+
 #endif	/* __PLAY_HANGMAN_UDP */

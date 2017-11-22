@@ -9,20 +9,30 @@
 	Joe O'Regan 	K00203642
 	Samantha Marah	K00200782
 	Jason Foley 	K00186690
+
+	22/11/2017 	Modified displayHostname() to only take a socket
+			Declaring it's own instance of a buffer
 */
 
 #ifndef	__SOCKET_H
 #define	__SOCKET_H
 
 
-// Display the server hostname
-void displayHostname(int o, char* buf) {
-	char hostname[LINESIZE];						// Name of the current system
+
+/*
+	SERVER:
+	Display the server hostname
+*/
+//void displayHostname(int o, char* buf) {
+//void displayHostname(int o) {
+void displayHostname() {
+	char hostname[LINESIZE], buf[LINESIZE];					// Name of the current system
 
 	gethostname (hostname, LINESIZE);					// Get the host name for the local machine
 	
 	snprintf(buf, LINESIZE, "Playing hangman on host: %s \n \n", hostname);	// Set outbuf to server hostname, with protection against buffer overflow
-	write(o, buf, strlen(buf));						// Send outbuf to client
+//	write(o, buf, strlen(buf));						// Send outbuf to client
+	write(0, buf, strlen(buf));						// Display hostname on server side
 }
 
 /*
