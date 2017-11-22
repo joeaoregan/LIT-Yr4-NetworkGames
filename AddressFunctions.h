@@ -3,6 +3,9 @@
 #include <stdbool.h>
 #include <arpa/inet.h>
 
+
+int get_ip_str(int ip, void *sa, char *s, size_t maxlen);
+
 void displayAddress(const struct sockaddr* address, FILE* stream){
 	// Test for address and stream
 	if (address == NULL || stream == NULL) return;				// return from function if the struct or file is empty
@@ -25,9 +28,10 @@ void displayAddress(const struct sockaddr* address, FILE* stream){
 	}
 	
 	// Convert binary to printable address
-	if (inet_ntop(address->sa_family, numericAddress, addressBuffer, sizeof(addressBuffer)) == NULL)
+        if(get_ip_str(address->sa_family, (void *) address, addressBuffer, INET6_ADDRSTRLEN) == 1) {
+	//if (inet_ntop(address->sa_family, numericAddress, addressBuffer, sizeof(addressBuffer)) == NULL)
 		fputs("[invalid address]", stream); 				// Unable to convert
-	else {
+	} else {
 		//printf("addressBuffer: %s:\n",addressBuffer);			// test value in addressBuffer
 		fprintf(stream, "%s", addressBuffer);
 		if (port != 0) fprintf(stream, "/%u", port);			// Zero not valid in socket address
@@ -35,21 +39,23 @@ void displayAddress(const struct sockaddr* address, FILE* stream){
 }
 
 // beej
-char* get_ip_str(const struct sockaddr *sa, char *s, size_t maxlen) {
-    switch(sa->sa_family) {
+int get_ip_str(int ip, void *sa, char *s, size_t maxlen) {
+    switch(ip) {
         case AF_INET:
             inet_ntop(AF_INET, &(((struct sockaddr_in *)sa)->sin_addr), s, maxlen);
+		//printf("4 get_ip_str s: %s", s);
             break;
 
         case AF_INET6:
             inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)sa)->sin6_addr), s, maxlen);
+		//printf("6 get_ip_str s: %s", s);
             break;
 
         default:
             strncpy(s, "Unknown Address Family", maxlen);
 
-            return NULL;
+            return 1;	// if unsuccessful 
     }
 
-    return s;
+    return 0;		// successful
 }
