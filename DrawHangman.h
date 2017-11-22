@@ -18,6 +18,7 @@
 #ifndef	__DRAW_HANGMAN_H
 #define	__DRAW_HANGMAN_H
 
+// Define colours to be used in terminal
 #define RED   "\x1B[31m"
 #define GREEN "\x1B[32m"
 #define YELO  "\x1B[33m"
@@ -25,8 +26,10 @@
 #define CYAN  "\x1B[36m"
 #define NORM  "\x1B[0m"
 
-char *hangman[]= {										// ASCII hangman graphic
-"   T E A M 1",											// Changed to Team 1 (the actual team name)
+
+// Hangman Game Logo
+char *hangman[]= {								// ASCII hangman graphic
+"   T E A M 1",									// Changed to Team 1 (the actual team name)
 " H A N G M A N",
 "\x1B[35m  _____________", 
 "\x1B[35m  |/      |",
@@ -40,21 +43,21 @@ char *hangman[]= {										// ASCII hangman graphic
 char *altArms[]={"\x1B[35m  |    \x1B[31m_\x1B[33m_(\")___\x1B[0m", 
 		 "\x1B[35m  |    \x1B[33m__(\")_\x1B[31m_\x1B[0m", 
 		 "\x1B[35m  |      \x1B[33m(\")__\x1B[0m", 
-		 "\x1B[35m  |      \x1B[33m(\")"};						// ARMS - left hand, right hand, left arm, none
+		 "\x1B[35m  |      \x1B[33m(\")"};				// ARMS - left hand, right hand, left arm, none
 
-char *altBody[]={"\x1B[35m  |\x1B[0m"};								// BODY - none
+char *altBody[]={"\x1B[35m  |\x1B[0m"};						// BODY - none
 
 char *altLegs[]={"\x1B[35m  |      \x1B[31m~^\x1B[33m\\",
-		 "\x1B[35m  |      \x1B[33m~^~\x1B[0m",};					// LEGS - 0.Left, 1.right, 2.none
+		 "\x1B[35m  |      \x1B[33m~^~\x1B[0m",};			// LEGS - 0.Left, 1.right, 2.none
 
 char *altFeet[]={"\x1B[35m  |   \x1B[31m  // \x1B[33m\\\\_\x1B[0m",
 		 "\x1B[35m  |\x1B[33m     // \x1B[31m\\\\\x1B[0m", 
 		 "\x1B[35m  |\x1B[31m        \\\\", 
-		 "\x1B[35m  |"};								// Feet - 0.Left foot, 1.right foot, 2.Left shin, 3. Right shin (none)
+		 "\x1B[35m  |"};						// Feet - 0.Left foot, 1.right foot, 2.Left shin, 3. Right shin (none)
 
 // Function Declarations
 void drawHangman();
-Void amputate(int lives);
+void amputate(int lives);
 
 /*
 	CLIENT & SERVER:
@@ -64,16 +67,17 @@ void drawHangman() {
 	// Draw hangman
 	printf("%s%s\n", RED,hangman[0]);
 	printf("%s%s\n", RED,hangman[1]);
-	for (int h = 2; h < 9; ++h){								// Draw hangman ASCII
+	for (int h = 2; h < 9; ++h){						// Draw hangman ASCII
 	  printf("%s\n", hangman[h]);
 	}
-	printf("%sA Game By:\n  * %sJoe O'Regan\n  %s* %sSamantha Marah\n  %s* %sJason Foley%s\n", CYAN,BLUE,CYAN,BLUE,CYAN,BLUE,NORM);	// Game Creators
+	printf("%sA Game By:\n  * %sJoe O'Regan\n%s  * ", CYAN,BLUE,CYAN);	// Game Creators
+	printf("%sSamantha Marah\n  %s* %sJason Foley%s\n",BLUE,CYAN,BLUE,NORM);// Game Creators
 }
 void drawHangmanNew() {
 	// Draw hangman
 	printf("  %s%s - ", RED,hangman[0]);
 	printf("%s%s\n", RED,hangman[1]);
-	for (int h = 2; h < 9; ++h){								// Draw hangman ASCII
+	for (int h = 2; h < 9; ++h){						// Draw hangman ASCII
 	  printf("%s", hangman[h]);
 	  if (h == 3) printf("%s\t  A Game By:\n",CYAN);
 	  else if (h == 4) printf("\t%s  * %sJoe O'Regan\n",CYAN,BLUE);
@@ -81,51 +85,52 @@ void drawHangmanNew() {
 	  else if (h == 6) printf("\t%s  * %sSamantha Marah%s\n",CYAN,BLUE,NORM);
 	  else printf("\n");
 	}
-	//printf("%sA Game By:\n  * %sJoe O'Regan\n  %s* %sSamantha Marah\n  %s* %sJason Foley%s\n", CYAN,BLUE,CYAN,BLUE,CYAN,BLUE,NORM);	// Game Creators
 }
 
 /*
 	CLIENT:
 	This function displays the graphical version of the lives remaining
 	First parsing the string from the server, to separate the part word and number of lives left
+	called by parseWordAndLives() which passes the lives/guesses remaining to it to draw the hangman
 */
-void amputate(int lives) {									// Takes a parameter of the number of lives/guesses remaining to draw the hangman game
-	printf("\n");										// Start on new line
-	if (lives == 12) {									// Full
+void amputate(int lives) {							// Takes a parameter of the number of lives/guesses remaining to draw the hangman game
+	printf("\n");								// Start on new line
+	if (lives == 12) {							// Full
 	  for (int h = 2; h < 9; ++h) {
 	    printf("%s\n", hangman[h]);	    
 	  }
-	  printf("As if hanging wasn't bad enough\nYou are also facing the threat of amputation!\n");
+	  printf("As if hanging wasn't bad enough\n");				// Display not so funny the millionth time around message for Player
+	  printf("You are also facing the threat of amputation!\n");
 	}
-	if (lives == 11) {									// Left Foot
+	if (lives == 11) {							// Left Foot
 	  for (int h = 2; h < 9; ++h){
 	    if (h == 7) printf("%s\n", altFeet[0]);
 	    else printf("%s\n", hangman[h]);
 	  }
 	  printf("You lost your left foot, start hopping!\n");
 	}
-	if (lives == 10) {									// Right Foot
+	if (lives == 10) {							// Right Foot
 	  for (int h = 2; h < 9; ++h){			
 	    if (h == 7) printf("%s\n", altFeet[1]);
 	    else printf("%s\n", hangman[h]);
 	  }
 	  printf("You lost your right foot\nNo more shoes for you!\n");
 	}
-	if (lives == 9) {									// Left Shin
+	if (lives == 9) {							// Left Shin
 	  for (int h = 2; h < 9; ++h){	
 	    if (h == 7) printf("%s\n", altFeet[2]);
 	    else printf("%s\n", hangman[h]);
 	  }
 	  printf("You lost your left shin\n");
 	}
-	if (lives == 8) {									// Right Shin
+	if (lives == 8) {							// Right Shin
 	  for (int h = 2; h < 9; ++h){				
 	    if (h == 7) printf("%s\n", altFeet[3]);
 	    else printf("%s\n", hangman[h]);
 	  }
 	  printf("You lost your right shin\n");
 	}
-	if (lives == 7) {									// Left Tight
+	if (lives == 7) {							// Left Tight
 	  for (int h = 2; h < 9; ++h){
 	    if (h == 6) printf("%s\n", altLegs[0]);
 	    else if (h == 7) printf("%s\n", altFeet[3]);
@@ -133,7 +138,7 @@ void amputate(int lives) {									// Takes a parameter of the number of lives/g
 	  }
 	  printf("You lost your left tight\n");
 	}
-	if (lives == 6) {									// Right Tight
+	if (lives == 6) {							// Right Tight
 	  for (int h = 2; h < 9; ++h){
 	    if (h == 6) printf("%s\n", altLegs[1]);
 	    else if (h == 7) printf("%s\n", altFeet[3]);
@@ -141,7 +146,7 @@ void amputate(int lives) {									// Takes a parameter of the number of lives/g
 	  }
 	  printf("You won't be needing pants anymore!\n");
 	}
-	if (lives == 5) {									// Body
+	if (lives == 5) {							// Body
 	  for (int h = 2; h < 9; ++h){
 	    if (h == 5) printf("%s\n", altBody[0]);
 	    else if (h == 6 || h == 7) printf("%s\n", altFeet[3]);
@@ -149,7 +154,7 @@ void amputate(int lives) {									// Takes a parameter of the number of lives/g
 	  }
 	  printf("You lost a few inches around the waste!\n");
 	}
-	if (lives == 4) {									// Left Hand
+	if (lives == 4) {							// Left Hand
 	  for (int h = 2; h < 9; ++h){
 	    if (h == 4) printf("%s\n", altArms[0]);
 	    else if (h == 5 || h == 6 || h == 7) printf("%s\n", altBody[0]);
@@ -157,7 +162,7 @@ void amputate(int lives) {									// Takes a parameter of the number of lives/g
 	  }
 	  printf("You were right handed ya?\n");
 	}
-	if (lives == 3) {									// Right Hand
+	if (lives == 3) {							// Right Hand
 	  for (int h = 2; h < 9; ++h){
 	    if (h == 4) printf("%s\n", altArms[1]);
 	    else if (h == 5 || h == 6 || h == 7) printf("%s\n", altBody[0]);
@@ -165,7 +170,7 @@ void amputate(int lives) {									// Takes a parameter of the number of lives/g
 	  }
 	  printf("Wave goodbye to your right hand!\n");
 	}
-	if (lives == 2) {									// Left Arm
+	if (lives == 2) {							// Left Arm
 	  for (int h = 2; h < 9; ++h){
 	    if (h == 4) printf("%s\n", altArms[2]);
 	    else if (h == 5 || h == 6 || h == 7) printf("%s\n", altBody[0]);
@@ -173,7 +178,7 @@ void amputate(int lives) {									// Takes a parameter of the number of lives/g
 	  }
 	  printf("Now your wheelchair will be going in circles!\n");
 	}
-	if (lives == 1) {									// Right Arm
+	if (lives == 1) {							// Right Arm
 	  for (int h = 2; h < 9; ++h){
 	    if (h == 4) printf("%s\n", altArms[3]);
 	    else if (h == 5 || h == 6 || h == 7) printf("%s\n", altBody[0]);
@@ -181,7 +186,7 @@ void amputate(int lives) {									// Takes a parameter of the number of lives/g
 	  }
 	  printf("You weren't a sleeves kind of person anyway!\n");
 	}
-	if (lives == 0) {									// Head
+	if (lives == 0) {							// Head
 	  for (int h = 2; h < 9; ++h){
 	    if (h == 4) printf("\x1B[35m  |       \x1B[33mO\x1B[35m\n");
 	    else if (h == 5 || h == 6 || h == 7) printf("%s\n", altBody[0]);
@@ -198,9 +203,9 @@ void amputate(int lives) {									// Takes a parameter of the number of lives/g
 	based on the number of lives/guesses the Player had left at the end of the game
 */
 void gameOverText(int win) {
-	if (win == 12) printf("%sPERFECT ROUND\nGAME OVER!%s\n", BLUE, NORM);			// Game over message to test prog terminates, perfect score
-	else if (win == 0) printf("%sLOSER! GAME OVER!%s\n", RED, NORM);			// Game over message, player ran out of guesses
-	else printf("%sPLAYER WINS\nGAME OVER!%s\n", GREEN, NORM);				// Game over message, could do better
+	if (win == 12) printf("%sPERFECT ROUND\nGAME OVER!%s\n", BLUE, NORM);	// Game over message to test prog terminates, perfect score
+	else if (win == 0) printf("%sGAME OVER! LOSER!!%s\n", RED, NORM);	// Game over message, player ran out of guesses
+	else printf("%sPLAYER WINS\nGAME OVER!%s\n", GREEN, NORM);		// Game over message, could do better
 }
 
 

@@ -11,6 +11,10 @@
 	Jason Foley 	K00186690
 
 	22/11/2017 	Removed additional read after while loop, can't remember why it was there
+			gameOverText() in DrawHangman.h sets a game over message based on the number
+	 		of lives the player has left
+			parseWordAndLives() moved to Hangman.h from DrawHangman.h, function now takes
+			a draw paramater and calls amputate if set, or can be left as text only
 	16/10/2017	amputate() in DrawHangman.h displays graphical representation of lives lost
 	13/10/2017	DrawHangman.h added to create ASCII graphics
 	12/10/2017	Added header files for shared game variables and methods
@@ -40,7 +44,7 @@
 
 	server = createTCPClientSocket(&sock, (argc == 1) ? SRV_IP : argv[1]);	// CreateTCPSocket.h: Create the connection between the client and the server, use default IP if none entered
 
-	drawHangmanNew();							// DrawHangman.h: Draw Hangman Graphic Representation of Number of Lives Left
+	drawHangmanNew();							// DrawHangman.h: Draw Hangman Graphic Representation of Number of Lives Left, replaces drawHangman()
 
 	/* ----------------------CONNECTED TO THE SERVER--------------------------
 	* Take a line containing the part word from the server and display it, 

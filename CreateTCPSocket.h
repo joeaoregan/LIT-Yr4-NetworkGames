@@ -32,6 +32,11 @@
 #define	MAX_CLIENTS 5									// 2nd argument to listen(), the maximum number of client connections
 char* TCP_PORT = "1066";								// The port number the server will run on, for createTCPServerSocket() function
 
+/*
+	SERVER:
+	Function to create a server side TCP socket that can handle both IPv4 & IPv6
+	client connections
+*/
 int createDualStackServerSocket(){
 	struct sockaddr_in6 server;
 	int i, sock, reuseaddr = 1;
@@ -42,30 +47,30 @@ int createDualStackServerSocket(){
 
 	bzero(&server, sizeof server);							// Zero out structure, could also use memset(), swapping 2 args in bzero will be caught by compiler
 
-	sock = socket(AF_INET6, SOCK_STREAM, 0);
-	setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof reuseaddr);
-	if (sock < 0) 
-		displayErrMsgStatus("Creating Stream Socket", 1);
+	sock = socket(AF_INET6, SOCK_STREAM, 0);					// Create an IPv6 socket
+	setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof reuseaddr);	// Set the options for the socket
+	if (sock < 0) 									// socket() returns -1 if there is an error
+		displayErrMsgStatus("Creating Stream Socket", 1);			// Error creating the socket
 	
- 	server.sin6_family = AF_INET6;
- 	server.sin6_addr = in6addr_any;
- 	server.sin6_port = htons(TCP_PORT_NUM);
+ 	server.sin6_family = AF_INET6;							// IPv6 socket
+ 	server.sin6_addr = in6addr_any;							// Store an IPv6 Address
+ 	server.sin6_port = htons(TCP_PORT_NUM);						// The TCP port to listen for connections on
 
  	if (bind(sock, (struct sockaddr *) & server, sizeof(server)) < 0) 		// Bind - Assign the address to the socket
-		displayErrMsgStatus("Binding Socket", 1);
+		displayErrMsgStatus("Binding Socket", 1);				// bind() returns -1 if there is an error
 	if (listen(sock, MAX_CLIENTS) < 0)						// Set socket to listen
-		displayErrMsgStatus("Listen()", 1);
+		displayErrMsgStatus("Listen()", 1);					// listen() returns -1 if there is an error
 	else {
 		// Display the local machine Name, IP, and port the server is running on
-		char hostname[128];
+		char hostname[128];							// Hostname for the local machine
 		if (gethostname(hostname, sizeof hostname) == 0)			// gethostname() returns 0 on success, returns the name of the computer the socket is running on
 			printf("Running Hangman Server on: %s ", hostname);
 
 		host_info = gethostbyname(hostname);					// gethostbyname() uses the name of the machine to return the local IP address
-		addr_list = (struct in_addr **) host_info->h_addr_list;
-		for (i = 0; addr_list[i] != NULL; i++) 
+		addr_list = (struct in_addr **) host_info->h_addr_list;			// list of ip addresses
+		for (i = 0; addr_list[i] != NULL; i++) 					// Search through the list of IP addresses
 			printf("%s", inet_ntoa(*addr_list[i]));				// inet_ntoa() converts the address to human readable format, deprecated, replaced by inet_ntop()
-		printf(":%d\n",TCP_PORT_NUM);
+		printf(":%d\n",TCP_PORT_NUM);						// Display the port number
 
 
 		//inet_ntop(AF_INET6, &(server.sin6_addr),str,INET6_ADDRSTRLEN);	// display IPv6 address
@@ -75,7 +80,7 @@ int createDualStackServerSocket(){
 
 	}
 
-	return sock;	
+	return sock;									// Return the socket back to the server application
 }
 
 int createTCPServerSocket() {
@@ -100,9 +105,9 @@ int createTCPServerSocket() {
       (listen(server, MAX_CLIENTS) == 0)) {						// Set socket to listen
     
       // Print local address of socket
-      struct sockaddr_storage localAddr;
-      socklen_t addrSize = sizeof(localAddr);
-      if (getsockname(server, (struct sockaddr *) &localAddr, &addrSize) < 0) 
+      struct sockaddr_storage localAddr;						// Address structure capable of holding IPv4 and IPv6 addresses
+      socklen_t addrSize = sizeof(localAddr);						// Size of the address stucture
+      if (getsockname(server, (struct sockaddr *) &localAddr, &addrSize) < 0) 		// Get the local IP address
 		displayErrMsg("getsockname() failed");
 
       fputs("Server now running on ", stdout);
@@ -113,15 +118,20 @@ int createTCPServerSocket() {
     }
 
     close(server);  									// Close and try again
-    server = -1;
+    server = -1;									// Reset the socket
   }
 
   // Free address list allocated by getaddrinfo()
   freeaddrinfo(servAddr);								// frees the memory that was allocated for the dynamically allocated linked list 
 
-  return server;
+  return server;									// Return the socket
 }
 
+
+/*
+	CLIENT:
+	Function to create a client socket using the TCP protocol
+*/
 struct sockaddr_in createTCPClientSocket(int* sock, char* server_name) {		/* CREATE THE SOCKET */
 	struct sockaddr_in servAddr;
  	struct hostent * host_info;
@@ -130,7 +140,7 @@ struct sockaddr_in createTCPClientSocket(int* sock, char* server_name) {		/* CRE
  	(*sock) = socket(AF_INET, SOCK_STREAM, 0);					// AF_INET = Address Family Internet, SOCK_STREAM = streams
  	if (sock < 0) displayErrMsgStatus("Creating Stream Socket", 1);	
 
- 	host_info = gethostbyname(server_name);
+ 	host_info = gethostbyname(server_name);						// Replaced by getaddrinfo(), used for DNS lookups
  //	if (host_info == NULL) {
  //	  fprintf (stderr, "%s: unknown host:%s \n", argv [0], server_name);
  //	  exit (2);
@@ -140,9 +150,9 @@ struct sockaddr_in createTCPClientSocket(int* sock, char* server_name) {		/* CRE
 	bzero(&servAddr, sizeof(servAddr));						// Zero out the address
 
 	//servaddr.sin_family = AF_INET;
- 	servAddr.sin_family = host_info->h_addrtype;
- 	memcpy ((char *) & servAddr.sin_addr, host_info->h_addr, host_info->h_length);
- 	servAddr.sin_port = htons(TCP_PORT_NUM);
+ 	servAddr.sin_family = host_info->h_addrtype;					// Get the address family from the gethostbyname() results
+ 	memcpy ((char *) & servAddr.sin_addr, host_info->h_addr, host_info->h_length);	
+ 	servAddr.sin_port = htons(TCP_PORT_NUM);					// htons() host to network short: convert port number to network byte order
 	//inet_pton(AF_INET, (argc == 1) ?  SRV_IP : argv[1], &servaddr.sin_addr);
 
  	if (connect ((*sock), (struct sockaddr *) &servAddr, sizeof servAddr) < 0)	// If the connection fails
@@ -150,15 +160,19 @@ struct sockaddr_in createTCPClientSocket(int* sock, char* server_name) {		/* CRE
 
  	printf ("Connected to server: %s \n", server_name);	
 
-	return servAddr;
+	return servAddr;								// Return the server address structure
 }
 
 
-// Display Client address and port
+/* 
+	SERVER:
+	Intended to display the Client's IP address and port
+	after connecting to the server
+*/
 char* displayNameAndPort(struct sockaddr_in* cli, char* name, int sock) {
-	int clilen = sizeof(cli);
+	int clilen = sizeof(cli);						
 
-	getpeername(sock, (struct sockaddr*) &cli, &clilen);
+	getpeername(sock, (struct sockaddr*) &cli, &clilen);				// Get the foreign address, the address of the socket connecting to you
 //	char name[INET_ADDRSTRLEN];							// Client address string
 	//inet_pton(AF_INET, "127.0.0.1", &(client.sin_addr));
 	//if (inet_ntop(AF_INET, &cli.sin_addr.s_addr, name,sizeof(name)) != NULL){	// sizeof(name) not working here, INET_ADDRSTRLEN is the length of an address string
@@ -166,5 +180,5 @@ char* displayNameAndPort(struct sockaddr_in* cli, char* name, int sock) {
 		printf("Handling client %s/%d\n", name, ntohs((*cli).sin_port));	// Display the client IP address and port number, ntohs = convert from network byte order to host byte order
 	}
 
-	return name;	
+	return name;									// Return the IP address
 }

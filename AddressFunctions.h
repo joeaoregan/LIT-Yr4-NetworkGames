@@ -60,18 +60,18 @@ void displayAddress(const struct sockaddr* address, FILE* stream){
 // beej
 int get_ip_str(int ip, void *sa, char *s, size_t maxlen) {
     switch(ip) {
-        case AF_INET:
+        case AF_INET:								// If it's an IPv4 address set the address value in the IPv4 address structure
             inet_ntop(AF_INET, &(((struct sockaddr_in *)sa)->sin_addr), s, maxlen);
 		//printf("4 get_ip_str s: %s", s);
             break;
-
-        case AF_INET6:
+		
+        case AF_INET6:								// If it's an IPv6 address set the address value in the IPv6 address stucture
             inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)sa)->sin6_addr), s, maxlen);
 		//printf("6 get_ip_str s: %s", s);
             break;
 
         default:
-            strncpy(s, "Unknown Address Family", maxlen);
+            strncpy(s, "Unknown Address Family", maxlen);			// If it's neither, something is wrong
 
             return 1;								// if unsuccessful 
     }

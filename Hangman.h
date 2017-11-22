@@ -9,6 +9,9 @@
 	Joe O'Regan 	K00203642
 	Samantha Marah	K00200782
 	Jason Foley 	K00186690
+
+	22/11/2017	parseWordAndLives() moved here from DrawHangman.h	
+			Modified, fork, and select servers now all use checkGameOver()
 */
 
 #ifndef	__HANGMAN_H
@@ -92,7 +95,7 @@ int parseWordAndLives(char* input, int draw) {
 
 
 /*
-	SERVER: 
+	SERVER TCP & UDP: 
 	Check if a correct guess has been made or not
 */
 int correctGuess(char* word, char* part, char* guess) {
@@ -124,6 +127,7 @@ char checkGameState(char* word, char* part, int lives) {
 /*
 	SERVER:
 	Display end of game message if game complete, with Client IP and Address
+	Return 1 if game is finished
 */
 int checkGameOver(int state, char* outbuffer, char* word, int o, char* clname, int clport) {
   if (state == 'I') return 0;									// return false, skip the rest of this function

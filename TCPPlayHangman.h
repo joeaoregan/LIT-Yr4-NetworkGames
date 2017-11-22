@@ -1,6 +1,6 @@
  /* 
  	File: 		TCPPlayHangman.h
-	Version: 	play_hangmang() function spllit to be used with modified, fork, and select hangman
+	Version: 	play_hangman() function split to be used with modified, fork, and select hangman servers
 	Modified by:	Joe O'Regan
 
 	Year 4 Networked Games Assignment
@@ -13,6 +13,9 @@
 	Reconfigured version of SetupTCPServerSocket() function from TCPServerUtility.c
 	from TCP/IP Sockets in C book, to work with TCP Hangman fork() server
 
+	22/11/2017	checkGuess() now highlights in colour if it was a good/bad guess in
+			text displayed on Server
+			sendPartWord() is used to send the part word/lives string to the client
 	18/11/2017 	Moved play_hangman() functionality to its own file to be used by
 			both the modified and fork() versions of the game
 */
@@ -68,8 +71,10 @@ void playHangmanTCP(int in, int out, char* name, int port) {
  }
 	
 
-/*
+/*	
+	SERVER:
 	Function to format and send the part word and lives data to client as a string
+	from the server
 */
 void sendPartWord(int out, char* outbuf, char* part_word, int lives) {
 	int byteCount;										// Number of bytes that will be sent to the client
@@ -81,8 +86,10 @@ void sendPartWord(int out, char* outbuf, char* part_word, int lives) {
 
 
 /*
+	SERVER:
 	Check input from client, format it, and display on server side, depending on the guess, 
 	and decrement the number of lives if bad guess
+	Returns the number of lives to be set in the client state.
 */
 int checkGuess(char* buf, char* word, char* part, char* guess, int lives, char* ip, int port) {
     if (!correctGuess(word, part, guess)) {
