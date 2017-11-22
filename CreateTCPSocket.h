@@ -38,7 +38,6 @@ int createDualStackServerSocket(){
 	struct hostent * host_info;							// Can only return IPv4 addresses
 	struct in_addr **addr_list;
 	char* s;
-
 	//char str[INET6_ADDRSTRLEN];
 
 	bzero(&server, sizeof server);							// Zero out structure, could also use memset(), swapping 2 args in bzero will be caught by compiler
@@ -57,14 +56,15 @@ int createDualStackServerSocket(){
 	if (listen(sock, MAX_CLIENTS) < 0)						// Set socket to listen
 		displayErrMsgStatus("Listen()", 1);
 	else {
+		// Display the local machine Name, IP, and port the server is running on
 		char hostname[128];
-		if(gethostname(hostname, sizeof hostname) == 0)				// gethostname() returns 0 on success, returns the name of the computer the socket is running on
+		if (gethostname(hostname, sizeof hostname) == 0)			// gethostname() returns 0 on success, returns the name of the computer the socket is running on
 			printf("Running Hangman Server on: %s ", hostname);
 
 		host_info = gethostbyname(hostname);					// gethostbyname() uses the name of the machine to return the local IP address
 		addr_list = (struct in_addr **) host_info->h_addr_list;
 		for (i = 0; addr_list[i] != NULL; i++) 
-			printf("%s", inet_ntoa(*addr_list[i]));				// inet_ntoa() converts the address to human readable format
+			printf("%s", inet_ntoa(*addr_list[i]));				// inet_ntoa() converts the address to human readable format, deprecated, replaced by inet_ntop()
 		printf(":%d\n",TCP_PORT_NUM);
 
 
@@ -155,12 +155,15 @@ struct sockaddr_in createTCPClientSocket(int* sock, char* server_name) {		/* CRE
 
 
 // Display Client address and port
-char* displayNameAndPort(struct sockaddr_in* cli, char* name) {
-//	char name[INET_ADDRSTRLEN];							// Client address string
+char* displayNameAndPort(struct sockaddr_in* cli, char* name, int sock) {
+	int clilen = sizeof(cli);
 
+	getpeername(sock, (struct sockaddr*) &cli, &clilen);
+//	char name[INET_ADDRSTRLEN];							// Client address string
+	//inet_pton(AF_INET, "127.0.0.1", &(client.sin_addr));
 	//if (inet_ntop(AF_INET, &cli.sin_addr.s_addr, name,sizeof(name)) != NULL){	// sizeof(name) not working here, INET_ADDRSTRLEN is the length of an address string
-	if (inet_ntop(AF_INET, &(*cli).sin_addr.s_addr, name, INET_ADDRSTRLEN) != NULL){	// Convert the address to a string, and store in clntName
-		printf("Handling client %s/%d\n", name, ntohs((*cli).sin_port));		// Display the client IP address and port number, ntohs = convert from network byte order to host byte order
+	if (inet_ntop(AF_INET, &(*cli).sin_addr.s_addr, name, INET_ADDRSTRLEN) != NULL){// Convert the address to a string, and store in clntName
+		printf("Handling client %s/%d\n", name, ntohs((*cli).sin_port));	// Display the client IP address and port number, ntohs = convert from network byte order to host byte order
 	}
 
 	return name;	

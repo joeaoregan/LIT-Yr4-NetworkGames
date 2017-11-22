@@ -1,5 +1,14 @@
-/*
-	CreateUDPSocket.h
+ /* 
+ 	File: 		CreateUDPSocket.h
+	Version: 	Functions to create and connect UDP sockets
+	Author:		Joe O'Regan
+
+	Year 4 Networked Games Assignment
+
+	Team 1:
+	Joe O'Regan 	K00203642
+	Samantha Marah	K00200782
+	Jason Foley 	K00186690
 
 	16/11/2017
 

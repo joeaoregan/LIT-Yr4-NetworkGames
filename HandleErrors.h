@@ -1,3 +1,16 @@
+ /* 
+ 	File: 		HandleErrors.h
+	Version: 	Error handling functions, with and without setting status
+	Author:		Joe O'Regan
+
+	Year 4 Networked Games Assignment
+
+	Team 1:
+	Joe O'Regan 	K00203642
+	Samantha Marah	K00200782
+	Jason Foley 	K00186690
+*/
+
 #ifndef	__HANDLE_ERRORS
 #define	__HANDLE_ERRORS
 

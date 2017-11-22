@@ -1,3 +1,16 @@
+ /* 
+ 	File: 		Hangman.h
+	Version: 	Hangman game functionality, mostly Server side
+	Author:		Joe O'Regan
+
+	Year 4 Networked Games Assignment
+
+	Team 1:
+	Joe O'Regan 	K00203642
+	Samantha Marah	K00200782
+	Jason Foley 	K00186690
+*/
+
 #ifndef	__HANGMAN_H
 #define	__HANGMAN_H
 
@@ -7,80 +20,34 @@ char* word [] = {										// Array of words, one word will be selected randomly
   #include "words"										// words text file
 };
 
-//#define MAX_WORD_LENGTH 11									// The longest word has 11 characters
 #define NUM_OF_WORDS (sizeof (word) / sizeof (word [0]))					// The number of words in the word array, used to randomly select a word
 #define MAX_LIVES 12										// The number of guesses the player can make
 #define LINESIZE 80										// Maximum size in the world of Any string
-//#define	MAX_CLIENTS 5									// 2nd argument to listen(), the maximum number of client connections
-//#define	MAXLINE	4096									// max text line length
 
-void play_hangman(int in, int out);								// Function delcaration for play_hangman
-char checkGameState(char* word, char* part, int lives);
 
-// Display end of game message if game complete, with Client IP and Address
-void checkGameOver(int state, char* outbuffer, char* word, int o, char* clname, int clport) {
-  if (state == 'W') {
-    printf("Client %s/%d has guessed \"%s\" correctly!\n", clname, clport, word);		// Display win message
-    snprintf (outbuffer, LINESIZE, "Player Has Guessed \"%s\" Correctly!\n", word);		// Set win message to return to client
-    write (o, outbuffer, strlen (outbuffer));							// Send outbuf info to client
-  }
-  else if (state == 'L') {
-    printf("Client %s/%d is a loser!\n", clname, clport);					// Display lose message
-    snprintf (outbuffer, LINESIZE, "Player Has Run Out Of Guesses!\n");				// Set lose message to return to client, with protection against buffer overflow
-    write (o, outbuffer, strlen (outbuffer));							// Send outbuf info to client
-  }
-}
-
-// Display end of game message if game complete
-void checkGameOver2(int state, char* outbuffer, char* word, int o) {
-  if (state == 'W') {
-    printf("Client has guessed \"%s\" correctly!\n",  word);					// Display win message
-    snprintf (outbuffer, LINESIZE, "Player Has Guessed \"%s\" Correctly!\n", word);		// Set win message to return to client
-    write (o, outbuffer, strlen (outbuffer));							// Send outbuf info to client
-  }
-  else if (state == 'L') {
-    printf("Client is a loser!\n");								// Display lose message
-    snprintf (outbuffer, LINESIZE, "Player Has Run Out Of Guesses!\n");				// Set lose message to return to client, with protection against buffer overflow
-    write (o, outbuffer, strlen (outbuffer));							// Send outbuf info to client
-  }
-}
-
-int gameOverSelect(int state, char* outbuffer, char* word, int o, char* clname, int clport) {
-  if (state == 'I') return 0;
-
-  else if (state == 'W') {
-    printf("Client %s/%d has guessed \"%s\" correctly!\n", clname, clport, word);		// Display win message
-    snprintf (outbuffer, LINESIZE, "Player Has Guessed \"%s\" Correctly!\n", word);		// Set win message to return to client
-    write (o, outbuffer, strlen (outbuffer));	
-   // return 1;
-  }
-  else if (state == 'L') {
-    printf("Client %s/%d is a loser!\n", clname, clport);					// Display lose message
-    snprintf(outbuffer, LINESIZE, "Player Has Run Out Of Guesses!\n");				// Set lose message to return to client, with protection against buffer overflow
-    write (o, outbuffer, strlen (outbuffer));							// Send outbuf info to client
-  //  return 1;
-  }
-  //return 0;
-    //write (o, outbuffer, strlen (outbuffer));	
-    return 1;
-}
-
-// Pick a word at random from the word list, displaying the Client IP & Port
-char* selectRandomWord(char* clname, int clport) {  
+/*
+	SERVER:
+	Random word selection with IP/Port Info: 
+	Pick a word at random from the word list, displaying the Client IP & Port
+*/
+char* selectRandomWord(char* ip, int port) {  
   char* the_word = word[rand() % NUM_OF_WORDS];							// Select random word from words array for client to guess
 
   syslog (LOG_USER | LOG_INFO, "server chose hangman word %s", the_word);			// Message logging
 
-  printf("Word: %s\"%s\"%s Randomly Selected For Client: %s/%d\n", RED,the_word,NORM,clname,clport);// Display the word selected for the client on the server
+  printf("Word: %s\"%s\"%s Randomly Selected For Client: %s/%d\n",RED,the_word,NORM,ip,port);	// Display the word selected for the client on the server, highlighting the word in red font
 
   return the_word;										// Return the selected word
 }
 
-// Pick a word at random from the word list
+
+/*
+	SERVER:
+	Basic random word selection: 
+	Pick a word at random from the word list
+*/
 char* randomWord() {  
   char* the_word = word[rand() % NUM_OF_WORDS];							// Select random word from words array for client to guess
-
- // syslog (LOG_USER | LOG_INFO, "server chose hangman word %s", the_word);			// Message logging
 
   printf("Word: \"%s\" Randomly Selected\n", the_word);						// Display the word selected for the client on the server
 
@@ -88,7 +55,46 @@ char* randomWord() {
 }
 
 
-// Check if a correct guess has been made or not
+/*
+	SERVER:
+	Set the part word to hyphens
+*/
+char initPartWord(char* partWord, int length) {
+	int i;											// For loop index
+ 	for (i = 0; i < length; i++) partWord[i]='-';						// Set every character in the partword to a hyphern
+ 	
+	partWord[i] = '\0';									// Set the string terminator
+}
+
+
+/*
+	CLIENT:
+	Parse the string from the server with the part word and number of lives
+	If the draw variable is set, call the DrawHangman.h amputate() to
+	render the graphical version of the number of lives left
+	Display the remaining guesses and the part word while the game is playing
+	or the full word if the game is finished and the player didn't guess
+*/
+int parseWordAndLives(char* input, int draw) {
+	char word[20];
+	int lives;
+
+	sscanf(input, "%s %d", &(*word), &lives);						// Parse string data received from server into separate part-word and score variables
+
+	if (draw) amputate(lives);								// If the draw paramater has been set, display the graphics for lives
+
+	printf("\n%sRemaining Guesses:%s\t%d\n", CYAN, NORM, lives);				// Guesses remaining
+	if (lives > 0) printf("%sWord To Guess:%s\t\t%s\n", CYAN, NORM, word);			// The part word string while game is playing OR
+	else printf("%sThe word was:%s\t\t%s\n", RED, NORM, word);				// The actual word if player loses
+
+	return lives;										// Return the number of lives, to decide which game over message
+}
+
+
+/*
+	SERVER: 
+	Check if a correct guess has been made or not
+*/
 int correctGuess(char* word, char* part, char* guess) {
   //printf("part word before: %s\n", part);
   int i, good_guess = 0;									// Set/reset good_guess to false
@@ -104,32 +110,60 @@ int correctGuess(char* word, char* part, char* guess) {
 }
 
 
-// Display the server hostname
-void displayHostname(int o, char* buf) {
-  char hostname[LINESIZE];									// Name of the current system
-
-  gethostname (hostname, LINESIZE);								// Get the host name
-	
-  snprintf(buf, LINESIZE, "Playing hangman on host: %s \n \n", hostname);			// Set outbuf to server hostname, with protection against buffer overflow
-  write(o, buf, strlen(buf));									// Send outbuf to client
-}
-
-
+/*
+	Check the game state, and decide if win/lose/continue
+*/
 char checkGameState(char* word, char* part, int lives) {
-	if (strcmp (word, part) == 0)								// If all letters guessed correctly
-		return 'W'; 
-	else if (lives <= 0) {									// If client has run out of guesses
-		return 'L';
-		//strcpy (arrPart[i], arrWords[i]); 						/* User Show the word */
-	}
+	if (strcmp (word, part) == 0) return 'W'; 						// If all letters guessed correctly. Game state becomes W ==> User Won
+	else if (lives <= 0) return 'L';							// If client has run out of guesses. Game state becomes L ==> User Lost
+
 	return 'I';	
 }
 
-char initPartWord(char* partWord, int length) {
-	int i;											// For loop index
- 	for (i = 0; i < length; i++) partWord[i]='-';						// Set every character in the partword to a hyphern
- 	
-	partWord[i] = '\0';									// Set the string terminator
+
+/*
+	SERVER:
+	Display end of game message if game complete, with Client IP and Address
+*/
+int checkGameOver(int state, char* outbuffer, char* word, int o, char* clname, int clport) {
+  if (state == 'I') return 0;									// return false, skip the rest of this function
+
+  if (state == 'W') printf("Client %s/%d has guessed \"%s\" correctly!\n", clname,clport,word); // Display win message
+    else if (state == 'L') printf("Client %s/%d is a loser!\n", clname, clport);		// Display lose message
+
+  return 1;											// Return true
 }
+
+
+/*
+	SERVER:
+	Display end of game message if game complete
+
+int gameOverSelect(int state, char* outbuffer, char* word, int o, char* name, int port) {
+  //char buf[LINESIZE] = "";
+  //char msg[LINESIZE] = "";
+  //msg[0] = '\0';
+  int count;
+
+  if (state == 'I') {
+    return 0;											// return false, skip the rest of this function
+  }
+  else if (state == 'W') {
+    snprintf(outbuffer, LINESIZE, "Client %s/%d has guessed \"%s\" correctly!\n", name, port, word);// Format the Server side win message
+    write(0, outbuffer, strlen(outbuffer));							// Display win message on Server
+    //printf("Client %s/%d has guessed \"%s\" correctly!\n", clname, clport, word);		// Display win message
+    snprintf (outbuffer, LINESIZE, "Player Has Guessed \"%s\" Correctly!\n", word);		// Set win message to return to client
+    write(o, outbuffer, strlen(outbuffer));	
+  }
+  else if (state == 'L') {
+    count = snprintf(outbuffer, LINESIZE, "Client %s/%d is a loser!\n", name, port);		// Format the Server side lose message
+    write(0, outbuffer, count);									// Display lose message on Server
+    count = snprintf(outbuffer, LINESIZE, "Player Has Run Out Of Guesses!\n");			// Set lose message to return to client, with protection against buffer overflow
+    write (o, outbuffer, count);								// Send outbuf info to client
+  }
+
+    return 1;											// return true
+}
+*/
 
 #endif	/* __HANGMAN_H */

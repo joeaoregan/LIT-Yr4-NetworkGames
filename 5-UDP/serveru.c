@@ -1,8 +1,23 @@
-// 20171116 CreateUDPSocket.h - abstracts the UDP socket creation code
-// 20171115 Fixed client continuing to connect
-// 20171114 Joe: Fixed warning messages by casting sockaddr_in to struct sockaddr*
-// 		 And moved HandleErrors to parent folder	
-// 		Added random word selection	
+ /* 
+ 	File: 		serveru.c
+	Version: 	Hangman UDP Server
+	Modified by:	Samantha Marah
+			Joe O'Regan
+
+	Year 4 Networked Games Assignment
+
+	Team 1:
+	Joe O'Regan 	K00203642
+	Samantha Marah	K00200782
+	Jason Foley 	K00186690
+
+	20171116 	CreateUDPSocket.h - abstracts the UDP socket creation code
+	20171115 	Fixed client continuing to connect, 
+			add command line parameter check
+			Fixed warning messages by casting sockaddr_in to struct sockaddr*
+			And moved HandleErrors to parent folder	
+			Added random word selection	
+*/
 
 #include <unistd.h>												// write(), gethostname()
 #include <string.h>												// strlen()

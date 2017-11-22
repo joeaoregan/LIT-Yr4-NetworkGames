@@ -107,22 +107,23 @@ void play_hangman (int in, int out)
  			if (errno != EINTR)
  				exit (4);
  			printf ("re-read the startin \n");
- 			} /* Re-start read () if interrupted by signal */
- 	good_guess = 0;
- 	for (i = 0; i <word_length; i++) {
- 		if (guess [0] == whole_word [i]) {
- 		good_guess = 1;
- 		part_word [i] = whole_word [i];
- 		}
- 	}
- 	if (! good_guess) lives--;
- 	if (strcmp (whole_word, part_word) == 0)
- 		game_state = 'W'; /* W ==> User Won */
- 	else if (lives == 0) {
- 		game_state = 'L'; /* L ==> User Lost */
- 		strcpy (part_word, whole_word); /* User Show the word */
- 	}
- 	sprintf (outbuf, "%s %d \n", part_word, lives);
- 	write (out, outbuf, strlen (outbuf));
+ 		} 						/* Re-start read () if interrupted by signal */
+	 	good_guess = 0;
+	 	for (i = 0; i <word_length; i++) {
+	 		if (guess [0] == whole_word [i]) {
+	 		good_guess = 1;
+	 		part_word [i] = whole_word [i];
+	 		}
+	 	}
+	 	if (! good_guess) lives--;
+	 	if (strcmp (whole_word, part_word) == 0)
+	 		game_state = 'W'; 			/* W ==> User Won */
+	 	else if (lives == 0) {
+	 		game_state = 'L';			/* L ==> User Lost */
+	 		strcpy (part_word, whole_word); 	/* User Show the word */
+	 	}
+
+	 	sprintf (outbuf, "%s %d \n", part_word, lives);
+	 	write (out, outbuf, strlen (outbuf));
  	}
  }

@@ -1,7 +1,7 @@
  /* 
 	File: 		servf.c
 	Version: 	Modified version of Hangman Server
-	Author:		Joe O'Regan
+	Modified By:	Joe O'Regan
 
 	Year 4 Networked Games Assignment
 
@@ -34,6 +34,7 @@
 #include "../DrawHangman.h"								// Display the hangman graphics
 #include "../Hangman.h"									// Hangman game functions
 #include "../CreateTCPSocket.h"								// Create a TCP Server Socket
+#include "../Socket.h"									// 22/11/2017 Moved functions for use with both TCP and UDP here
 #include "../TCPPlayHangman.h"								// 18/11/2017 Moved hang_man() function to separate file
 
 extern time_t time ();									// Seed the random number
@@ -50,20 +51,20 @@ void main () {										// No command line arguments
 	void sig_chld(int);								// Signal handling function, catches SIGCHLD signal from terminating process
 
 	//sock = createTCPServerSocket();						// IPv4 only: Functionality to create socket moved to separate file CreateTCPServer.h
-	sock = createDualStackServerSocket();						// Create and bind the TCP socket, with dual stack IPv4 and IPv6 support
+	sock = createDualStackServerSocket();						// CreateTCPSocket.h: Create and bind the TCP socket, with dual stack IPv4 and IPv6 support
 	// The UNP books signal() function calls POSIX sigaction
 	// signal(<signal name>, <point to signal handler function>);
 	signal(SIGCHLD, sig_chld);							// SIGCHLD signal is sent to the parent of a child process when it exits, is interuppted, or resumes after interruption
 
-	drawHangmanNew();								// Draw the hangman graphic
+	drawHangmanNew();								// DrawHangman.h: Draw the hangman graphic
 
  	while (1) {									// Infinite loop
  		client_len = sizeof (client);						// Size of the client socket
  		if ((fd = accept (sock, (struct sockaddr *) &client, &client_len)) < 0)	// P41 A new descriptor is returned by accept() for each client that connects to our server
-			displayErrMsgStatus("Accepting Connection", 3);			// Display the error message, and exit with status 3
+			displayErrMsgStatus("Accepting Connection", 3);			// HandleErrors.h: Display the error message, and exit with status 3
 
 		/* DISPLAY CLIENT ADDRESS AND PORT */
-		//displayNameAndPort(&client, cliName);					// Display the Client IP and Port number
+		//displayNameAndPort(&client, cliName);					// CreateTCPSocket.h: Display the Client IP and Port number
 
 		if (inet_ntop(AF_INET, &client.sin_addr.s_addr, cliName, sizeof(cliName)) != NULL)
 			printf("Handling client %s/%d\n", cliName, ntohs(client.sin_port));
@@ -78,7 +79,7 @@ void main () {										// No command line arguments
 		*/
 		if ( (childpid = fork()) == 0) {					// Creating child process of Server to handle client. Assigning unique process ID to the child.
 			close(sock);							// close listening socket
-			playHangmanTCP(fd, fd, cliName, CLI_PORT);			// Play the game - playHangmanTCP() located in TCPPlayHangman.h
+			playHangmanTCP(fd, fd, cliName, CLI_PORT);			// TCPPlayHangman.h: Play the game - playHangmanTCP() located in TCPPlayHangman.h
 			exit(0);							// Process termination
 		}
 

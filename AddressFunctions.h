@@ -1,3 +1,22 @@
+ /* 
+ 	File: 		AddressFunctions.h
+	Version: 	Functions to display the IP of client and server sockets
+	Author:		Joe O'Regan
+
+	Year 4 Networked Games Assignment
+
+	Team 1:
+	Joe O'Regan 	K00203642
+	Samantha Marah	K00200782
+	Jason Foley 	K00186690
+
+
+	Code adapted (unsuccessfully) from: 
+	TCP/IP Sockets in C, Donahoo, Calvert -> PrintSocketAddr() P42
+	Unix Network Programming, Stevens, Fenner, Rudoff
+	Beej's Guide to Network Programming, Hall
+*/
+
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
@@ -54,8 +73,8 @@ int get_ip_str(int ip, void *sa, char *s, size_t maxlen) {
         default:
             strncpy(s, "Unknown Address Family", maxlen);
 
-            return 1;	// if unsuccessful 
+            return 1;								// if unsuccessful 
     }
 
-    return 0;		// successful
+    return 0;									// successful
 }

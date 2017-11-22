@@ -1,4 +1,15 @@
-/* Hangclient.c - Client for hangman server.  */
+/* 
+ 	File: 		Hangclient.c
+	Version: 	Client for hangman server
+	Modified by: 	Jason Foley
+
+	Year 4 Networked Games Assignment
+
+	Team 1:
+	Joe O'Regan 	K00203642
+	Samantha Marah	K00200782
+	Jason Foley 	K00186690
+*/
 
  #include <stdio.h>
  #include <sys/types.h>

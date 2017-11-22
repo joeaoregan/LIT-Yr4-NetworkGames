@@ -1,8 +1,18 @@
-/* 
-	DrawHangman.h
+ /* 
+ 	File: 		DrawHangman.h
+	Version: 	Hangman Graphics
+	Author:		Joe O'Regan
 
-	Functions to draw a graphical represenation of the players lives,
+	Year 4 Networked Games Assignment
+
+	Team 1:
+	Joe O'Regan 	K00203642
+	Samantha Marah	K00200782
+	Jason Foley 	K00186690
+
+	Mostly unnecessary functions to draw a graphical represenation of the players lives,
 	and the game logo displayed when the client and server first start up
+	A game over message is also displayed depending on the number of lives/guesses left
 */
 
 #ifndef	__DRAW_HANGMAN_H
@@ -44,9 +54,12 @@ char *altFeet[]={"\x1B[35m  |   \x1B[31m  // \x1B[33m\\\\_\x1B[0m",
 
 // Function Declarations
 void drawHangman();
-//void amputate(int lives);
+Void amputate(int lives);
 
-// Draw the full hangman intro on Client and Server Sockets
+/*
+	CLIENT & SERVER:
+	Draw the full hangman intro on Client and Server Sockets
+*/
 void drawHangman() {
 	// Draw hangman
 	printf("%s%s\n", RED,hangman[0]);
@@ -56,7 +69,6 @@ void drawHangman() {
 	}
 	printf("%sA Game By:\n  * %sJoe O'Regan\n  %s* %sSamantha Marah\n  %s* %sJason Foley%s\n", CYAN,BLUE,CYAN,BLUE,CYAN,BLUE,NORM);	// Game Creators
 }
-
 void drawHangmanNew() {
 	// Draw hangman
 	printf("  %s%s - ", RED,hangman[0]);
@@ -72,15 +84,12 @@ void drawHangmanNew() {
 	//printf("%sA Game By:\n  * %sJoe O'Regan\n  %s* %sSamantha Marah\n  %s* %sJason Foley%s\n", CYAN,BLUE,CYAN,BLUE,CYAN,BLUE,NORM);	// Game Creators
 }
 
-// This function displays the graphical version of the lives remaining
-// First parsing the string from the server, to separate the part word and number of lives left
-//void amputate(int lives) {
-void amputate(char* input) {
-	char partWord[20];
-	int lives;
-
-	sscanf(input, "%s %d", &(*partWord), &lives);						// Parse string data received from server into separate part-word and score variables
-
+/*
+	CLIENT:
+	This function displays the graphical version of the lives remaining
+	First parsing the string from the server, to separate the part word and number of lives left
+*/
+void amputate(int lives) {									// Takes a parameter of the number of lives/guesses remaining to draw the hangman game
 	printf("\n");										// Start on new line
 	if (lives == 12) {									// Full
 	  for (int h = 2; h < 9; ++h) {
@@ -116,8 +125,6 @@ void amputate(char* input) {
 	  }
 	  printf("You lost your right shin\n");
 	}
-
-
 	if (lives == 7) {									// Left Tight
 	  for (int h = 2; h < 9; ++h){
 	    if (h == 6) printf("%s\n", altLegs[0]);
@@ -134,8 +141,6 @@ void amputate(char* input) {
 	  }
 	  printf("You won't be needing pants anymore!\n");
 	}
-
-
 	if (lives == 5) {									// Body
 	  for (int h = 2; h < 9; ++h){
 	    if (h == 5) printf("%s\n", altBody[0]);
@@ -144,8 +149,6 @@ void amputate(char* input) {
 	  }
 	  printf("You lost a few inches around the waste!\n");
 	}
-
-
 	if (lives == 4) {									// Left Hand
 	  for (int h = 2; h < 9; ++h){
 	    if (h == 4) printf("%s\n", altArms[0]);
@@ -178,8 +181,6 @@ void amputate(char* input) {
 	  }
 	  printf("You weren't a sleeves kind of person anyway!\n");
 	}
-
-
 	if (lives == 0) {									// Head
 	  for (int h = 2; h < 9; ++h){
 	    if (h == 4) printf("\x1B[35m  |       \x1B[33mO\x1B[35m\n");
@@ -188,30 +189,19 @@ void amputate(char* input) {
 	  }
 	  printf("Now you have actually lost your mind!\n");
 	}
-
-	printf("\n%sRemaining Guesses:%s\t%d\n", CYAN, NORM, lives);				// Guesses remaining
-	if (lives > 0) printf("%sWord To Guess:%s\t\t%s\n", CYAN, NORM, partWord);		// The part word string while game is playing OR
-	else printf("%sThe word was:%s\t\t%s\n", RED, NORM, partWord);						// The actual word if player loses
 }
 
-// Used in TCP select client
-void selectLives(int lives) {
-	printf("%sRemaining Guesses:%s\t%d\n", CYAN, NORM, lives);				// Guesses remaining
-	if (lives > 0) printf("%sWord To Guess:%s\t\t", CYAN, NORM);				// The part word string while game is playing OR
-	else printf("%sThe word was:%s\t\t", RED, NORM);					// The actual word if player loses
+
+/*
+	CLIENT:
+	Select the game over message to display 
+	based on the number of lives/guesses the Player had left at the end of the game
+*/
+void gameOverText(int win) {
+	if (win == 12) printf("%sPERFECT ROUND\nGAME OVER!%s\n", BLUE, NORM);			// Game over message to test prog terminates, perfect score
+	else if (win == 0) printf("%sLOSER! GAME OVER!%s\n", RED, NORM);			// Game over message, player ran out of guesses
+	else printf("%sPLAYER WINS\nGAME OVER!%s\n", GREEN, NORM);				// Game over message, could do better
 }
-
-void parseWordAndLives(char* input) {
-	char word[20];
-	int lives;
-
-	sscanf(input, "%s %d", &(*word), &lives);						// Parse string data received from server into separate part-word and score variables
-
-	printf("%sRemaining Guesses:%s\t%d\n", CYAN, NORM, lives);				// Guesses remaining
-	if (lives > 0) printf("%sWord To Guess:%s\t\t%s\n", CYAN, NORM, word);			// The part word string while game is playing OR
-	else printf("%sThe word was:%s\t\t%s\n", RED, NORM, word);				// The actual word if player loses
-}
-
 
 
 #endif	/* __DRAW_HANGMAN_H */

@@ -1,7 +1,20 @@
-// 20171116 CreateUDPSocket.h - abstracts the UDP socket creation code
-// 20171115 Fixed client continuing to connect, 
-// 		add command line parameter check
-// 
+ /* 
+ 	File: 		clientu.c
+	Version: 	Hangman UDP Client
+	Modified by: 	Samantha Marah
+			Joe O'Regan
+
+	Year 4 Networked Games Assignment
+
+	Team 1:
+	Joe O'Regan 	K00203642
+	Samantha Marah	K00200782
+	Jason Foley 	K00186690
+
+	20171116 	CreateUDPSocket.h - abstracts the UDP socket creation code
+	20171115 	Fixed client continuing to connect, 
+			add command line parameter check
+*/
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
