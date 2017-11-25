@@ -37,9 +37,9 @@ char* TCP_PORT = "1066";								// The port number the server will run on, for c
 /*
 	SERVER:
 	Function to create a server-side TCP socket that can handle both IPv4 & IPv6
-	client connections
+	client connections. Taking a parameter of the port number to run the Server on
 */
-int createDualStackServerSocket(){
+int createDualStackServerSocket(char* port){
 	struct sockaddr_in6 server;
 	int i, sock, reuseaddr = 1;	
 	char* s;
@@ -53,14 +53,14 @@ int createDualStackServerSocket(){
 	
  	server.sin6_family = AF_INET6;							// IPv6 socket
  	server.sin6_addr = in6addr_any;							// Store an IPv6 Address
- 	server.sin6_port = htons(TCP_PORT_NUM);						// The TCP port to listen for connections on
+ 	server.sin6_port = htons(atoi(port));						// The TCP port to listen for connections on
 
  	if (bind(sock, (struct sockaddr *) & server, sizeof(server)) < 0) 		// Bind - Assign the address to the socket
 		displayErrMsgStatus("Binding Socket", 1);				// bind() returns -1 if there is an error
 	if (listen(sock, MAX_CLIENTS) < 0)						// Set socket to listen
 		displayErrMsgStatus("Listen()", 1);					// listen() returns -1 if there is an error
 	else {		
-		displayHostIPPort(TCP_PORT_NUM);					// Socket.h: Display the local machine Name, IP, and port the server is running on
+		displayHostIPPort(atoi(port));						// Socket.h: Display the local machine Name, IP, and port the server is running on
 
 		//inet_ntop(AF_INET6, &(server.sin6_addr),str,INET6_ADDRSTRLEN);	// display IPv6 address
 		//printf("%s\n", str);
@@ -74,8 +74,9 @@ int createDualStackServerSocket(){
 /*
 	SERVER:
 	Function to create a Server socket using the TCP protocol
+	Taking a parameter of the port number to run the Server on
 */
-int createTCPServerSocket() {
+int createTCPServerSocket(char* port) {
   // Construct the server address structure
   struct addrinfo addrCriteria;                   					// Criteria for address match
   memset(&addrCriteria, 0, sizeof(addrCriteria)); 					// Zero out structure
@@ -85,7 +86,7 @@ int createTCPServerSocket() {
   addrCriteria.ai_protocol = IPPROTO_TCP;         					// Only TCP protocol
 
   struct addrinfo *servAddr; 								// List of server addresses
-  int rtnVal = getaddrinfo(NULL, TCP_PORT, &addrCriteria, &servAddr);
+  int rtnVal = getaddrinfo(NULL, port, &addrCriteria, &servAddr);			// Specify port number, or use default 1066
   if (rtnVal != 0) printf("getaddrinfo() failed %s\n", gai_strerror(rtnVal));		// DieWithUserMessage("getaddrinfo() failed", gai_strerror(rtnVal));
 
   int server = -1;									// Initialise the server socket
@@ -102,7 +103,7 @@ int createTCPServerSocket() {
       if (getsockname(server, (struct sockaddr *) &localAddr, &addrSize) < 0) 		// Get the local IP address
 		displayErrMsg("getsockname() failed");
 
-      displayAddress((struct sockaddr *) &localAddr, stdout);				// AddressFunctions.h: Display the address/port for the socket
+	displayHostIPPort(atoi(port));							// Socket.h: Display the local machine Name, IP & port the server is running on
 
       break;       									// Bind and list successful
     }
@@ -111,8 +112,7 @@ int createTCPServerSocket() {
     server = -1;									// Reset the socket
   }
 
-  // Free address list allocated by getaddrinfo()
-  freeaddrinfo(servAddr);								// frees the memory that was allocated for the dynamically allocated linked list 
+  freeaddrinfo(servAddr);								// Frees memory getaddrinfo() allocated for the dynamically allocated linked list
 
   return server;									// Return the socket
 }
@@ -161,16 +161,37 @@ struct sockaddr_in createTCPClientSocket(int* sock, char* server_name, int port)
 	Intended to display the Client's IP address and port
 	after connecting to the server, using getpeername()
 */
-char* displayNameAndPort(struct sockaddr_in* cli, char* name, int sock) {
-	int clilen = sizeof(cli);						
+//char* displayNameAndPort(struct sockaddr_storage* cli, char name[], int s, int* port) {
+//char* displayNameAndPort(struct sockaddr_storage* cli, char name[], int s, int* port) {
+char* displayNameAndPort(struct sockaddr_storage* cli, int clilen , char* name, int size, int* s, int* port) {	// XXX added size of address structure
+//	int  clilen = sizeof(cli);
+	//int port;						
 
-	getpeername(sock, (struct sockaddr*) &cli, &clilen);				// Get the foreign address, the address of the socket connecting to you
+	getpeername((*s), (struct sockaddr*) &cli, &clilen);				// Get the foreign address, the address of the socket connecting to you
+/*
 //	char name[INET_ADDRSTRLEN];							// Client address string
 	//inet_pton(AF_INET, "127.0.0.1", &(client.sin_addr));
 	//if (inet_ntop(AF_INET, &cli.sin_addr.s_addr, name,sizeof(name)) != NULL){	// sizeof(name) not working here, INET_ADDRSTRLEN is the length of an address string
 	if (inet_ntop(AF_INET, &(*cli).sin_addr.s_addr, name, INET_ADDRSTRLEN) != NULL){// Convert the address to a string, and store in clntName
 		printf("Handling client %s/%d\n", name, ntohs((*cli).sin_port));	// Display the client IP address and port number, ntohs = convert from network byte order to host byte order
 	}
+*/
+	// deal with both IPv4 and IPv6:
+	if ((*cli).ss_family == AF_INET) {
+		struct sockaddr_in *s = (struct sockaddr_in *)&cli;
+		*port = ntohs(s->sin_port);
+		//inet_ntop(AF_INET, &s->sin_addr, name, sizeof name);
+		//inet_ntop(AF_INET, &s->sin_addr, name, strlen(name));
+		inet_ntop(AF_INET, &s->sin_addr, name, size);
+		//printf("ipv4\n");
+	} else { // AF_INET6
+		struct sockaddr_in6 *s = (struct sockaddr_in6 *)&cli;
+		*port = ntohs(s->sin6_port);
+		//inet_ntop(AF_INET6, &s->sin6_addr, name, strlen(name));
+		inet_ntop(AF_INET6, &s->sin6_addr, name, size);
+		//printf("ipv6 %s\n", name);
+	}
+	printf("Handling client %s/%d\n", name, (*port));
 
 	return name;									// Return the IP address
 }

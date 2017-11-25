@@ -18,7 +18,6 @@
 #define	__SOCKET_H
 
 
-
 /*
 	SERVER:
 	Display the name of the local machine using gethostname()

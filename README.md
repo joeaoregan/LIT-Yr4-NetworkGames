@@ -1,6 +1,16 @@
+#     T E A M 1
+#   H A N G M A N
+#   _____________
+#   |/      |
+#   |   ___(")___
+#   |      |_|
+#   |      /^\
+#   |    _// \\_
+# __|____________
+# 
 # Year 4: Networked Games CA
 # Hangman
-## 17/11/2017
+## 25/11/2017
 
 This is a group assignment for the 4th year Networked Games module. The group consists of:
   * [Joe O'Regan](https://github.com/joeaoregan)
@@ -18,3 +28,4 @@ This online text based version of Hangman includes the following features:
 
 Features yet to be implemented include:
   * All server and clients handling a dual TCP/IP stack (IPv4 and IPv6). With the client handling naming and the DNS.
+    (The server can handle connections from both IPv4 and IPv6 clients, but the clients need to be separate programs)

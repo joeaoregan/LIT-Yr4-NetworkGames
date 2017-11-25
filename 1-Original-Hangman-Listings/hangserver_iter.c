@@ -9,14 +9,14 @@
  #include <signal.h>
  #include <errno.h>
 
- extern time_t time ();						// Seed the random number
+ extern time_t time ();
 
  int maxlives = 12;
  char *word [] = {
  # include "words"
  };
  # define NUM_OF_WORDS (sizeof (word) / sizeof (word [0]))
- # define MAXLEN 80 						/* Maximum size in the world of Any string */
+ # define MAXLEN 80 /* Maximum size in the world of Any string */
  # define HANGMAN_TCP_PORT 1066
 
  main ()
@@ -24,10 +24,10 @@
  	int sock, fd, client_len;
  	struct sockaddr_in server, client;
 
- 	srand ((int) time ((long *) 0)); 			/* randomize the seed */
+ 	srand ((int) time ((long *) 0)); /* randomize the seed */
 
- 	sock = socket (AF_INET, SOCK_STREAM, 0);		//0 or IPPROTO_TCP
- 	if (sock <0) { 						//This error checking is the code Stevens wraps in his Socket Function etc
+ 	sock = socket (AF_INET, SOCK_STREAM, 0);//0 or IPPROTO_TCP
+ 	if (sock <0) { //This error checking is the code Stevens wraps in his Socket Function etc
  		perror ("creating stream socket");
  		exit (1);
  	}
@@ -75,13 +75,11 @@
  	word_length = strlen(whole_word);
  	syslog (LOG_USER | LOG_INFO, "server chose hangman word %s", whole_word);
 
- 	/* No letters are guessed Initially 
+ 	/* No letters are guessed Initially */
  	for (i = 0; i <word_length; i++)
  		part_word[i]='-';
  	
 	part_word[i] = '\0';
-*/
-	initPartWord(part_word, word_length);
 
  	sprintf (outbuf, "%s %d \n", part_word, lives);
  	write (out, outbuf, strlen(outbuf));

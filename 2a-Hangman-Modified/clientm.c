@@ -34,7 +34,7 @@
 
 #define DRAW 1									// Turn Graphics on/off: 0 = Don't Draw Hangman Graphics, 1 = Draw Hangman Graphics
 
- int main (int argc, char * argv []) {
+int main (int argc, char * argv []) {
  	struct sockaddr_in server; 						// Server's address assembled here
  	int sock, count, livesLeft;						// The socket, size of buffer data in bytes, game over message displayed based on lives left
  	char inbuf[LINESIZE];							// input buffer (linesize definition (80) moved to Hangman.h headf file)
