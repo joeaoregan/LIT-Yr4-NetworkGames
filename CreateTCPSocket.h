@@ -163,14 +163,13 @@ struct sockaddr_in createTCPClientSocket(int* sock, char* server_name, int port)
 */
 //char* displayNameAndPort(struct sockaddr_storage* cli, char name[], int s, int* port) {
 //char* displayNameAndPort(struct sockaddr_storage* cli, char name[], int s, int* port) {
-char* displayNameAndPort(struct sockaddr_storage* cli, int clilen , char* name, int size, int* s, int* port) {	// XXX added size of address structure
-//	int  clilen = sizeof(cli);
-	//int port;						
+void displayIPAndPort(struct sockaddr_storage* cli, int clilen , char* name, int* sock, int* port) {	// XXX added size of address structure
+	printf("clilen %d sock %d\n", clilen, (*sock));			
 
-	getpeername((*s), (struct sockaddr*) &cli, &clilen);				// Get the foreign address, the address of the socket connecting to you
+	getpeername((*sock), (struct sockaddr*) &(*cli), &clilen);			// Get the foreign address, the address of the socket connecting to you
 /*
 //	char name[INET_ADDRSTRLEN];							// Client address string
-	//inet_pton(AF_INET, "127.0.0.1", &(client.sin_addr));
+	inet_pton(AF_INET, "127.0.0.1", &(client.sin_addr));
 	//if (inet_ntop(AF_INET, &cli.sin_addr.s_addr, name,sizeof(name)) != NULL){	// sizeof(name) not working here, INET_ADDRSTRLEN is the length of an address string
 	if (inet_ntop(AF_INET, &(*cli).sin_addr.s_addr, name, INET_ADDRSTRLEN) != NULL){// Convert the address to a string, and store in clntName
 		printf("Handling client %s/%d\n", name, ntohs((*cli).sin_port));	// Display the client IP address and port number, ntohs = convert from network byte order to host byte order
@@ -178,20 +177,60 @@ char* displayNameAndPort(struct sockaddr_storage* cli, int clilen , char* name, 
 */
 	// deal with both IPv4 and IPv6:
 	if ((*cli).ss_family == AF_INET) {
-		struct sockaddr_in *s = (struct sockaddr_in *)&cli;
-		*port = ntohs(s->sin_port);
-		//inet_ntop(AF_INET, &s->sin_addr, name, sizeof name);
-		//inet_ntop(AF_INET, &s->sin_addr, name, strlen(name));
-		inet_ntop(AF_INET, &s->sin_addr, name, size);
-		//printf("ipv4\n");
+		struct sockaddr_in *s = (struct sockaddr_in *) &(*cli);
+		(*port) = ntohs(s->sin_port);
+	
+		inet_ntop(AF_INET, &s->sin_addr, name, INET_ADDRSTRLEN);
+		printf("ipv4 %s\n", name);
 	} else { // AF_INET6
-		struct sockaddr_in6 *s = (struct sockaddr_in6 *)&cli;
-		*port = ntohs(s->sin6_port);
-		//inet_ntop(AF_INET6, &s->sin6_addr, name, strlen(name));
-		inet_ntop(AF_INET6, &s->sin6_addr, name, size);
-		//printf("ipv6 %s\n", name);
+		struct sockaddr_in6 *s = (struct sockaddr_in6 *) &(*cli);
+		(*port) = ntohs(s->sin6_port);
+		inet_ntop(AF_INET6, &s->sin6_addr, name, INET6_ADDRSTRLEN);
+		printf("ipv6 %s\n", name);
 	}
 	printf("Handling client %s/%d\n", name, (*port));
 
+//	return name;									// Return the IP address
+}
+
+/*
+
+
+/* 
+	SERVER:
+	Intended to display the Client's IP address and port
+	after connecting to the server, using getpeername()
+
+//char* displayNameAndPort(struct sockaddr_storage* cli, char name[], int s, int* port) {
+//char* displayNameAndPort(struct sockaddr_storage* cli, char name[], int s, int* port) {
+char* displayNameAndPort(struct sockaddr_storage* cli, int clilen , char* name, int* s, int* port) {	// XXX added size of address structure
+//	int  clilen = sizeof(cli);
+	//int port;						
+
+	getpeername((*s), (struct sockaddr*) &cli, &clilen);				// Get the foreign address, the address of the socket connecting to you
+
+//	char name[INET_ADDRSTRLEN];							// Client address string
+//	inet_pton(AF_INET, "127.0.0.1", &(client.sin_addr));
+//	//if (inet_ntop(AF_INET, &cli.sin_addr.s_addr, name,sizeof(name)) != NULL){	// sizeof(name) not working here, INET_ADDRSTRLEN is the length of an address string
+//	if (inet_ntop(AF_INET, &(*cli).sin_addr.s_addr, name, INET_ADDRSTRLEN) != NULL){// Convert the address to a string, and store in clntName
+//		printf("Handling client %s/%d\n", name, ntohs((*cli).sin_port));	// Display the client IP address and port number, ntohs = convert from network byte order to host byte order
+//	}
+
+	// deal with both IPv4 and IPv6:
+//	if ((*cli).ss_family == AF_INET) {
+		struct sockaddr_in*  sAddr = (struct sockaddr_in*) &cli;
+		(*port) = ntohs(sAddr->sin_port);
+	
+		inet_ntop(AF_INET, &sAddr->sin_addr, name, INET_ADDRSTRLEN);
+		printf("ipv4 %s\n", name);
+//	} else { // AF_INET6
+//		struct sockaddr_in6 *s = (struct sockaddr_in6 *)&cli;
+//		(*port) = ntohs(s->sin6_port);
+//		inet_ntop(AF_INET6, &s->sin6_addr, name, INET6_ADDRSTRLEN);
+//		printf("ipv6 %s\n", name);
+//	}
+	printf("Handling client %s/%d\n", name, ntohs(sAddr->sin_port));
+
 	return name;									// Return the IP address
 }
+*/
