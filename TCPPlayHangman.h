@@ -85,7 +85,7 @@ void sendPartWord(int out, char* outbuf, char* part_word, int lives) {
 
  	sprintf(outbuf, "%s %d \n", part_word, lives);						// Set outbuf to the part word & the lives left, creating a string to send to the client
  	byteCount = write(out, outbuf, strlen(outbuf));						// Send part word string to client
-	printf("Number of bytes sent: %d\n", byteCount);					// Display the number of bytes sent (includes: part word, lives, new line, and string terminator)
+	printf("Number of bytes sent: %d in: %s", byteCount, outbuf);				// Display number of bytes sent, includes: part word, lives, new line & string terminator
 }
 
 

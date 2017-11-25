@@ -29,7 +29,8 @@
 
 void play_hangman (int in, int out); 					// XXX void return type
 
-int main ()  {								// XXX int return type, add "return 0" at end
+//int main ()  {								// XXX int return type, add "return 0" at end
+int main (int argc, char * argv []) {	
  	int sock, fd, client_len;
 	//int reuseaddr = 1;
  	struct sockaddr_in6 server, client;
@@ -55,7 +56,8 @@ int main ()  {								// XXX int return type, add "return 0" at end
 
  	listen (sock, 5);
 */
-	sock = createDualStackServerSocket();	// XXX Moved socket create, bind, listen, functionality to CreateTCPSocket.h
+//	sock = createDualStackServerSocket();	// XXX Moved socket create, bind, listen, functionality to CreateTCPSocket.h
+	sock = createDualStackServerSocket((argc == 2) ? argv[1] : TCP_PORT);	// XXX Moved socket create, bind, listen, functionality to CreateTCPSocket.h
 
  	while (1) {
  		client_len = sizeof (client);
