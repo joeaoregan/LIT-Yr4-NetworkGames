@@ -5,86 +5,62 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <netinet/in.h>		// IPv6
+#include <netinet/in.h>								// IPv6
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include "../HandleErrors.h"	// XXX error handling functions header in parent directory
+#include "../HandleErrors.h"							// XXX error handling functions header in parent directory
 #include "../DrawHangman.h"
 #include "../CreateTCPSocket.h"
 
 #define LINESIZE 80
 
-int main (int argc, char * argv [])
-{
-//	struct sockaddr_in6 server; 	/* Server's address assembled here */ 	// XXX sockaddr_in6 holds IPv6 address
-	struct sockaddr_storage server; /* Server's address assembled here */ 	// XXX sockaddr_in6 holds IPv6 address
-	struct hostent * host_info;						// XXX
-	int sock, count;
-	char i_line[LINESIZE];
-	char o_line[LINESIZE];
-	char * server_name;
+int main (int argc, char * argv []) {
+	int sock, count;							// Client socket, and byte count for data
+	char i_line[LINESIZE];							// Input buffer
+	char o_line[LINESIZE];							// Output buffer
 
- 	/* Get server name from the command line.  If none, use 'localhost' */
- //	server_name = (argc = 1)?  argv [1]: "localhost";			// XXX this is broken
-//	server_name = (argc == 1) ? "localhost" : argv[1];
-
-
-
+	/* IF THE USER ENTERS AN IP PARAMETER, DECIDE IF IPv4 (DEFAULT) OR IPv6 */
 	int sockType = createTCPClientDualStack(argv[1], TCP_PORT_NUM);
 	printf("Socket Type IPv%d\n",sockType);
-
+	
+/*
 	if (sockType == 4) {
-		struct sockaddr_in server;	
-//		server = createTCPClientSocket(&sock, 				// CreateTCPSocket.h: Create the connection between the client & server, 
 		IPv4TCPClientSocket(&sock, 					// CreateTCPSocket.h: Create the connection between the client & server, 
 			(argc == 1) ? SRV_IP : argv[1], 			// use default IP address of localhost if none entered
 			(argc == 3) ? atoi(argv[2]) : TCP_PORT_NUM);		// If 3 parameters are entered, use the given port number, otherwise, use default 1066
 	} else if (sockType == 6) {
-		struct sockaddr_in6 server;
 		IPv6TCPClientSocket(&sock, 					// CreateTCPSocket.h: Create the connection between the client & server, 
 			(argc == 1) ? SRV_IP : argv[1], 			// use default IP address of localhost if none entered
 			(argc == 3) ? atoi(argv[2]) : TCP_PORT_NUM);		// If 3 parameters are entered, use the given port number, otherwise, use default 1066
 	}
-
-/*
-
- 	// Create the socket
- 	sock = socket(AF_INET6, SOCK_STREAM, 0);				// XXX
- 	if (sock < 0) displayErrMsgStatus("Creating stream socket", 1);		// XXX error handling function in HandleErrors.h
-
- 	host_info = gethostbyname2(server_name,AF_INET6);
- 	if (host_info == NULL) {
- 		fprintf (stderr, "%s: unknown host: %s \n", argv [0], server_name);
- 		exit (2);
- 	}
-
- 	// Set up the server's socket address, then connect
-
- 	server.sin6_family = AF_INET6;
- 	//inet_pton ((char *) & server.sin6_addr, host_info->h_addr, host_info->h_length);
-  	inet_pton(AF_INET6, "::1",(char *) & server.sin6_addr);
- 	server.sin6_port = htons (HANGMAN_TCP_PORT);
-
- 	if (connect (sock, (struct sockaddr *) & server, sizeof server)) 
-		displayErrMsgStatus("Connecting to server", 3); 		// XXX error handling function in HandleErrors.h
-
- 	printf ("Connected to server %s \n", server_name);
-
-
 */
+	// Previous 2 functions combined into 1
 
- 	//OK connected to the server.  
- 	//Take a line from the server and show it, take a line and send the user input to the server. 
- 	//Repeat until the server terminates the connection.
+	/*
+	   CREATE A SOCKET:
+	   If the user entered parameters, use them, otherwise use default values
+	   of IPv4 localhost 127.0.0.1 on port 1066, sockType decides the protocol
+	   and defaults to IPv4 if no command line parameters were read.
+	*/
+	createClientSocketType(&sock, 						// CreateTCPSocket.h: Create the connection between the client & server, 
+			(argc == 1) ? SRV_IP : argv[1], 			// use default IP address of localhost if none entered
+			(argc == 3) ? atoi(argv[2]) : TCP_PORT_NUM,		// If 3 parameters are entered, use the given port number, otherwise, use default 1066
+			sockType);						// sockType variable is used to decide to create IPv4 or IPv6 socket
 
- 	while ((count = read (sock, i_line, LINESIZE)) > 0) {
- 		write (1, i_line, count);
- 		count = read (0, o_line, LINESIZE);//0 = STDIN
- 		write (sock, o_line, count);
+ 	/*
+	   CONNECTED TO THE SERVER: 
+ 	   Take a line from the server and show it, 
+	   take a line and send the user input to the server. 
+ 	   Repeat until the server terminates the connection.
+	*/
+
+ 	while ((count = read(sock, i_line, LINESIZE)) > 0) {			// Read input from the server until the server closes the connection so read returns 0
+ 		write(1, i_line, count);					// Display the part word to the user using standard input
+ 		count = read(0, o_line, LINESIZE);				// Get the Player guess from standard input. 0 = STDIN
+ 		write(sock, o_line, count);					// Send the guess to the Server to be processed
  	}
 
-	return 0;
-
+	return 0;								// End the program
  }

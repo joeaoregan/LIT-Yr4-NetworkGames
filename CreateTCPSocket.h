@@ -195,32 +195,36 @@ int createTCPClientDualStack(char* serverIP, int port){
 	int rtnVal = getaddrinfo(serverIP, "1066", &hints, &servinfo);			// Specify port number or use default 1066, address structure, 
 //	if (rtnVal != 0) printf("getaddrinfo() failed %s\n", gai_strerror(rtnVal));	// DieWithUserMessage("getaddrinfo() failed", gai_strerror(rtnVal));
 	
-	if(servinfo->ai_family == AF_INET) {
-		printf("Creating IPv4 Socket Connection To: %s/%d\n", serverIP,port);
-	} else {
+	if(servinfo->ai_family == AF_INET) {						// Check the address family
+		printf("Creating IPv4 Socket Connection To: %s/%d\n", serverIP,port);	// Notify the user of the type of socket (IPv4)
+	} else {									// If the address family is AF_INET6
 		printf("Creating IPv6 Socket Connection To: %s/%d\n", serverIP,port);
-		proto = 6;
+		proto = 6;								// IPv6 socket will be created
 	}
 
-	freeaddrinfo(servinfo); 		// free the linked-list
+	freeaddrinfo(servinfo); 							// Free the linked-list of addresses created by getaddrinfo()
 
 	return proto;
 }
 
 
+/*
+	CLIENT:
+	Create an IPv4 Client Socket using get hostbyname to get details
+	Using memcpy() to assign the address value to the address structure
+*/
 void IPv4TCPClientSocket(int* sock, char* server_name, int port) {			// Create a Socket using an IPv4 address structure
 	struct sockaddr_in servAddr;							// Assemble Server's address using IPv4 address structure
  	struct hostent * host_info;							// Used to get the host name
-	char* err;
  	
 	 /* CREATE THE SOCKET */
  	(*sock) = socket(AF_INET, SOCK_STREAM, 0);					// AF_INET = Address Family Internet, SOCK_STREAM = streams
  	if (sock < 0) displayErrMsgStatus("Creating Stream Socket", 1);	
 
  	host_info = gethostbyname(server_name);						// Replaced by getaddrinfo(), used for DNS lookups
-	if (host_info == NULL) displayErrMoreSpecific("Unknown Host",2,server_name);	// HandleErrors: more descriptive error message, with string appends
+	if (host_info == NULL) displayErrSpecific("Unknown Host",2,server_name);	// HandleErrors: more descriptive error message, with string appends
 
-/* SET UP THE SERVER'S SOCKET ADDRESS, AND CONNECT */
+	/* SET UP THE SERVER'S IPv4 SOCKET ADDRESS, AND CONNECT */
 	bzero(&servAddr, sizeof(servAddr));						// Zero out the address
 
 	//servaddr.sin_family = AF_INET;						// Set to IPv4 address family
@@ -235,22 +239,71 @@ void IPv4TCPClientSocket(int* sock, char* server_name, int port) {			// Create a
 }
 
 
+/*
+	CLIENT:
+	Create an IPv6 Client Socket using server, and port parameters
+	Assigning the values to the address structure using inet_pton()
+*/
 void IPv6TCPClientSocket(int* sock, char* server_name, int port) {			// Create a Socket using an IPv4 address structure
-	struct sockaddr_in6 servAddr;							// Assemble Server's address using IPv6 address structure
+	struct sockaddr_in6 addr6;							// Assemble Server's address using IPv6 address structure
  	
 	 /* CREATE THE SOCKET */
  	(*sock) = socket(AF_INET6, SOCK_STREAM, 0);					// AF_INET = Address Family Internet, SOCK_STREAM = streams
- 	if (sock < 0) displayErrMsgStatus("Creating Stream Socket", 1);	
+ 	if (sock < 0) displayErrMsgStatus("Creating Stream Socket", 1);			// If socket() returns -1 display an error
 
-	/* SET UP THE SERVER'S SOCKET ADDRESS, AND CONNECT */
-	bzero(&servAddr, sizeof(servAddr));						// Zero out the address
+	/* SET UP THE SERVER'S IPv6 SOCKET ADDRESS, AND CONNECT */
+	bzero(&addr6, sizeof(addr6));							// Zero out the address
+ 	addr6.sin6_family = AF_INET6;							// Set to IPv6 address family  
+	inet_pton(AF_INET6, server_name,(char *) & addr6.sin6_addr);			// Convert the IPv6 address from text to binary
+ 	addr6.sin6_port = htons(port);							// htons() host to network short: convert port number to network byte order
 
- 	servAddr.sin6_family = AF_INET6;						// Set to IPv6 address family  
-	inet_pton(AF_INET6, server_name,(char *) & servAddr.sin6_addr);
- 	servAddr.sin6_port = htons(port);						// htons() host to network short: convert port number to network byte order
-
- 	if (connect ((*sock), (struct sockaddr *) &servAddr, sizeof servAddr) < 0)	// If the connection fails
+ 	if (connect ((*sock), (struct sockaddr *) &addr6, sizeof addr6) < 0)		// If the connection fails
 		displayErrMsgStatus("Connecting To Server", 3);				// HandleErrors.h: Display the error message, and exit with status 3
 
  	printf ("Connected to server: %s \n", server_name);	
 }
+
+
+/*
+	CLIENT:
+	Create a Client socket, either IPv4, or IPv6 based on the type specified
+	For IPv4 use gethostbyname() to get the address details, otherwise
+	create an IPv6 address structure
+*/
+void createClientSocketType(int* sock, char* servIP, int port, int type) {		// Create a Socket using an IPv4 address structure
+	struct sockaddr_in addr4;							// Assemble Server's address using IPv6 address structure
+	struct sockaddr_in6 addr6;							// Assemble Server's address using IPv6 address structure
+ 	struct hostent * hostInfo;							// Used to get the host name
+
+	 /* CREATE THE SOCKET - IPv4 or IPv6, DEPENS ON TYPE PARAMETER */
+	if (type == 4) {
+	 	(*sock) = socket(AF_INET, SOCK_STREAM, 0);				// AF_INET = IPv4 Address Family Internet, SOCK_STREAM = streams
+	 	if (sock < 0) displayErrMsgStatus("Creating IPv4 Stream Socket", 1);	
+
+	 	hostInfo = gethostbyname(servIP);					// Replaced by getaddrinfo(), used for DNS lookups
+		if (hostInfo == NULL) displayErrSpecific("Unknown Host",2,servIP);	// HandleErrors: more descriptive error message, with string appends
+
+		/* SET UP THE SERVER'S SOCKET ADDRESS, AND CONNECT */
+		bzero(&addr4, sizeof(addr4));						// Zero out the address
+
+		//servaddr.sin_family = AF_INET;					// Set to IPv4 address family
+	 	addr4.sin_family = hostInfo->h_addrtype;				// Get the address family from the gethostbyname() results
+	 	memcpy((char *) & addr4.sin_addr, hostInfo->h_addr, hostInfo->h_length);// Set the address to the address returned by gethostbyname()	
+	 	addr4.sin_port = htons(port);						// htons() host to network short: convert port number to network byte order
+	} else {
+		(*sock) = socket(AF_INET6, SOCK_STREAM, 0);				// AF_INET6 = IPv6 Address Family Internet
+	 	if (sock < 0) displayErrMsgStatus("Creating IPv6 Stream Socket", 1);	
+
+		/* SET UP THE SERVER'S IPv6 SOCKET ADDRESS, AND CONNECT */
+		bzero(&addr6, sizeof(addr6));						// Zero out the address
+	 	addr6.sin6_family = AF_INET6;						// Set to IPv6 address family  
+		inet_pton(AF_INET6, servIP,(char *) & addr6.sin6_addr);			// Convert the IPv6 address from text to binary
+	 	addr6.sin6_port = htons(port);						// htons() host to network short: convert port number to network byte order
+	}
+
+ 	if (connect ((*sock), (struct sockaddr *) &addr6, sizeof addr6) < 0)		// If the connection fails
+		displayErrMsgStatus("Connecting To Server", 3);				// HandleErrors.h: Display the error message, and exit with status 3
+
+ 	printf ("Connected to server: %s/%d\n", servIP,port);	
+}
+

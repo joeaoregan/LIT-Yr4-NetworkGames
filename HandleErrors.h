@@ -37,7 +37,7 @@ void displayErrMsgStatus(char* reason, int status) {
 /*
 	Display a more detailed error message and exit
 */
-void displayErrMoreSpecific(char* reason, int status, char* extraInfo) {
+void displayErrSpecific(char* reason, int status, char* extraInfo) {
 	char* err;							// Error message to display to user
 	sprintf(err, "%s %s", reason, extraInfo);			// Append the 2 strings to 1 error message
 	perror(err);							// Dispay system error message		
