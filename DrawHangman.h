@@ -61,7 +61,7 @@ void amputate(int lives);
 
 /*
 	CLIENT & SERVER:
-	Draw the full hangman intro on Client and Server Sockets
+	Draw the full hangman logo on Client and Server Sockets
 */
 void drawHangman() {
 	// Draw hangman
@@ -73,6 +73,11 @@ void drawHangman() {
 	printf("%sA Game By:\n  * %sJoe O'Regan\n%s  * ", CYAN,BLUE,CYAN);	// Game Creators
 	printf("%sSamantha Marah\n  %s* %sJason Foley%s\n",BLUE,CYAN,BLUE,NORM);// Game Creators
 }
+
+/*
+	Draw a new game logo, that displays more information across the screen, 
+	using less lines (handy for screenshots)
+*/
 void drawHangmanNew() {
 	// Draw hangman
 	printf("  %s%s - ", RED,hangman[0]);

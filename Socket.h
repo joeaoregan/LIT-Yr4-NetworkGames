@@ -21,18 +21,43 @@
 
 /*
 	SERVER:
-	Display the server hostname
+	Display the name of the local machine using gethostname()
 */
 //void displayHostname(int o, char* buf) {
 //void displayHostname(int o) {
 void displayHostname() {
 	char hostname[LINESIZE], buf[LINESIZE];					// Name of the current system
 
-	gethostname (hostname, LINESIZE);					// Get the host name for the local machine
+	gethostname(hostname, LINESIZE);					// Get the host name for the local machine
 	
 	snprintf(buf, LINESIZE, "Playing hangman on host: %s \n \n", hostname);	// Set outbuf to server hostname, with protection against buffer overflow
 //	write(o, buf, strlen(buf));						// Send outbuf to client
 	write(0, buf, strlen(buf));						// Display hostname on server side
+}
+
+
+/*
+	SERVER TCP & UDP:
+	Use gethostname() to display the name of the local machine and get gethostbyname() 
+	to get the local IP address using the host name. 
+	Taking the port number as a parameter and displaying it.
+*/
+void displayHostIPPort(int port) {
+	int i;									// Index for for loope, to create address
+	struct hostent * host_info;						// Can only return IPv4 addresses
+	char hostname[LINESIZE];						// Hostname for the local machine
+	struct in_addr **addr_list;
+
+	if (gethostname(hostname, sizeof hostname) == 0) {			// gethostname() returns 0 on success, returns the name of the computer the socket is running on
+		printf("Running Hangman Server on: %s ", hostname);		// Display the name of the local machine
+
+		host_info = gethostbyname(hostname);				// gethostbyname() uses the name of the machine to return the local IP address
+		addr_list = (struct in_addr **) host_info->h_addr_list;		// list of ip addresses
+
+		for (i = 0; addr_list[i] != NULL; i++) 				// Search through the list of IP addresses
+			printf("%s", inet_ntoa(*addr_list[i]));			// inet_ntoa() converts the address to human readable format, deprecated, replaced by inet_ntop()
+		printf(":%d\n",port);						// Display the port number
+	}
 }
 
 /*

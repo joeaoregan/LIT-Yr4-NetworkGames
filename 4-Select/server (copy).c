@@ -38,7 +38,8 @@ struct sessionData {				// Store the game state, maybe use a linked list of stru
 	int gameState;				// Store the game state for the connection
 	char bufIn[LINESIZE];			// BUFFER
 	char bufOut[LINESIZE];			// BUFFER
-	char ip[INET_ADDRSTRLEN];		// client IP
+//	char ip[INET_ADDRSTRLEN];		// client IP
+	char* ip;				// client IP
 	int port;				// client port
 };
 
@@ -81,14 +82,14 @@ int main(int argc, char **argv) {
 				if (client[i].sock < 0) {									// If the array position is empty
 					client[i].sock = connfd;	
 /* XXX */					// Store and display the client IP and Port 
-		//			client[i].port = CLI_PORT;
+					client[i].port = CLI_PORT;
 					//strcpy(client[i].ip, storeAndDisplayPort(cliaddr, client[i].ip, CLI_PORT));
-					if (inet_ntop(AF_INET, &cliaddr.sin_addr.s_addr, client[i].ip,sizeof(client[i].ip)) != NULL){	// inet_ntop() - Convert IP address to human readable form
-  						printf("Handling client %s/%d \n", client[i].ip, CLI_PORT);				// Display the client IP address and port number
-						client[i].port = CLI_PORT;
-					}											/* save descriptor */
+//					if (inet_ntop(AF_INET, &cliaddr.sin_addr.s_addr, client[i].ip,sizeof(client[i].ip)) != NULL){	// inet_ntop() - Convert IP address to human readable form
+  //						printf("Handling client %s/%d \n", client[i].ip, CLI_PORT);				// Display the client IP address and port number
+	//					client[i].port = CLI_PORT;
+	//				}											/* save descriptor */
 /*========================================== initialise the variables for each client ==========================================*/
-		//			client[i].ip = storeAndDisplayIP(cliaddr, client[i].ip, CLI_PORT);
+					client[i].ip = storeAndDisplayIP(cliaddr, client[i].ip, CLI_PORT);
 /* XXX */ 				client[i].word = selectRandomWord(client[i].ip, CLI_PORT);			// Hangman.h: Select a random word from the list of words
 /* CHOOSE WORD */ 			//client[i].word = selectRandomWord(client[i].ip, CLI_PORT);				// Hangman.h: Select a random word from the list of words
 					/* No letters are guessed Initially */

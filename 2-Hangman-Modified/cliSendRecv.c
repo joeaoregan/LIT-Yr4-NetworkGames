@@ -1,6 +1,6 @@
  /* 
  	File: 		clientm.c
-	Version: 	Modified Hangman Client
+	Version: 	Modified Hangman Client using send() and recv()
 	Modified by:	Joe O'Regan
 
 	Year 4 Networked Games Assignment
@@ -32,7 +32,7 @@
 #include "../Hangman.h"								// 11/10/2017 Hangamen header file
 #include "../CreateTCPSocket.h"							// 16/11/2017 Functions to create and connect sockets moved here
 
-#define DRAW 1									// Turn Graphics on/off: 0 = Don't Draw Hangman Graphics, 1 = Draw Hangman Graphics
+#define DRAW 1									// 0 = Don't Draw Hangman Graphics, 1 = Draw Hangman Graphics
 
  int main (int argc, char * argv []) {
  	struct sockaddr_in server; 						// Server's address assembled here
@@ -58,10 +58,12 @@
  	* Repeat until the server terminates the connection.
 	------------------------------------------------------------------------*/
 
- 	while ((count = read (sock, inbuf, LINESIZE)) > 0) {			// While there is input from the Server (Part word received from the Server)
+ 	while ((count = recv(sock, inbuf, LINESIZE, 0)) > 0) {			// While there is input from the Server (Part word received from the Server)
+										// return -1 error, 0 socket closed remotely
 		livesLeft = parseWordAndLives(inbuf, DRAW);			// DrawHangman.h: Parse input from Server & Display lives left & partword, with optional graphics
- 	    	count = read(0, outbuf, LINESIZE);				// 0 = Standard Input. Get input from Client (Enter guess letter)
- 	    	write(sock, outbuf, count);					// Send Client input to Server
+ 	    	count = read(0, outbuf, 3);					// 0 = Standard Input. Get input from Client (Enter guess letter)
+	    	if ((send(sock, outbuf, count, 0)) < 0)				// Send Client input to Server
+			displayErrMsg("Recv failed");
  	}
 
 	gameOverText(livesLeft);						// DrawHangman.h: Select game over message to display, with 3 different messages, win/lose/perfect

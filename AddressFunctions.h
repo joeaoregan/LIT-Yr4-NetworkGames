@@ -25,6 +25,11 @@
 
 int get_ip_str(int ip, void *sa, char *s, size_t maxlen);
 
+
+/*
+	Server:
+	Display the IP address and Port the Server is running on
+*/
 void displayAddress(const struct sockaddr* address, FILE* stream){
 	// Test for address and stream
 	if (address == NULL || stream == NULL) return;				// return from function if the struct or file is empty
@@ -45,19 +50,28 @@ void displayAddress(const struct sockaddr* address, FILE* stream){
 		fputs("Stream error", stream);					// Error with stream
 		return;
 	}
-	
+
+
+      fputs("Server now running on ", stdout);
+	//printf("displayAddress test\n");
 	// Convert binary to printable address
         if(get_ip_str(address->sa_family, (void *) address, addressBuffer, INET6_ADDRSTRLEN) == 1) {
 	//if (inet_ntop(address->sa_family, numericAddress, addressBuffer, sizeof(addressBuffer)) == NULL)
 		fputs("[invalid address]", stream); 				// Unable to convert
 	} else {
 		//printf("addressBuffer: %s:\n",addressBuffer);			// test value in addressBuffer
-		fprintf(stream, "%s", addressBuffer);
+		printf("%s", addressBuffer);
+		//fprintf(stream, "%s", addressBuffer);
 		if (port != 0) fprintf(stream, "/%u", port);			// Zero not valid in socket address
 	}
+
+      fputc('\n', stdout);							// Add new line
 }
 
-// beej
+/*
+	Function to return the IP address for an IPv4 or IPv6 address structure
+	Taken from beej website, but not implemented
+*/
 int get_ip_str(int ip, void *sa, char *s, size_t maxlen) {
     switch(ip) {
         case AF_INET:								// If it's an IPv4 address set the address value in the IPv4 address structure

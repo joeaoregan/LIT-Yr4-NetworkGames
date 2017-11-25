@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
 	struct sockaddr_in servaddr;
 	char sendline[LINESIZE], recvline[LINESIZE];
 
-	servaddr = createTCPClientSocket(&sockfd, (argc == 1) ?  SRV_IP : argv[1]);	// CreateTCPSocket.h: Create socket and make connection, using a default IP 127.0.0.1 if no paramaters, or command line argument if entered
+	servaddr = createTCPClientSocket(&sockfd, (argc == 1) ?  SRV_IP : argv[1]);	// CreateTCPSocket.h: Create socket & make connection, using a default IP 127.0.0.1 if no paramaters, or command line argument if entered
 
 	while (1) {		
 		if (read(sockfd, recvline, LINESIZE) == 0) break;			// Receive line from the server, break from loop when the connection is terminated

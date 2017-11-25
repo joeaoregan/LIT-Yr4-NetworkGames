@@ -28,6 +28,10 @@
 #define HANGMAN_UDP_PORT 1068							// The port number the server will run on
 #define SRV_IP "127.0.0.1"							// IPv4 Address of server on local machine
 
+/*
+	SERVER:
+	Function to create a UDP Server socket
+*/
 int createUDPServer() {
 	struct sockaddr_in srvAddr;
 	int server;
@@ -49,17 +53,27 @@ int createUDPServer() {
 	return server;								// Return the server socket
 }
 
+
+/*
+	CLIENT:
+	Function to create a UDP Client socket
+*/
 int createUDPClient(char* server_name){
 	struct sockaddr_in srvAddr;						// IPv4 address stucture
 	int client;
 
 	if ((client = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)  	// create the socket
 		displayErrMsg("Socket Failed");					// HandleErrors.h: display error if -1 returned by call to socket()
-	else printf("\nSocket Created\n");
+	else printf("UDP Hangman Socket Created\n");
 		
 	return client;								// Return the client socket
 }
 
+
+/*
+	SERVER:
+	Get the address of the server
+*/
 struct sockaddr_in getServerAddress(char* server_name){
 	struct sockaddr_in srvAddr;						// IPv4 address stucture
 

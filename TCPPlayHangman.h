@@ -78,12 +78,12 @@ void playHangmanTCP(int in, int out, char* name, int port) {
 /*	
 	SERVER TCP:
 	Function to format and send the part word and lives data to client as a string
-	from the server
+	from the server using write()
 */
 void sendPartWord(int out, char* outbuf, char* part_word, int lives) {
 	int byteCount;										// Number of bytes that will be sent to the client
 
- 	sprintf (outbuf, "%s %d \n", part_word, lives);						// Set outbuf to the part word & the lives left, creating a string to send to the client
+ 	sprintf(outbuf, "%s %d \n", part_word, lives);						// Set outbuf to the part word & the lives left, creating a string to send to the client
  	byteCount = write(out, outbuf, strlen(outbuf));						// Send part word string to client
 	printf("Number of bytes sent: %d\n", byteCount);					// Display the number of bytes sent (includes: part word, lives, new line, and string terminator)
 }

@@ -20,7 +20,6 @@ int checkGuessUDP(char* buf, char* word, char* part, char* guess, int lives);
 void playHangmanUDP(int in, int out, char* name);
 
 struct sockaddr_in cliAddr;									// IPv4 address structure
-
 int slen = sizeof(cliAddr);
 #define CLI_PORT ntohs(cliAddr.sin_port)							// Format the port number
 
@@ -33,8 +32,6 @@ void playHangmanUDP(int in, int out, char* name) {
  	char * whole_word, part_word [LINESIZE],guess[LINESIZE], outbuf[LINESIZE];		// Selected word, part word, input buffer, output buffer
  	int lives = MAX_LIVES, game_state = 'I', i, word_length;
  
-	printf("name test 3: %s\n", name);
-
 	displayHostname();									// Socket.h: Display the local machines name
 	
 	whole_word = selectRandomWord(name, CLI_PORT);						// Hangman.h: Username and Port instead of IP and Port
@@ -42,17 +39,14 @@ void playHangmanUDP(int in, int out, char* name) {
  	
 	initPartWord(part_word, word_length);							// Hangman.h: Set the part word to hyphens
 
-	//while (game_state == 'I') {								// sends and receives reversed so not working
 	while (1) {		
-/*SEND*/
- 		sprintf (outbuf, "%s %d \n", part_word, lives);					// Format the part word and lives as a string to send to the client
+/*SEND*/	sprintf (outbuf, "%s %d \n", part_word, lives);					// Format the part word and lives as a string to send to the client
 		sendto(out, outbuf, LINESIZE, 0, (struct sockaddr *) &cliAddr, slen);		// cast sockaddr_in to sockaddr
 		
-		if ((game_state != 'I')) break;							// Check here as send/receive reversed from TCP
+		if ((game_state != 'I')) break;							// Check here, instead of while condition, as send/receive reversed from TCP version
 
-/*RECV*/	if (recvfrom(in,guess,LINESIZE,0, (struct sockaddr *) &cliAddr, &slen) == -1){	// cast sockaddr_in to sockaddr
-			 //displayErrMsg("Guess recvfrom() Failed");
-			printf("Hangman recvfrom: No more input from %s%s%s\n",BLUE,name,NORM);	// Display end of input message
+/*RECV*/	if (recvfrom(in,guess,LINESIZE,0, (struct sockaddr *) &cliAddr, &slen) == -1) {	// cast sockaddr_in to sockaddr
+			printf("Hangman recvfrom: No more input from %s%s%s\n",BLUE,name,NORM);	// Display end of input message, no need for error
 			break;
 		}
 
@@ -60,14 +54,14 @@ void playHangmanUDP(int in, int out, char* name) {
 		lives = checkGuessUDP(outbuf, whole_word, part_word, guess, lives);		// UDPPlayHangman.h: check the client guess, and display formatted message on server side
 
 		if ((game_state = checkGameState(whole_word, part_word, lives)) == 'L')		// Hangman.h: If all letters guessed, W, if out of guesses/lives, L, otherwise I is returned
-			strcpy(part_word, whole_word);
+			strcpy(part_word, whole_word);						// Copy the selected word, to be sent to the client, to show Player
 
 		printf("Game State: %c Lives: %d\n", game_state, lives);			// Display the game state and lives, for testing
 	}	
 
 /* GAME TERMINATES WITH 'b' FROM 'bye' */
-	sprintf (outbuf, "%s\n", "bye");						// The Client tests for the letter 'b' arriving as the first letter, as a condition to exit it's loop
-/**/	sendto(out, outbuf, LINESIZE, 0, (struct sockaddr *) &cliAddr, slen);			// cast sockaddr_in to sockaddr
+	sprintf (outbuf, "%s\n", "bye");							// Client tests for the letter 'b' arriving as the first letter, as a condition to exit it's loop
+/*SEND*/sendto(out, outbuf, LINESIZE, 0, (struct sockaddr *) &cliAddr, slen);			// cast sockaddr_in to sockaddr
 
 	close(in);										// Close the socket connection
 }

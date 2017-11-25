@@ -16,13 +16,17 @@
 
 #include <stdio.h>	// perror()
 
-// error message function
+/*
+	Function to display error message
+*/
 void displayErrMsg(char *reason) {
 	perror(reason);			// Dispay system error message		
 	exit(1);			// Exit the program
 }
 
-// Error message function with exit status
+/* 
+	Error message function with exit status
+*/
 void displayErrMsgStatus(char *reason, int status) {
 	perror(reason);			// Dispay system error message		
 	exit(status);			// Exit the program

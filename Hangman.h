@@ -60,7 +60,7 @@ char* randomWord() {
 
 /*
 	SERVER:
-	Set the part word to hyphens
+	Initialise the part word to a string of hyphens
 */
 char initPartWord(char* partWord, int length) {
 	int i;											// For loop index
@@ -73,8 +73,9 @@ char initPartWord(char* partWord, int length) {
 /*
 	CLIENT:
 	Parse the string from the server with the part word and number of lives
-	If the draw variable is set, call the DrawHangman.h amputate() to
+	If the draw variable is set, call the DrawHangman.h amputate() function to
 	render the graphical version of the number of lives left
+	
 	Display the remaining guesses and the part word while the game is playing
 	or the full word if the game is finished and the player didn't guess
 */
@@ -131,7 +132,7 @@ char checkGameState(char* word, char* part, int lives) {
 	Return 1 if game is finished
 */
 int checkGameOver(int state, char* outbuffer, char* word, int o, char* clname, int clport) {
-  if (state == 'I') return 0;									// return false, skip the rest of this function
+ if (state == 'I') return 0;									// return false, skip the rest of this function
 
   if (state == 'W') printf("Client %s/%d has guessed \"%s\" correctly!\n", clname,clport,word); // Display win message
     else if (state == 'L') printf("Client %s/%d is a loser!\n", clname, clport);		// Display lose message

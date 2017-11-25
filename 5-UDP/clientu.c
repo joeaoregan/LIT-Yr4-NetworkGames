@@ -37,33 +37,25 @@ int main (int argc, char * argv []) {					// Added arguments to specify another 
 
 	s = createUDPClient((argc == 1) ? SRV_IP : argv[1]);		// Create the IPv4 UDP socket
 	si_other = getServerAddress((argc == 1) ? SRV_IP : argv[1]);	// Set up the address stucture for the server
-// Enter username
+// Enter username, to be used to check against stored states
 	printf("Please Enter Your Username: ");				// Get username
 	fgets(userInput, LINESIZE, stdin);				// Enter username		
 
 /*SEND*/sendGuess(s, userInput, si_other);				// CreateUDPSocket.h: Send the username input on the client side to the server
 
-// PLAY THE GAME
+// PLAY HANGMAN GAME
 	while(1) {							// change to check lives, as this will exit on word beginning with b
-	//while(partword[0] != 'b') {					// Works, but lives affected - change to check lives, as this will exit on word beginning with b
-	//while((byteCount = recvfrom(s, &partword, LINESIZE, 0, (struct sockaddr *) &si_other, &slen)) > -1) {	// NOT WORKING - change to check lives, as this will exit on word beginning with b
-// RECEIVE THE PART WORD
 		partword[0]='\0';					// Reset the part-word string
 
-/*RECV*/	//if (byteCount = recvfrom(s, &partword, LINESIZE, 0, (struct sockaddr *) &si_other, &slen) == -1) break;	 
-		recvfrom(s, &partword, LINESIZE, 0, (struct sockaddr *) &si_other, &slen);
+/*RECV*/	if (byteCount = recvfrom(s, &partword, LINESIZE, 0, (struct sockaddr *) &si_other, &slen) == -1) break;	
 		//printf("partword: %s\n", partword);			// Test part word received OK
-		if (partword[0] == 'b') break;
+		if (partword[0] == 'b') break;				// Server sends "bye" when the game is finished, a special character would be a better idea
 		win = parseWordAndLives(partword, DRAW_HANGMAN_GFX);	// Hangman.h: parse the word and display it on screen, and set the game over message in win
 		
-		//if (byteCount == 0) break;		
-
-		fgets(userInput, LINESIZE, stdin);
-
+		fgets(userInput, LINESIZE, stdin);			// Get the Players guess from the keyboard, standard input
 /*SEND*/	sendGuess(s, userInput, si_other);			// CreateUDPSocket.h: Send the guess input on the client side to the server
 	}
 
-//	printf("win: %d\n", win);
 	gameOverText(win);						// DrawHangman.h: Display the game over message, depending on how many lives/guesses the player has left
 
 	close(s);							// Close the socket connection
@@ -71,4 +63,3 @@ int main (int argc, char * argv []) {					// Added arguments to specify another 
 	
 	return 0;
 }
-
