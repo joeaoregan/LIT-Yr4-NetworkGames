@@ -38,11 +38,11 @@ To run the existing compiled client:
 ./cli 127.0.0.1
 ```
 ## Compiling:
-To run the existing compiled Server:
+To compile the client code:
 ```c
 gcc -o cli hangclient.c
 ```
-To run the existing compiled client: 
+To compile the server code:
 ```c
 gcc -o srv hangserver_iter.c
 ```
