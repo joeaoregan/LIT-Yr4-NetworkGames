@@ -1,5 +1,19 @@
- /* Network server for hangman game */
- /* File: hangserver.c */
+  /* 
+ 	File: 		serverds.c
+	Version: 	Dual Stack TCP Server
+	Modified by: 	Jason Foley, Joe O'Regan
+
+	Year 4 Networked Games Assignment
+
+	Team 1:
+	Joe O'Regan 	K00203642
+	Samantha Marah	K00200782
+	Jason Foley 	K00186690
+	
+	Dual stack Server can accept connections from Clients connecting with IPv4 or IPv6 sockets. 
+	Using createDualStackServerSocket() a sockaddr_in6 structure is used to store an IPv6 or IPv4 address (formatted as IPv6).
+*/
+
 
 #include <stdio.h>								// printf()
 #include <stdlib.h> 								// rand(), exit() atoi(), srand()

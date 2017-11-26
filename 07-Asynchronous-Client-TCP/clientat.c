@@ -13,11 +13,6 @@
 	Joe O'Regan 17/11/2017
 	(Reference strcliselect02.h P228 UNIX® Network Programming Volume 1, Third Edition)
 	The Modified TCP Client that can handle input asynchronously from the socket and file descriptors using the `select()` function
-
-	20171122	Added functionality in Hangman.h to make code more modular			
-	20171116 	CreateUDPSocket.h - abstracts the UDP socket creation code
-	20171115 	Fixed client continuing to connect, 
-			add command line parameter check
 */
 
 #include <stdio.h>										// printf()

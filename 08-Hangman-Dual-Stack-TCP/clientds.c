@@ -1,6 +1,22 @@
-// Jason Foley, Joe O'Regan
-// Hangman client connecting with IPv4 and IPv6 addresses
-/* Hangclient.c - Client for hangman server.  */
+ /* 
+ 	File: 		clientds.c
+	Version: 	Dual Stack TCP Client
+	Modified by: 	Jason Foley, Joe O'Regan
+
+	Year 4 Networked Games Assignment
+
+	Team 1:
+	Joe O'Regan 	K00203642
+	Samantha Marah	K00200782
+	Jason Foley 	K00186690
+
+	The Dual stack client, can take an IPv4 or IPv6 command line parameter and create the appropriate socket, before connecting to the Server. 
+	The Client communicates with the Server using read() and write() if an IPv4 address is supplied, 
+	createClientSocketType() uses a sockaddr_in address structure, for an IPv6 address a sockaddr_in6 address structure is created, 
+	createTCPClientDualStack uses the IP address parameter, and the port number and calls getaddrinfo() 
+	creating an addrinfo address structure from which the address family can be determined.
+*/
+
 
 #include <netdb.h>								// gai_strerror()
 #include <stdlib.h>								// exit(), rand(), atoi()

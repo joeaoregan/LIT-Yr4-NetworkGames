@@ -74,6 +74,19 @@ The Modified TCP Client that can handle input asynchronously from the socket and
 
 The Modified Hangman TCP Client and Server that can handle connections to and from IPv4 and IPv6 addresses
 
+###### Server:
+
+Dual stack Server can accept connections from Clients connecting with IPv4 or IPv6 sockets. 
+Using `createDualStackServerSocket()` a `sockaddr_in6` structure is used to store an `IPv6` or `IPv4` address (formatted as IPv6)
+
+###### Client:
+
+The Dual stack client, can take an IPv4 or IPv6 command line parameter and create the appropriate socket, before connecting to the Server. 
+The Client communicates with the Server using `read()` and `write()` if an `IPv4` address is supplied, 
+`createClientSocketType()` uses a `sockaddr_in` address structure, for an `IPv6` address a `sockaddr_in6` address structure is created, 
+`createTCPClientDualStack` uses the IP address parameter, and the port number and calls `getaddrinfo()` 
+creating an `addrinfo` address structure from which the address family can be determined.
+
 ##### 9-Asynchronous-Client-UDP
 
 The Modified UDP Client that can handle input asynchronously from socket and file descriptors using `select()`
