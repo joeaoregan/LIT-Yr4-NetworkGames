@@ -1,5 +1,24 @@
-// Joe O'Regan 17/11/2017
-// 17/11/2017 Asynchronous TCP Client using select()  - Using strcliselect02.h P228
+ /* 
+ 	File: 		clientat.c
+	Version: 	Asynchronous TCP Client using select() 
+	Modified by: 	Joe O'Regan
+
+	Year 4 Networked Games Assignment
+
+	Team 1:
+	Joe O'Regan 	K00203642
+	Samantha Marah	K00200782
+	Jason Foley 	K00186690
+
+	Joe O'Regan 17/11/2017
+	(Reference strcliselect02.h P228 UNIX® Network Programming Volume 1, Third Edition)
+	The Modified TCP Client that can handle input asynchronously from the socket and file descriptors using the `select()` function
+
+	20171122	Added functionality in Hangman.h to make code more modular			
+	20171116 	CreateUDPSocket.h - abstracts the UDP socket creation code
+	20171115 	Fixed client continuing to connect, 
+			add command line parameter check
+*/
 
 #include <stdio.h>										// printf()
 #include <string.h>										// Warning for strcpy, bzero()
@@ -19,23 +38,23 @@ int main(int argc, char **argv) {
 			(argc == 1) ? SRV_IP : argv[1], 					// use default IP address of localhost if none entered
 			(argc == 3) ? atoi(argv[2]) : TCP_PORT_NUM);				// If 3 parameters are entered, use the given port number, 
 	stdineof = 0;										// Flag to select on standard input, each loop
-	FD_ZERO(&rset);										// Clear the set
+	FD_ZERO(&rset);										// Clear the list of descriptors
 
 	drawHangmanLogo(ASYNC_TCP_CLI);								// Display game logo
 	
 	byteCount = read (sock, buf, LINESIZE);							// Read 1st (empty) part word from server
 	write (1, buf, byteCount);								// Display on screen
 
-	for ( ; ; ) {										// Guess loop
+	for ( ; ; ) {										// Infinite Guess loop
 		if (stdineof == 0) FD_SET(fileno(stdin), &rset);				// FD_SET - add stdin to file descriptor list
 		FD_SET(sock, &rset);								// Add socket to file descriptor list. 
 		maxfdp1 = max(fileno(stdin), sock) + 1;						// Maximum number of file descriptors to test
-		select(maxfdp1, &rset, NULL, NULL, NULL);					// Get the minimum of the 2 descriptors to select
+		select(maxfdp1, &rset, NULL, NULL, NULL);					// Get the minimum of the 2 descriptors using select() and use it
 
 		if (FD_ISSET(sock, &rset)) {							// socket is readable, FD_ISSET = check socket is in file descriptor list
 			if ((byteCount = read(sock, buf, LINESIZE)) == 0) {			// Get input from socket
 				if (stdineof == 1) break;					// normal termination, EOF already received
-				else displayErrMsg("str_cli: server terminated prematurely");	// HandleErrors.h: read() returns 0 if the server terminates the connection
+				else displayErrMsg("Server Has Terminated the Connection");	// HandleErrors.h: read() returns 0 if the server terminates the connection
 			}
 
 			write(fileno(stdout), buf, byteCount);					// Write to screen
