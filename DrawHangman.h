@@ -68,21 +68,23 @@ enum sockTitle {
 	ASYNC_TCP_CLI,
 	DS_CLI_TCP,
 	DS_SRV_TCP,
-	ASYNC_UDP_CLI
+	ASYNC_UDP_CLI,
+	UDP_FORK
 };
 
-char* socketDescription[] = {"MODIFIED TCP CLIENT",
-			     "MODIFIED TCP SERVER", 
-			     "TCP CLIENT SEND/RECV",
-			     "  TCP FORK SERVER",
-			     "   SELECT CLIENT",
-			     "   SELECT SERVER",
-			     "    UDP CLIENT",
-			     "    UDP SERVER",
+char* socketDescription[] = {" MODIFIED TCP CLIENT",
+			     " MODIFIED TCP SERVER", 
+			     " TCP CLIENT SEND/RECV",
+			     "   TCP FORK SERVER",
+			     "    SELECT CLIENT",
+			     "    SELECT SERVER",
+			     "      UDP CLIENT",
+			     "      UDP SERVER",
 			     "ASYNCHRONOUS TCP CLIENT",
 			     "TCP DUAL STACK CLIENT",
 			     "TCP DUAL STACK SERVER",
-			     "ASYNCHRONOUS UDP CLIENT"};
+			     "ASYNCHRONOUS UDP CLIENT",
+			     "   UDP FORK SERVER" };
 // Function Declarations
 void drawHangman();
 void amputate(int lives);

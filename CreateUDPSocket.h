@@ -15,6 +15,8 @@
 	Reconfigured version of SetupTCPServerSocket() function from TCPServerUtility.c
 	from TCP/IP Sockets in C book, to work with UDP Hangman server
 	Using https://gafferongames.com/post/sending_and_receiving_packets/ as a reference
+	
+	25/11/2017	Added option to specify port for server to run on
 */
 
 #include <sys/socket.h>
@@ -27,14 +29,15 @@
 #include "HandleErrors.h"							// Display Error messages
 #include "Socket.h"
 
-#define HANGMAN_UDP_PORT 1068							// The port number the server will run on
+#define UDP_PORT "1068"								// The port number the Hangman Server will run on
+#define UDP_PORT_NUM 1068							// The port number the Hangman Server will run on
 #define SRV_IP "127.0.0.1"							// IPv4 Address of server on local machine
 
 /*
 	SERVER:
 	Function to create a UDP Server socket
 */
-int createUDPServer() {
+int createUDPServer(char* port) {
 	struct sockaddr_in srvAddr;
 	int server;
 
@@ -45,7 +48,7 @@ int createUDPServer() {
 	memset((char *) &srvAddr, 0, sizeof(srvAddr));				// Set/Reset the IP address to 0
 
 	srvAddr.sin_family = AF_INET;						// Specify the address family as IPv4
-	srvAddr.sin_port = htons(HANGMAN_UDP_PORT);				// Specify the port number
+	srvAddr.sin_port = htons(atoi(port));						// Specify the port number entered by user, or default 1068
 	srvAddr.sin_addr.s_addr = htonl(INADDR_ANY);				// Use IPv4 address, could be more than one
 
 	if (bind(server, (struct sockaddr *) &srvAddr, sizeof(srvAddr)) == -1) 	// Bind to the address stored in srvAddr
@@ -82,7 +85,7 @@ struct sockaddr_in getServerAddress(char* server_name){
 	memset((char *) &srvAddr, 0, sizeof(srvAddr));				// Zero out the address, could also use bzero()
 
 	srvAddr.sin_family = AF_INET;						// Set the address family as IPv4
-	srvAddr.sin_port = htons(HANGMAN_UDP_PORT);				// Set the port to the default stored port
+	srvAddr.sin_port = htons(UDP_PORT_NUM);					// Set the port to the default stored port
 
 	if (inet_aton(server_name, &srvAddr.sin_addr) == 0 )  			// inet_aton() replaced by inet_pton()
 		displayErrMsgStatus("Sinet_aton() failed", 1);			// HandleErrors.h: Display an error message with exit status of 1

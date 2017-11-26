@@ -11,6 +11,7 @@
 	Samantha Marah	K00200782
 	Jason Foley 	K00186690
 
+	20171125	Added option to specify port as a command line parameter
 	20171122	Added in Hangman.h functions, to make code more modular 
 			(and easier to fit in screen shots)
 			Created GetUserNameUDP() function to read in the Player name
@@ -34,11 +35,11 @@
 #include "../UDPPlayHangman.h"										// Functions to play hangman using sendto() and recvfrom(), needs to be included after Socket.h
 
 
-int main(void) {
+int main (int argc, char * argv []) {									// Option to specify port as a command line parameter
 	int sock, count;										// Client socket, and byte count variables
 	char buf[LINESIZE], username[LINESIZE];								// Buffer string, the username entered by the Client
 
-	sock = createUDPServer();									// Create the UDP Server socket
+	sock = createUDPServer((argc == 2) ? argv[1] : UDP_PORT);					// Create the UDP Server socket, with port specified, or default 1068
 
 	drawHangmanLogo(UDP_SERVER);									// DrawHangman.h: Draw the game logo, with socket type label
 

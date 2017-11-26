@@ -50,7 +50,7 @@ int main (int argc, char * argv []) {							// Option to specify port as a comma
 	pid_t childpid;									// pid_t: signed int data type, capable of representing  a process ID. 
 	void sig_chld(int);								// Signal handling function, catches SIGCHLD signal from terminating process
 
-	sock = createTCPServerSocket(TCP_PORT);						// IPv4 only: Functionality to create socket moved to separate file CreateTCPServer.h
+	sock = createTCPServerSocket((argc == 2) ? argv[1] : TCP_PORT);			// IPv4 only: Functionality to create socket moved to separate file CreateTCPServer.h
 
 	// The UNP books signal() function calls POSIX sigaction	
 	signal(SIGCHLD, sig_chld);							// SIGCHLD signal sent to parent of a child process when it exits, is interupted, 
@@ -74,7 +74,7 @@ int main (int argc, char * argv []) {							// Option to specify port as a comma
 			Each child process has its own process ID fork returns 0 for a child, and the childs process ID for the parent 
 		*/
 		if ( (childpid = fork()) == 0) {					// Creating child process of Server to handle client. Assigning unique process ID to the child.
-			close(sock);							// close listening socket
+			close(sock);							// Close listening socket, after forking a child process
 			playHangmanTCP(fd, fd, cliName, CLI_PORT);			// TCPPlayHangman.h: Play the game - playHangmanTCP() located in TCPPlayHangman.h
 			exit(0);							// Process termination
 		}

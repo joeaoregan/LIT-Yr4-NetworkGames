@@ -2,16 +2,17 @@
 	Joe O'Regan K00203642
 	17/11/2017
 
-	svrtest.c
+	serverua.c
 
 	Test Asynchronous UDP Client
+
+	20171117 	Asynchronous UDP client sends and receives, and terminates when finished
+	20171116 	CreateUDPSocket.h - abstracts the UDP socket creation code
+	20171115 	Fixed client continuing to connect
+	20171114 	Joe: Fixed warning messages by casting sockaddr_in to struct sockaddr*
+			And moved HandleErrors to parent folder	
+			Added random word selection	
 */
-// 20171117 Asynchronous UDP client sends and receives, and terminates when finished
-// 20171116 CreateUDPSocket.h - abstracts the UDP socket creation code
-// 20171115 Fixed client continuing to connect
-// 20171114 Joe: Fixed warning messages by casting sockaddr_in to struct sockaddr*
-// 		 And moved HandleErrors to parent folder	
-// 		Added random word selection	
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -21,36 +22,30 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
-#include <time.h>					// Seed the random number
+#include <time.h>							// Seed the random number
 #include "../DrawHangman.h"
-//#include "../HandleErrors.h"				// Moved HandleErrors.h to parent folder
 #include "../Hangman.h"
 #include "../CreateUDPSocket.h"
 
-//struct sockaddr_in srvAddr;
 struct sockaddr_in cliAddr;
 
 int slen = sizeof(cliAddr);
 void play_hangman (int in, int out);
-int main(void) {
+
+int main (int argc, char * argv []) {					// Option to specify port as a command line parameter
 	int sock;
 	char buf[LINESIZE];
 
-	sock = createUDPServer();
+	sock = createUDPServer((argc == 2) ? argv[1] : UDP_PORT);	// Create the UDP Server socket, with port specified, or default 1068
 
 	drawHangman();
 
-	printf("\nWaiting For Data...\n");
+	printf("\nAsynchronous Test Server: Waiting For Data...\n");
 
-	//while(1) {
+	fflush(stdout);
+	srand(time(NULL));
 
-		fflush(stdout);
-		srand(time(NULL));
-
-		play_hangman(sock,sock);
-
-//		printf("Finished Play Hangman\n");	
-	//}
+	play_hangman(sock,sock);
 
 	close(sock);	
 
@@ -126,7 +121,7 @@ void play_hangman (int in, int out) {
 	
 	// Send b to exit
 	sprintf (outbuf, "%s\n", "bye");	
-	sendto(out, outbuf, strlen(outbuf), 0, (struct sockaddr *) &cliAddr, slen);			// cast sockaddr_in to sockaddr
+	sendto(out, outbuf, strlen(outbuf), 0, (struct sockaddr *) &cliAddr, slen);				// cast sockaddr_in to sockaddr
 	close(in);
 	shutdown(out, SHUT_RD);
 }
