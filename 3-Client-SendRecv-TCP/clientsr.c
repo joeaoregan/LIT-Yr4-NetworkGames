@@ -1,5 +1,5 @@
 /* 
- 	File: 		cliSendRecv.c
+ 	File: 		clientsr.c
 	Version: 	Modified Hangman Client using send() and recv()
 	Modified by:	Joe O'Regan
 
