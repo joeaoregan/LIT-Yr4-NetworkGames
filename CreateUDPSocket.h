@@ -79,13 +79,13 @@ int createUDPClient(char* server_name){
 	SERVER:
 	Get the address of the server
 */
-struct sockaddr_in getServerAddress(char* server_name){
+struct sockaddr_in getServerAddress(char* server_name, char* port){
 	struct sockaddr_in srvAddr;						// IPv4 address stucture
 
 	memset((char *) &srvAddr, 0, sizeof(srvAddr));				// Zero out the address, could also use bzero()
 
 	srvAddr.sin_family = AF_INET;						// Set the address family as IPv4
-	srvAddr.sin_port = htons(UDP_PORT_NUM);					// Set the port to the default stored port
+	srvAddr.sin_port = htons(atoi(port));					// Set the port to the default stored port
 
 	if (inet_aton(server_name, &srvAddr.sin_addr) == 0 )  			// inet_aton() replaced by inet_pton()
 		displayErrMsgStatus("Sinet_aton() failed", 1);			// HandleErrors.h: Display an error message with exit status of 1

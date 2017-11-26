@@ -1,21 +1,19 @@
-#     T E A M 1 - H A N G M A N
-# . . . _ _ _ _ _ _ _ _ _ 
-# . . . |/ . . . . . . |
-# . . . |. . . _ _ _(")_ _ _
-# . . . |.  . . . . . |_|
-# . . . |. . . . . . /^\
-# . . . |. . . . _// . \ \ _
-# _ _ |_ _ _ _ _ _ _ _
-# 
-# Year 4: Networked Games CA
-# Hangman
-
-## 26/11/2017
+```c
+   _____________          T E A M 1 -  H A N G M A N
+   |/      |        Year 4: Networked Games CA - Hangman
+   |   ___(")___                  26/11/2017
+   |      |_| 
+   |      /^\                    Joe O'Regan
+   |    _// \\_                  Jason Foley
+ __|___________                 Samantha Marah
+```
 
 This is a group assignment for the 4th year Networked Games module. The group consists of:
   * [Joe O'Regan](https://github.com/joeaoregan)
   * [Samantha Marah](https://github.com/jasfoley)
   * [Jason Foley](https://github.com/samanthamarah)
+
+![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/5HangmanSelectTCP.png "Select Server Handling 2 Clients")
 
 ## Features:
 
@@ -66,7 +64,7 @@ A concurrent version of the TCP Server using select(), to handle input from diff
 
 ##### 6-Hangman-UDP
 
-The Modified Hangman Client and Server using `sendto()` and `recvfrom()` to communicate between each other in a connectionless state
+The Modified Hangman Client and Server using `sendto()` and `recvfrom()` to communicate between each other in a connectionless state over UDP
 
 ##### 7-Asynchronous-Client-TCP
 

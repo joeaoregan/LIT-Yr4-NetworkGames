@@ -13,28 +13,27 @@ This is a group assignment for the 4th year Networked Games module. The group co
   * [Samantha Marah](https://github.com/jasfoley)
   * [Jason Foley](https://github.com/samanthamarah)
 
-![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/5HangmanSelectTCP.png "Select Server Handling 2 Clients")
+![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/6HangmanUDP.png "UDP Server and Client")
 
-## 5-Hangman-Select-TCP
+##### 6-Hangman-UDP
 
-A concurrent version of the TCP Server using select(), to handle input from different client connections by one Server process
+The Modified Hangman Client and Server using `sendto()` and `recvfrom()` to communicate between each other in a connectionless state over UDP
 
 ##### Files:
 
-1. servers.c (Select Server code)
-2. client.c (Client code)
-3. srv (Concurrent Server Application)
-4. cli (Client Application)
+1. serveru.c (UDP Server code)
+2. clientu.c (UDP Client code)
+3. srv (UDP Server Application)
+4. cli (UDP Client Application)
 
 ##### Dependencies (Placed in root directory):
 Files that the Select Server is dependent on to compile:
 
 1. DrawHangman.h
 2. Hangman.h
-3. CreateTCPSocket.h
+3. CreateUDPSocket.h
 4. Socket.h
-5. TCPPlayHangman.h
-6. GameState.h
+5. UDPPlayHangman.h
 
 Files the Client (Modified to work with the Select Server) is dependent on:
 
@@ -42,9 +41,9 @@ Files the Client (Modified to work with the Select Server) is dependent on:
 
 ## Running:
 
-This Concurrent Server application will communicate with the included Client application
+This UDP Server application will communicate with the included UDP Client application using `sendto()` and `recvfrom()`
 
-To run the existing compiled Select Server with default port number `1066`:
+To run the existing compiled Select Server with default port number `1068` (Different to TCP `1066`):
 ```c
 ./srv
 ```
@@ -54,7 +53,7 @@ To run Server specifying the port number to listen for client connections on e.g
 ./srv 8000
 ```
 
-###### With Select Server application running, the Client must connect to the same port
+###### With UDP Server application running, the Client must use the same port when sending data
 
 
 The already compiled Client application included in the directory can be run with commands: 
@@ -68,9 +67,9 @@ To run the Client specifying an IP Address `193.168.1.10` and default port:
 ./cli 193.168.1.10
 ```
 
-To run the Client specifying an IP Address `193.168.1.10` and port `5000`: 
+To run the Client specifying an IP Address `193.168.1.10` and port `8000`: 
 ```c
-./cli 193.168.1.10 5000
+./cli 193.168.1.10 8000
 ```
 
 The Client can also connect using `localhost`
@@ -87,11 +86,11 @@ And the Client can also connect specifying the name of a PC e.g. `Joe-PC`
 
 To compile the Select Server code (with the dependent files in parent directory):
 ```c
-gcc -o srv servers.c
+gcc -o srv serveru.c
 ```
 
 To compile the Select Client code:
 ```c
-gcc -o cli clients.c
+gcc -o cli clientu.c
 ```
 

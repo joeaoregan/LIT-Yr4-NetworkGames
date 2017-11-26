@@ -36,9 +36,9 @@ int main (int argc, char * argv []) {					// Arguments to specify another IP add
 	char userInput[LINESIZE];					// Send buffer, read in guess and sent to Server
 	char partword[LINESIZE];					// Input buffer, read in part word from Server
 
-	s = createUDPClient((argc == 1) ? SRV_IP : argv[1]);		// Create the IPv4 UDP socket
-	si_other = getServerAddress((argc == 1) ? SRV_IP : argv[1]);	// Set up the address stucture for the server
-
+	s = createUDPClient((argc == 2) ? argv[1]: SRV_IP);		// Create the IPv4 UDP socket
+	si_other = getServerAddress((argc == 2) ? argv[1]: SRV_IP, 	// CreateUDPSocket.h: Set up the address stucture for sending data to the server
+			(argc == 3) ? argv[2] : UDP_PORT);		// Enter IP address/port from command line, or use defaults
 
 	drawHangmanLogo(UDP_CLIENT);					// DrawHangman.h: Draw the game logo, with socket type label
 
@@ -58,7 +58,7 @@ int main (int argc, char * argv []) {					// Arguments to specify another IP add
 		win = parseWordAndLives(partword, DRAW_HANGMAN_GFX);	// Hangman.h: parse the word, display it on screen, & win sets game over message
 		
 		fgets(userInput, LINESIZE, stdin);			// Get the Players guess from the keyboard, standard input
-/*SEND*/	sendGuess(s, userInput, si_other);			// CreateUDPSocket.h: Send the guess input on Client side to Server
+/*SEND*/	sendGuess(s, userInput, si_other);			// UDPPlayHangman.h: Send the guess input on Client side to Server
 	}
 
 	gameOverText(win);						// DrawHangman.h: Display the game over message, 

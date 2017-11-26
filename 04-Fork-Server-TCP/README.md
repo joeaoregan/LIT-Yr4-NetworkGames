@@ -13,7 +13,7 @@ This is a group assignment for the 4th year Networked Games module. The group co
   * [Samantha Marah](https://github.com/jasfoley)
   * [Jason Foley](https://github.com/samanthamarah)
 
-![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/4ForkServerTCP.png "Modified Client using send() and recv()")
+![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/4ForkServerTCP.png "Concurrent Server using fork()")
 
 ##  04. Fork Server TCP
 
