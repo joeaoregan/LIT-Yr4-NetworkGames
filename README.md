@@ -89,7 +89,7 @@ creating an `addrinfo` address structure from which the address family can be de
 
 ##### 9-Asynchronous-Client-UDP
 
-The Modified UDP Client that can handle input asynchronously from socket and file descriptors using `select()`
+A Modified UDP Client that can handle input asynchronously from socket and file descriptors using `select()`
 
 ##### 10-Fork-Server-UDP (Unfinished)
 

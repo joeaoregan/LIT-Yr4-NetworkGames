@@ -1,11 +1,16 @@
-/* 	
-	Joe O'Regan K00203642
-	17/11/2017
+ /* 
+ 	File: 		clientua.c
+	Version: 	Hangman Asynchronous UDP Client
+	Modified by: 	Joe O'Regan
 
-	cliAsync.c
+	Year 4 Networked Games Assignment
 
-	Asynchronous UDP Client
+	Team 1:
+	Joe O'Regan 	K00203642
+	Samantha Marah	K00200782
+	Jason Foley 	K00186690
 
+	20171126	createUDPClient() takes port parameter specified in commandline argurments
 	20171117	Asynchronous UDP client sends and receives, and terminates when finished
 	20171116	CreateUDPSocket.h - abstracts the UDP socket creation code
 	20171115	Fixed client continuing to connect, 
@@ -26,8 +31,9 @@
 	char partword[LINESIZE], userInput[LINESIZE];
 	ssize_t byteCount;
 
-	sock = createUDPClient((argc == 1) ? SRV_IP : argv[1]);						// Creat the socket
-	si_other = getServerAddress((argc == 1) ? SRV_IP : argv[1]);					// 
+	sock = createUDPClient((argc == 2) ? argv[1]: SRV_IP);						// Create the IPv4 UDP socket
+	si_other = getServerAddress((argc == 2) ? argv[1]: SRV_IP, 					// CreateUDPSocket.h: Set up the address stucture for sending data to the server
+			(argc == 3) ? argv[2] : UDP_PORT);						// Enter IP address/port from command line, or use defaults
 
 	drawHangmanLogo(ASYNC_UDP_CLI);									// Display game logo, with socket title
 

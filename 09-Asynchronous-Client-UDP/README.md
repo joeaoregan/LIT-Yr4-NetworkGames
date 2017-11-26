@@ -9,41 +9,36 @@
 ```
 
 This is a group assignment for the 4th year Networked Games module. The group consists of:
+
   * [Joe O'Regan](https://github.com/joeaoregan)
   * [Samantha Marah](https://github.com/jasfoley)
   * [Jason Foley](https://github.com/samanthamarah)
 
-![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/6HangmanUDP.png "UDP Server and Client")
+![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/9AsynchronousClientUDP.png "Asynchronous UDP Client")
 
-## 6-Hangman-UDP
+## 9-Asynchronous-Client-UDP
 
-The Modified Hangman Client and Server using `sendto()` and `recvfrom()` to communicate between each other in a connectionless state over UDP
+A Modified UDP Client that can handle input asynchronously from socket and file descriptors using `select()`
 
 ##### Files:
 
-1. serveru.c (UDP Server code)
-2. clientu.c (UDP Client code)
-3. srv (UDP Server Application)
-4. cli (UDP Client Application)
+1. clientua.c (Asynchronous UDP Client code)
+2. serverua.c (Test UDP Server Code)
+2. cli (Asynchronous UDP Client Application)
+3. srv (Test UDP Server Application)
 
 ##### Dependencies (Placed in root directory):
-Files that the Select Server is dependent on to compile:
+Files the Asynchronous Client is dependent on:
 
 1. DrawHangman.h
 2. Hangman.h
 3. CreateUDPSocket.h
-4. Socket.h
-5. UDPPlayHangman.h
-
-Files the Client (Modified to work with the Select Server) is dependent on:
-
-0. None 
 
 ## Running:
 
-This UDP Server application will communicate with the included UDP Client application using `sendto()` and `recvfrom()`
+The Asynchronous UDP Client communicates with the Server using `sendto()` and `recvfrom()` (Test Server application srv included in directory)
 
-To run the existing compiled Select Server with default port number `1068` (Different to TCP `1066`):
+To run the included compiled Test Server with default port number `1068` (Different to TCP `1066`):
 ```c
 ./srv
 ```
@@ -53,10 +48,10 @@ To run Server specifying the port number to listen for client connections on e.g
 ./srv 8000
 ```
 
-###### With UDP Server application running, the Client must use the same port when sending data
+###### With UDP Test Server application running, the Client must use the same port when sending data with sendto()
 
 
-The already compiled Client application included in the directory can be run with commands: 
+The already compiled Asynchronous Client application included in the directory can be run with commands: 
 
 ```c
 ./cli
@@ -84,13 +79,8 @@ And the Client can also connect specifying the name of a PC e.g. `Joe-PC`
 
 ## Compiling:
 
-To compile the Select Server code (with the dependent files in parent directory):
+To compile the Asynchronous UDP Client code:
 ```c
-gcc -o srv serveru.c
-```
-
-To compile the Select Client code:
-```c
-gcc -o cli clientu.c
+gcc -o cli clientua.c
 ```
 

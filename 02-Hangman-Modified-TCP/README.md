@@ -15,7 +15,7 @@ This is a group assignment for the 4th year Networked Games module. The group co
 
 ![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/2ModifiedHangman.png "Modified Hangman Client and Server")
 
-##### 02-Hangman-Modified-TCP
+## 02-Hangman-Modified-TCP
 
 Modified Hangman game, with graphics, coloured text, and functionality to set up sockets, and play the game separated to header files
 

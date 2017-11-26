@@ -11,6 +11,7 @@
 	Samantha Marah	K00200782
 	Jason Foley 	K00186690
 
+	20171126	createUDPClient() takes port parameter specified in commandline argurments
 	20171122	Added functionality in Hangman.h to make code more modular			
 	20171116 	CreateUDPSocket.h - abstracts the UDP socket creation code
 	20171115 	Fixed client continuing to connect, 
