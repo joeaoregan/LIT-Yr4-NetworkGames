@@ -23,38 +23,66 @@
 #define GREEN "\x1B[32m"
 #define YELO  "\x1B[33m"
 #define BLUE  "\x1B[34m"
+#define MGNT  "\x1B[35m"
 #define CYAN  "\x1B[36m"
 #define NORM  "\x1B[0m"
 
 
 // Hangman Game Logo
-char *hangman[]= {								// ASCII hangman graphic
+char* hangman[]= {								// ASCII hangman graphic
 "   T E A M 1",									// Changed to Team 1 (the actual team name)
 " H A N G M A N",
-"\x1B[35m  _____________", 
-"\x1B[35m  |/      |",
-"\x1B[35m  | \x1B[33m  ___(\")___",
-"\x1B[35m  | \x1B[33m     |_|   ",
-"\x1B[35m  | \x1B[33m     /^\\",
-"\x1B[35m  | \x1B[33m   _// \\\\_",
-"\x1B[35m__|____________\x1B[0m"};    
+"\x1B[35m   _____________", 
+"\x1B[35m   |/      |",
+"\x1B[35m   | \x1B[33m  ___(\")___",
+"\x1B[35m   | \x1B[33m     |_|   ",
+"\x1B[35m   | \x1B[33m     /^\\",
+"\x1B[35m   | \x1B[33m   _// \\\\_",
+"\x1B[35m __|____________\x1B[0m"};    
 
-// Variables to swap out body parts as the player loses lives
-char *altArms[]={"\x1B[35m  |    \x1B[31m_\x1B[33m_(\")___\x1B[0m", 
-		 "\x1B[35m  |    \x1B[33m__(\")_\x1B[31m_\x1B[0m", 
-		 "\x1B[35m  |      \x1B[33m(\")__\x1B[0m", 
-		 "\x1B[35m  |      \x1B[33m(\")"};				// ARMS - left hand, right hand, left arm, none
+// Variables to swap out body parts as the player loses lives			Arms:
+char* altArms[]={"\x1B[35m   |    \x1B[31m_\x1B[33m_(\")___\x1B[0m", 		// 0. Left hand
+		 "\x1B[35m   |    \x1B[33m__(\")_\x1B[31m_\x1B[0m", 		// 1. Right hand
+		 "\x1B[35m   |      \x1B[33m(\")__\x1B[0m", 			// 2. Left arm
+		 "\x1B[35m   |      \x1B[33m(\")"};				// 4. None
 
-char *altBody[]={"\x1B[35m  |\x1B[0m"};						// BODY - none
+char* altBody[]={"\x1B[35m   |\x1B[0m"};					// 0. BODY - none
 
-char *altLegs[]={"\x1B[35m  |      \x1B[31m~^\x1B[33m\\",
-		 "\x1B[35m  |      \x1B[33m~^~\x1B[0m",};			// LEGS - 0.Left, 1.right, 2.none
+char* altLegs[]={"\x1B[35m   |      \x1B[31m~^\x1B[33m\\",			// 0. Left
+		 "\x1B[35m   |      \x1B[33m~^~\x1B[0m"};			// 1. Right (none)
+// Feet
+char* altFeet[]={"\x1B[35m   |   \x1B[31m  // \x1B[33m\\\\_\x1B[0m",		// 0. Left foot
+		 "\x1B[35m   |\x1B[33m     // \x1B[31m\\\\\x1B[0m", 		// 1. Right foot
+		 "\x1B[35m   |\x1B[31m        \\\\", 				// 2. Left Shit
+		 "\x1B[35m   |"};						// 3. Right shin (none)
 
-char *altFeet[]={"\x1B[35m  |   \x1B[31m  // \x1B[33m\\\\_\x1B[0m",
-		 "\x1B[35m  |\x1B[33m     // \x1B[31m\\\\\x1B[0m", 
-		 "\x1B[35m  |\x1B[31m        \\\\", 
-		 "\x1B[35m  |"};						// Feet - 0.Left foot, 1.right foot, 2.Left shin, 3. Right shin (none)
+enum sockTitle {
+	TCP_CLIENT = 0,
+	TCP_SERVER,
+	TCP_CLI_SR,
+	TCP_FORK_SERVER,
+	SELECT_CLIENT,	
+	SELECT_SERVER,	
+	UDP_CLIENT,	
+	UDP_SERVER,
+	ASYNC_TCP_CLI,
+	DS_CLI_TCP,
+	DS_SRV_TCP,
+	ASYNC_UDP_CLI
+};
 
+char* socketDescription[] = {"MODIFIED TCP CLIENT",
+			     "MODIFIED TCP SERVER", 
+			     "TCP CLIENT SEND/RECV",
+			     "  TCP FORK SERVER",
+			     "   SELECT CLIENT",
+			     "   SELECT SERVER",
+			     "    UDP CLIENT",
+			     "    UDP SERVER",
+			     "ASYNCHRONOUS TCP CLIENT",
+			     "TCP DUAL STACK CLIENT",
+			     "TCP DUAL STACK SERVER",
+			     "ASYNCHRONOUS UDP CLIENT"};
 // Function Declarations
 void drawHangman();
 void amputate(int lives);
@@ -65,8 +93,8 @@ void amputate(int lives);
 */
 void drawHangman() {
 	// Draw hangman
-	printf("%s%s\n", RED,hangman[0]);
-	printf("%s%s\n", RED,hangman[1]);
+	printf("%s%s\n", RED,hangman[0]);					// Team 1 text
+	printf("%s%s\n", RED,hangman[1]);					// Hangman text
 	for (int h = 2; h < 9; ++h){						// Draw hangman ASCII
 	  printf("%s\n", hangman[h]);
 	}
@@ -80,14 +108,29 @@ void drawHangman() {
 */
 void drawHangmanNew() {
 	// Draw hangman
-	printf("  %s%s - ", RED,hangman[0]);
-	printf("%s%s\n", RED,hangman[1]);
+	printf("  %s%s - ", RED,hangman[0]);					// Team 1 text
+	printf("%s%s\n", RED,hangman[1]);					// Hangman text
 	for (int h = 2; h < 9; ++h){						// Draw hangman ASCII
 	  printf("%s", hangman[h]);
-	  if (h == 3) printf("%s\t  A Game By:\n",CYAN);
+	  if (h == 3) printf("%s\t\t  A Game By:\n",CYAN);			// Display text beside hangman logo
 	  else if (h == 4) printf("\t%s  * %sJoe O'Regan\n",CYAN,BLUE);
 	  else if (h == 5) printf("\t%s  * %sJason Foley\n",CYAN,BLUE);
-	  else if (h == 6) printf("\t%s  * %sSamantha Marah%s\n",CYAN,BLUE,NORM);
+	  else if (h == 6) printf("\t\t%s  * %sSamantha Marah%s\n",CYAN,BLUE,NORM);
+	  else printf("\n");
+	}
+}
+
+void drawHangmanLogo(int desc) {
+	// Draw hangman
+	printf("  %s%s - ", RED,hangman[0]);					// Team 1 text
+	printf("%s%s\n", RED,hangman[1]);					// Hangman text
+	for (int h = 2; h < 9; ++h){						// Draw hangman ASCII
+	  printf("%s", hangman[h]);
+	  if (h == 3) printf("%s\t\tA Game By:\n",CYAN);			// Display text beside hangman logo
+	  else if (h == 4) printf("\t%s* %sJoe O'Regan\n",CYAN,BLUE);		// Set colour, Display text, Reset colour 
+	  else if (h == 5) printf("\t%s* %sJason Foley\n",CYAN,BLUE);
+	  else if (h == 6) printf("\t\t%s* %sSamantha Marah%s\n",CYAN,BLUE,NORM);
+	  else if (h == 8) printf("\n\t%s %s %s\n",MGNT, socketDescription[desc], NORM);
 	  else printf("\n");
 	}
 }

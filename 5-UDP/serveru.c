@@ -22,10 +22,11 @@
 			Added random word selection	
 */
 
+#include <stdio.h>
 #include <string.h>											// strlen()
 #include <stdlib.h>											// exit(), rand(), srand()
+#include <unistd.h>
 #include <time.h>											// time(), Seed the random number
-#include "../HandleErrors.h"										// Moved HandleErrors.h to parent folder
 #include "../DrawHangman.h"										// Draw graphics and add colour, needs to be included before Hangman.h
 #include "../Hangman.h"											// Functions to play hangman
 #include "../CreateUDPSocket.h"										// Functions to create and use UDP sockets
@@ -39,7 +40,7 @@ int main(void) {
 
 	sock = createUDPServer();									// Create the UDP Server socket
 
-	drawHangmanNew();										// DrawHangman.h: Draw the game logo
+	drawHangmanLogo(UDP_SERVER);									// DrawHangman.h: Draw the game logo, with socket type label
 
 	while(1) {
 		fflush(stdout);										// flushes the output buffer of a stream

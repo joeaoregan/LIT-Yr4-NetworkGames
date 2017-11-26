@@ -92,3 +92,19 @@ int get_ip_str(int ip, void *sa, char *s, size_t maxlen) {
 
     return 0;									// successful
 }
+
+
+//	Select Server
+	char ip[INET_ADDRSTRLEN];		// client IP 
+
+char* storeAndDisplayIP(struct sockaddr_in addr, char* ip, int port) {
+	// Store and display the client IP and Port 
+//	if (inet_ntop(AF_INET, &addr.sin_addr.s_addr, ip,sizeof(ip)) != NULL){	// inet_ntop() - Convert IP address to human readable form
+	if (inet_ntop(AF_INET, &addr.sin_addr.s_addr, ip, INET_ADDRSTRLEN) != NULL){	// inet_ntop() - Convert IP address to human readable form
+		printf("Handling client %s/%d \n", ip, port);			// Display the client IP address and port number
+		//client[i].port = CLI_PORT;
+	}	
+	printf("storeAndDisplayIP: %s\n", ip);
+
+	return ip;
+}

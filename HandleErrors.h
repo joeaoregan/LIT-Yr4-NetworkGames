@@ -16,32 +16,44 @@
 #ifndef	__HANDLE_ERRORS
 #define	__HANDLE_ERRORS
 
-#include <stdio.h>							// perror()
+#include <stdio.h>						// perror()
 
 /*
 	Function to display error message and exit
 */
 void displayErrMsg(char* reason) {
-	perror(reason);							// Dispay system error message		
-	exit(1);							// Exit the program
+	perror(reason);						// Dispay system error message		
+	exit(1);						// Exit the program
 }
 
 /* 
 	Error message function with exit status
 */
 void displayErrMsgStatus(char* reason, int status) {
-	perror(reason);							// Dispay system error message		
-	exit(status);							// Exit the program
+	perror(reason);						// Dispay system error message		
+	exit(status);						// Exit the program
 }
 
 /*
 	Display a more detailed error message and exit
 */
-void displayErrSpecific(char* reason, int status, char* extraInfo) {
-	char* err;							// Error message to display to user
-	sprintf(err, "%s %s", reason, extraInfo);			// Append the 2 strings to 1 error message
-	perror(err);							// Dispay system error message		
-	exit(status);							// Exit the program	
+void displayErrSpecific(char* reason, int status, char* info) {
+	char* err;						// Error message to display to user
+	sprintf(err, "%s %s", reason, info);			// Append the 2 strings to 1 error message
+	perror(err);						// Dispay system error message		
+	exit(status);						// Exit the program	
 }
+
+
+/*
+	Display error message for getaddrinfo() when gai_strerror() is used
+*/
+void displayErrGaiStr(char* reason, int status, int rtnVal ) {
+	char* err;						// Error message to display to user
+	sprintf(err, "%s %s", reason, gai_strerror(rtnVal));	// Append the 2 strings to 1 error message
+	perror(err);						// Dispay system error message		
+	exit(status);						// Exit the program	
+}
+
 
 #endif	/* __HANDLE_ERRORS */

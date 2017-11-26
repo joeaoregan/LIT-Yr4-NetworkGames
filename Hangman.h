@@ -38,7 +38,7 @@ char* selectRandomWord(char* ip, int port) {
 
   syslog (LOG_USER | LOG_INFO, "server chose hangman word %s", the_word);			// Message logging
 
-  printf("Word: %s\"%s\"%s Randomly Selected For Client: %s/%d\n",RED,the_word,NORM,ip,port);	// Display the word selected for the client on the server, highlighting the word in red font
+  printf("Word: %s\"%s\"%s Randomly Selected For Client: %s/%d\n",BLUE,the_word,NORM,ip,port);	// Display the word selected for the client on the server, highlighting the word in red font
 
   return the_word;										// Return the selected word
 }
@@ -87,7 +87,7 @@ int parseWordAndLives(char* input, int draw) {
 
 	if (draw) amputate(lives);								// If the draw paramater has been set, display the graphics for lives
 
-	printf("\n%sRemaining Guesses:%s\t%d\n", CYAN, NORM, lives);				// Guesses remaining
+	printf("%sRemaining Guesses:%s\t%d\n", CYAN, NORM, lives);				// Guesses remaining
 	if (lives > 0) printf("%sWord To Guess:%s\t\t%s\n", CYAN, NORM, word);			// The part word string while game is playing OR
 	else printf("%sThe word was:%s\t\t%s\n", RED, NORM, word);				// The actual word if player loses
 
@@ -134,8 +134,9 @@ char checkGameState(char* word, char* part, int lives) {
 int checkGameOver(int state, char* outbuffer, char* word, int o, char* clname, int clport) {
  if (state == 'I') return 0;									// return false, skip the rest of this function
 
-  if (state == 'W') printf("Client %s/%d has guessed \"%s\" correctly!\n", clname,clport,word); // Display win message
-    else if (state == 'L') printf("Client %s/%d is a loser!\n", clname, clport);		// Display lose message
+  if (state == 'W') printf("%sClient %s/%d has guessed %s\"%s\"%s correctly!%s\n", 		// Display win message
+			GREEN,clname,clport,BLUE,word,GREEN,NORM); 				// Formatting with colour
+    else if (state == 'L') printf("%sClient %s/%d is a loser!%s\n", RED,clname, clport,NORM);	// Display lose message, with colour
 
   return 1;											// Return true
 }

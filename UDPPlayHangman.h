@@ -16,6 +16,8 @@
 #ifndef	__PLAY_HANGMAN_UDP
 #define	__PLAY_HANGMAN_UDP
 
+#include <errno.h>
+
 int checkGuessUDP(char* buf, char* word, char* part, char* guess, int lives);
 void playHangmanUDP(int in, int out, char* name);
 
@@ -111,6 +113,19 @@ int getUserNameUDP(int s, char* name, struct sockaddr_in cliAddr) {
 	printf("input: %s name: %s\n",input, name);
 
 	return 1;										// Return a user name has been created is true
+}
+
+
+/*
+	CLIENT:
+	Send the guess input on the client side to the server
+	Displaying an error if sendto() returns -1
+*/
+void sendGuess(int s, char* guess, struct sockaddr_in server) {
+	int len = sizeof(server);
+
+	if (sendto(s, guess, strlen(guess), 0,(struct sockaddr *) &server, len) == -1)
+		displayErrMsg("sendto() Failed");
 }
 
 

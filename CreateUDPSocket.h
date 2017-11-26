@@ -22,8 +22,10 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <string.h>
+#include "Hangman.h"
 #include "AddressFunctions.h"
 #include "HandleErrors.h"							// Display Error messages
+#include "Socket.h"
 
 #define HANGMAN_UDP_PORT 1068							// The port number the server will run on
 #define SRV_IP "127.0.0.1"							// IPv4 Address of server on local machine
@@ -47,7 +49,7 @@ int createUDPServer() {
 	srvAddr.sin_addr.s_addr = htonl(INADDR_ANY);				// Use IPv4 address, could be more than one
 
 	if (bind(server, (struct sockaddr *) &srvAddr, sizeof(srvAddr)) == -1) 	// Bind to the address stored in srvAddr
-		displayErrMsg("but Bind Failed");					// HandleErrors.h: display error if -1 returned by call to bind()
+		displayErrMsg("but Bind Failed");				// HandleErrors.h: display error if -1 returned by call to bind()
 	printf("and Bind Successful\n");
 
 	return server;								// Return the server socket
@@ -86,17 +88,5 @@ struct sockaddr_in getServerAddress(char* server_name){
 		displayErrMsgStatus("Sinet_aton() failed", 1);			// HandleErrors.h: Display an error message with exit status of 1
 
 	return srvAddr;								// Return the IPv4 address structure
-}
-
-/*
-	CLIENT:
-	Send the guess input on the client side to the server
-	Displaying an error if sendto() returns -1
-*/
-void sendGuess(int s, char* guess, struct sockaddr_in server) {
-	int len = sizeof(server);
-
-	if (sendto(s, guess, strlen(guess), 0,(struct sockaddr *) &server, len) == -1)
-		displayErrMsg("sendto() Failed");
 }
 

@@ -24,9 +24,28 @@
 #define	__PLAY_HANGMAN_TCP
 
 #include <errno.h>										// EINTR, Defines errno int, set by system calls/library functions, to indicate error
+#include <ctype.h>										// tolower(): take uppercase and lowercase input from client
 
 void sendPartWord(int out, char* outbuf, char* part_word, int lives);				// Function to format and send the part word and lives data to client as a string
-int checkGuess(char* buf, char* word, char* part, char* guess, int lives, char* name, int port);
+//int checkGuess(char* buf, char* word, char* part, char* guess, int lives, char* name, int port);
+
+/*
+	SERVER TCP:
+	Check input from client, format it, and display on server side, depending on the guess, 
+	and decrement the number of lives if bad guess
+	Returns the number of lives to be set in the client state.
+*/
+int checkGuess(char* buf, char* word, char* part, char* guess, int* lives, char* ip, int port) {
+    if (!correctGuess(word, part, guess)) {							// Hangman.h: Good guess: copy letter to part word
+        (*lives)--;										// Incorrect guess: decrement lives. 
+        sprintf(buf, "%sBad Guess%s Received From Client %s/%d %s\n",RED,NORM,ip,port,guess);	// Format a bad guess received, adding the ip and port of the client to identify
+    }
+    else sprintf(buf,"%sGood Guess%s Received From Client %s/%d %s\n",GREEN,NORM,ip,port,guess);// Format a good guess received, adding the ip and port of the client to identify
+    write(0, buf, strlen(buf));									// Write the guess received to standard output, displaying on Server side
+
+    return (*lives);										// Return the number of guesses/lives remaining
+}
+
 
 /*--------------------------------------- PLAY HANGMAN -----------------------------------------*/
 /*
@@ -57,10 +76,12 @@ void playHangmanTCP(int in, int out, char* name, int port) {
  			if (errno != EINTR) displayErrMsgStatus("Re-read the startin\n", 4);	// P182 Check for EINTR error if stuck in slow system call, & exit if restart signal not recieved. Re-start read() if interrupted by signal
  		} 
 		guess[1]='\0';									// Only need 1 letter, so this will cut all the gibberish
+		tolower(guess[0]);								// Set input to lower case, to accept Capital letters
 
 		/*-----------------CHECK CORRECT GUESS & FORMAT INFO----------------------------*/
  
-		lives = checkGuess(outbuf, whole_word, part_word, guess, lives, name, port);	// Decrement the lives remaining if the client sends an incorrect guess
+		//lives = checkGuess(outbuf, whole_word, part_word, guess, lives, name, port);	// Decrement the lives remaining if the client sends an incorrect guess
+		checkGuess(outbuf, whole_word, part_word, guess, &lives, name, port);		// Decrement the lives remaining if the client sends an incorrect guess
 
 		/*---------------------CHECK GAME WIN LOSE CONDITIONS---------------------------*/
 		if((game_state = checkGameState(whole_word,part_word,lives)) == 'L')		// Hangman.h: check if the game state is win/lose/continue, and if lose
@@ -86,24 +107,6 @@ void sendPartWord(int out, char* outbuf, char* part_word, int lives) {
  	sprintf(outbuf, "%s %d \n", part_word, lives);						// Set outbuf to the part word & the lives left, creating a string to send to the client
  	byteCount = write(out, outbuf, strlen(outbuf));						// Send part word string to client
 	printf("Number of bytes sent: %d in: %s", byteCount, outbuf);				// Display number of bytes sent, includes: part word, lives, new line & string terminator
-}
-
-
-/*
-	SERVER TCP:
-	Check input from client, format it, and display on server side, depending on the guess, 
-	and decrement the number of lives if bad guess
-	Returns the number of lives to be set in the client state.
-*/
-int checkGuess(char* buf, char* word, char* part, char* guess, int lives, char* ip, int port) {
-    if (!correctGuess(word, part, guess)) {							// Hangman.h: Good guess: copy letter to part word
-        lives--;										// Incorrect guess: decrement lives. 
-        sprintf(buf, "%sBad Guess%s Received From Client %s/%d %s\n",RED,NORM,ip,port,guess);	// Format a bad guess received, adding the ip and port of the client to identify
-    }
-    else sprintf(buf,"%sGood Guess%s Received From Client %s/%d %s\n",GREEN,NORM,ip,port,guess);// Format a good guess received, adding the ip and port of the client to identify
-    write(0, buf, strlen(buf));									// Write the guess received to standard output, displaying on Server side
-
-    return lives;										// Return the number of guesses/lives remaining
 }
 
 #endif	/* __PLAY_HANGMAN_TCP */
