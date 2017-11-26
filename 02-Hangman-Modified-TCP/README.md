@@ -1,8 +1,8 @@
 ```c
    _____________          T E A M 1 -  H A N G M A N
    |/      |        Year 4: Networked Games CA - Hangman
-   |   ___(")___                  26/11/2017
-   |      |_| 
+   |   ___(")___                  26/11/2017			  Modified
+   |      |_| 							Hangman Game
    |      /^\                    Joe O'Regan
    |    _// \\_                  Jason Foley
  __|___________                 Samantha Marah
@@ -17,7 +17,7 @@ This is a group assignment for the 4th year Networked Games module. The group co
 
 ## 02-Hangman-Modified-TCP
 
-Modified Hangman game, with graphics, coloured text, and functionality to set up sockets, and play the game separated to header files
+**Modified Hangman Game**, with graphics, coloured text, and functionality to set up sockets, and play the game separated to header files
 
 ##### Files:
 
@@ -33,57 +33,57 @@ Files that the client is dependent on to compile:
 2. Hangman.h
 3. CreateTCPSocket.h
 
-Additional Server dependencies:
+Additional **Server** dependencies:
 
 1. Socket.h
 2. TCPPlayHangman.h
 
 ## Running:
 
-To run the existing compiled Server with default port number `1066`:
+To run the existing compiled **Server** with default port number `1066`:
 ```c
 ./srv
 ```
-To run Server specifying the port number to listen for client connections on e.g. port `8000`:
+To run **Server** specifying the port number to listen for **Client** connections on e.g. port `8000`:
 ```c
 ./srv 8000
 ```
 
 ###### With Server application running, the Client must connect to the same port
 
-To run the existing compiled Client with default IP Address and default port number: 
+To run the existing compiled **Client** with default IP Address and default port number: 
 ```c
 ./cli
 ```
 
-To run the Client specifying an IP Address `193.168.1.10` and default port: 
+To run the **Client** specifying an IP Address `193.168.1.10` and default port: 
 ```c
 ./cli 193.168.1.10
 ```
 
-To run the Client specifying an IP Address `193.168.1.10` and port `5000`: 
+To run the **Client** specifying an IP Address `193.168.1.10` and port `8000` (Client port must match Server): 
 ```c
-./cli 193.168.1.10 5000
+./cli 193.168.1.10 8000
 ```
 
-The Client can also connect using `localhost`
+The **Client** can also connect using `localhost`
 ```c
 ./cli localhost
 ```
 
-And the Client can also connect specifying the name of a PC e.g. `Joe-PC`
+And the **Client** can also connect specifying the name of a PC e.g. `Joe-PC`
 ```c
 ./cli Joe-PC
 ```
 
 ## Compiling:
 
-To compile the Client code (with the dependent files in parent directory):
+To compile the **Client** code (with the dependent files in parent directory):
 ```c
 gcc -o cli clientm.c
 ```
 
-To compile the server code:
+To compile the **Server** code:
 ```c
 gcc -o srv serverm.c
 ```

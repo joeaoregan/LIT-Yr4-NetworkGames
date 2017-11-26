@@ -1,8 +1,8 @@
 ```c
    _____________          T E A M 1 -  H A N G M A N
-   |/      |        Year 4: Networked Games CA - Hangman
-   |   ___(")___                  26/11/2017
-   |      |_| 
+   |/      |        Year 4: Networked Games CA - Hangman	
+   |   ___(")___                  26/11/2017			Asyncronous
+   |      |_| 							TCP Client
    |      /^\                    Joe O'Regan
    |    _// \\_                  Jason Foley
  __|___________                 Samantha Marah
@@ -18,13 +18,13 @@ This is a group assignment for the 4th year Networked Games module. The group co
 
 ## 7-Asynchronous-Client-TCP
 
-The Modified TCP Client that can handle input asynchronously from the socket and file descriptors using the `select()` function
+The **Asynchronous TCP Client** handles input asynchronously from the socket and file descriptors using the `select()` function
 
 ##### Files:
 
 1. clientat.c (Asynchronous TCP Client code)
-3. cla (Asynchronous Client Application)
-4. srvf (Forking Server Application (04-Fork-Server-TCP))
+2. cla (Asynchronous Client Application)
+3. srvf (Forking Server Application (04-Fork-Server-TCP))
 
 ##### Dependencies (Placed in root directory):
 Files the Asynchronous Client is dependent on:
@@ -35,14 +35,14 @@ Files the Asynchronous Client is dependent on:
 
 ## Running:
 
-The Asynchronous TCP Client communicates with the Server using `read()` and `write()` (Forked Server application srvf included in directory)
+The **Asynchronous TCP Client** communicates with the **Server** using `read()` and `write()` (Forked Server application srvf included in directory)
 
-To run the included compiled Fork Server with default port number `1066`:
+To run the included compiled **Fork Server** with default port number `1066`:
 ```c
 ./srv
 ```
 
-To run Server specifying the port number to listen for client connections on e.g. port `8000`:
+To run **Server** specifying the port number to listen for client connections on e.g. port `8000`:
 ```c
 ./srv 8000
 ```
@@ -50,35 +50,35 @@ To run Server specifying the port number to listen for client connections on e.g
 ###### With TCP Server application running, the Client must use the same port when sending data
 
 
-The already compiled Asynchronous TCP Client application included in the directory can be run with commands: 
+The already compiled **Asynchronous TCP Client** application included in the directory can be run with commands: 
 
 ```c
 ./cla
 ```
 
-To run the Client specifying an IP Address `193.168.1.10` and default port: 
+To run the **Client** specifying an IP Address `193.168.1.10` and default port: 
 ```c
 ./cla 193.168.1.10
 ```
 
-To run the Client specifying an IP Address `193.168.1.10` and port `8000`: 
+To run the **Client** specifying an IP Address `193.168.1.10` and port `8000`: 
 ```c
 ./cla 193.168.1.10 8000
 ```
 
-The Client can also connect using `localhost`
+The **Client** can also connect using `localhost`
 ```c
 ./cla localhost
 ```
 
-And the Client can also connect specifying the name of a PC e.g. `Joe-PC`
+And the **Client** can also connect specifying the name of a PC e.g. `Joe-PC`
 ```c
 ./cla Joe-PC
 ```
 
 ## Compiling:
 
-To compile the Asynchronous TCP Client code:
+To compile the **Asynchronous TCP Client** code:
 ```c
 gcc -o cla clientat.c
 ```

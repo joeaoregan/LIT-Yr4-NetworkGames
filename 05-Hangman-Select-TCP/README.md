@@ -1,8 +1,8 @@
 ```c
    _____________          T E A M 1 -  H A N G M A N
    |/      |        Year 4: Networked Games CA - Hangman
-   |   ___(")___                  26/11/2017
-   |      |_| 
+   |   ___(")___                  26/11/2017			Concurrent Server
+   |      |_| 							 Using select()
    |      /^\                    Joe O'Regan
    |    _// \\_                  Jason Foley
  __|___________                 Samantha Marah
@@ -17,7 +17,7 @@ This is a group assignment for the 4th year Networked Games module. The group co
 
 ## 5-Hangman-Select-TCP
 
-A concurrent version of the TCP Server using select(), to handle input from different client connections by one Server process
+A concurrent version of the **TCP Server** using `select()`, to handle input from different **Client** connections by one **Server** process
 
 ##### Files:
 
@@ -27,7 +27,7 @@ A concurrent version of the TCP Server using select(), to handle input from diff
 4. cli (Client Application)
 
 ##### Dependencies (Placed in root directory):
-Files that the Select Server is dependent on to compile:
+Files that the **Select Server** is dependent on to compile:
 
 1. DrawHangman.h
 2. Hangman.h
@@ -36,20 +36,20 @@ Files that the Select Server is dependent on to compile:
 5. TCPPlayHangman.h
 6. GameState.h
 
-Files the Client (Modified to work with the Select Server) is dependent on:
+Files the **Client** (Modified to work with the Select Server) is dependent on:
 
 0. None 
 
 ## Running:
 
-This Concurrent Server application will communicate with the included Client application
+This concurrent **Select Server** application will communicate with the included **Client** application
 
-To run the existing compiled Select Server with default port number `1066`:
+To run the existing compiled **Select Server** with default port number `1066`:
 ```c
 ./srv
 ```
 
-To run Server specifying the port number to listen for client connections on e.g. port `8000`:
+To run **Server** specifying the port number to listen for **Client** connections on e.g. port `8000`:
 ```c
 ./srv 8000
 ```
@@ -57,40 +57,39 @@ To run Server specifying the port number to listen for client connections on e.g
 ###### With Select Server application running, the Client must connect to the same port
 
 
-The already compiled Client application included in the directory can be run with commands: 
-
+The already compiled **Client** application included in the directory can be run with commands:
 ```c
 ./cli
 ```
 
-To run the Client specifying an IP Address `193.168.1.10` and default port: 
+To run the **Client** specifying an IP Address `193.168.1.10` and default port: 
 ```c
 ./cli 193.168.1.10
 ```
 
-To run the Client specifying an IP Address `193.168.1.10` and port `5000`: 
+To run the **Client** specifying an IP Address `193.168.1.10` and port `5000`: 
 ```c
 ./cli 193.168.1.10 5000
 ```
 
-The Client can also connect using `localhost`
+The **Client** can also connect using `localhost`
 ```c
 ./cli localhost
 ```
 
-And the Client can also connect specifying the name of a PC e.g. `Joe-PC`
+And the **Client** can also connect specifying the name of a PC e.g. `Joe-PC`
 ```c
 ./cli Joe-PC
 ```
 
 ## Compiling:
 
-To compile the Select Server code (with the dependent files in parent directory):
+To compile the **Select Server** code (with the dependent files in parent directory):
 ```c
 gcc -o srv servers.c
 ```
 
-To compile the Select Client code:
+To compile the **Select Client** code:
 ```c
 gcc -o cli clients.c
 ```

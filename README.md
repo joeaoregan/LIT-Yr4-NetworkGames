@@ -1,6 +1,6 @@
 ```c
    _____________          T E A M 1 -  H A N G M A N
-   |/      |        Year 4: Networked Games CA - Hangman
+   |/      |        Year 4 - Networked Games CA - Hangman
    |   ___(")___                  26/11/2017
    |      |_| 
    |      /^\                    Joe O'Regan
@@ -56,11 +56,11 @@ The Modified Client using `send()` and `recv()` instead of read() and write() to
 
 ##### 4-Fork-Server-TCP
 
-A concurrent version of the TCP Server using fork(), to fork a separate process to deal with each client connection
+A concurrent version of the TCP Server using `fork()`, to fork a separate process to deal with each client connection
 
 ##### 5-Hangman-Select-TCP
 
-A concurrent version of the TCP Server using select(), to handle input from different client connections by one Server process
+A concurrent version of the TCP Server using `select()`, to handle input from different client connections by one Server process
 
 ##### 6-Hangman-UDP
 
@@ -68,11 +68,11 @@ The Modified Hangman Client and Server using `sendto()` and `recvfrom()` to comm
 
 ##### 7-Asynchronous-Client-TCP
 
-The Modified TCP Client that can handle input asynchronously from the socket and file descriptors using the ```select()``` function
+The Modified TCP Client that can handle input asynchronously from the socket and file descriptors using the `select()` function
 
 ##### 8-Hangman-Dual-Stack-TCP
 
-The Modified Hangman TCP Client and Server that can handle connections to and from IPv4 and IPv6 addresses
+The Modified Hangman TCP Client and Server that can handle connections to and from `IPv4` and `IPv6` addresses
 
 ###### Server:
 
@@ -95,6 +95,30 @@ A Modified UDP Client that can handle input asynchronously from socket and file 
 
 A concurrent version of the UDP Server using `fork()`, to fork a separate process on receiving data with recvfrom to deal with each client connection
 
+###### This socket is incomplete
+
 ## Running:
 
 For each listing or set of listings, see running and compile instructions in each folder
+###### Format:
+```c
+gcc -o <compiled-app-name> <source-code-file-name>
+```
+Ensure dependendent files are in the root directory
+
+## Header Files:
+
+1. **AddressFunctions.h** - Intended to hold address functions such as displaying an IP Address and Port number
+2. **CreateTCPSocket.h** - Functions to create and handle TCP sockets
+3. **CreateUDPSocket.h** - Funcions to create and handle UDP sockets
+4. **DrawHangman.h** - Draw the hangman graphics and display coloured text
+5. **GameState.h** - Functionality required to hold state for a game
+6. **HandleErrors.h** - Display Error messages, with exit status 
+7. **Hangman.h** - Functions to play Hangman common to both TCP and UDP
+8. **Socket.h**	- Socket Functins common to both TCP and UDP
+9. **TCPPlayHangman.h**	- Functions to play Hangman, modifying the original play_hangman() function using TCP
+10. **UDPPlayHangman.h** - Functions to play Hangman, modifying the original play_hangman() function using UDP
+
+## Other Files:
+
+1. **words** - Text file containing the various words the player should guess while playing the game

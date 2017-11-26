@@ -1,8 +1,8 @@
 ```c
    _____________          T E A M 1 -  H A N G M A N
    |/      |        Year 4: Networked Games CA - Hangman
-   |   ___(")___                  26/11/2017
-   |      |_| 
+   |   ___(")___                  26/11/2017			    Original
+   |      |_| 							Hangman Listings
    |      /^\                    Joe O'Regan
    |    _// \\_                  Jason Foley
  __|___________                 Samantha Marah
@@ -23,20 +23,20 @@ The Original Hangman code, unmodified with errors. Using `read()` and `write()` 
 3. words
 
 ## Running:
-To run the existing compiled Server:
+To run the existing compiled **Server**:
 ```c
 ./srv
 ```
-To run the existing compiled client: 
+To run the existing compiled **Client**: 
 ```c
 ./cli 127.0.0.1
 ```
 ## Compiling:
-To compile the client code:
+To compile the **Client** code:
 ```c
 gcc -o cli hangclient.c
 ```
-To compile the server code:
+To compile the **Server** code:
 ```c
 gcc -o srv hangserver_iter.c
 ```

@@ -1,8 +1,8 @@
 ```c
    _____________          T E A M 1 -  H A N G M A N
    |/      |        Year 4: Networked Games CA - Hangman
-   |   ___(")___                  26/11/2017
-   |      |_| 
+   |   ___(")___                  26/11/2017			Concurrent Server
+   |      |_| 							   Using fork()
    |      /^\                    Joe O'Regan
    |    _// \\_                  Jason Foley
  __|___________                 Samantha Marah
@@ -17,7 +17,7 @@ This is a group assignment for the 4th year Networked Games module. The group co
 
 ##  04. Fork Server TCP
 
-The Modified Client using `send()` and `recv()` instead of read() and write() to communicate with the server
+A concurrent version of the **TCP Server** using `fork()`, to fork a separate process to deal with each **Client** connection
 
 ##### Files:
 
@@ -36,27 +36,27 @@ Files that the client is dependent on to compile:
 
 ## Running:
 
-This Server application will communicate with the Client application from 2-Hangman-Modified-TCP
+This **Server** application will communicate with the included **Client** application (cli) from 2-Hangman-Modified-TCP
 
-To run the existing compiled Forking Server with default port number `1066`:
+To run the existing compiled **Forking Server** with default port number `1066`:
 ```c
 ./srv
 ```
-To run Server specifying the port number to listen for client connections on e.g. port `8000`:
+To run **Server** specifying the port number to listen for **Client** connections on e.g. port `8000`:
 ```c
 ./srv 8000
 ```
 
 ####### With Forking Server application running, the Client must connect to the same port
-The already compiled Modified Client application included in the directory can be run with command: 
+The already compiled **Client** application included in the directory can be run with command: 
 ```c
 ./srv
 ```
-Or see README.md in 02-Hangman-Modified-TCP for further Client running instructions
+Or see README.md in 02-Hangman-Modified-TCP for further **Client** running instructions
 
 ## Compiling:
 
-To compile the Forking Server code (with the dependent files in parent directory):
+To compile the **Forking Server** code (with the dependent files in parent directory):
 ```c
 gcc -o srv serverf.c
 ```
