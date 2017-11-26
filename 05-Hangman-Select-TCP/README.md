@@ -13,45 +13,52 @@ This is a group assignment for the 4th year Networked Games module. The group co
   * [Samantha Marah](https://github.com/jasfoley)
   * [Jason Foley](https://github.com/samanthamarah)
 
-![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/2ModifiedHangman.png "Modified Hangman Client and Server")
+![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/5HangmanSelectTCP.png "Modified Client using send() and recv()")
 
-##### 02-Hangman-Modified-TCP
+## 5-Hangman-Select-TCP
 
-Modified Hangman game, with graphics, coloured text, and functionality to set up sockets, and play the game separated to header files
+A concurrent version of the TCP Server using select(), to handle input from different client connections by one Server process
 
 ##### Files:
 
-1. clientm.c (Client code)
-2. serverm.c (Server code)
-3. cli (Client Application)
-4. srv (Server Application)
+1. servers.c (Select Server code)
+2. client.c (Client code)
+3. srv (Concurrent Server Application)
+4. cli (Client Application)
 
 ##### Dependencies (Placed in root directory):
-Files that the client is dependent on to compile:
+Files that the Select Server is dependent on to compile:
 
 1. DrawHangman.h
 2. Hangman.h
 3. CreateTCPSocket.h
+4. Socket.h
+5. TCPPlayHangman.h
+6. GameState.h
 
-Additional Server dependencies:
+Files the Client (Modified to work with the Select Server) is dependent on:
 
-1. Socket.h
-2. TCPPlayHangman.h
+0. None 
 
 ## Running:
 
-To run the existing compiled Server with default port number `1066`:
+This Concurrent Server application will communicate with the included Client application
+
+To run the existing compiled Select Server with default port number `1066`:
 ```c
 ./srv
 ```
+
 To run Server specifying the port number to listen for client connections on e.g. port `8000`:
 ```c
 ./srv 8000
 ```
 
-###### With Server application running, the Client must connect to the same port
+###### With Select Server application running, the Client must connect to the same port
 
-To run the existing compiled Client with default IP Address and default port number: 
+
+The already compiled Client application included in the directory can be run with commands: 
+
 ```c
 ./cli
 ```
@@ -78,14 +85,13 @@ And the Client can also connect specifying the name of a PC e.g. `Joe-PC`
 
 ## Compiling:
 
-To compile the Client code (with the dependent files in parent directory):
+To compile the Select Server code (with the dependent files in parent directory):
 ```c
-gcc -o cli clientm.c
+gcc -o srv servers.c
 ```
 
-To compile the server code:
+To compile the Select Client code:
 ```c
-gcc -o srv serverm.c
+gcc -o cli clients.c
 ```
 
-Where `cli` and `srv` are the names of the compiled programs

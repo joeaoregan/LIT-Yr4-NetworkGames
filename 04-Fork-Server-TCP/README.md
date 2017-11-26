@@ -1,16 +1,12 @@
-#     T E A M 1
-#   H A N G M A N
-# . . . _ _ _ _ _ _ _ _ _ 
-# . . . |/ . . . . . . |
-# . . . |. . . _ _ _(")_ _ _
-# . . . |.  . . . . . |_|
-# . . . |. . . . . . /^\
-# . . . |. . . . _// . \ \ _
-# _ _ |_ _ _ _ _ _ _ _
-# 
-# Year 4: Networked Games CA - Hangman
-
-## 26/11/2017
+```c
+   _____________          T E A M 1 -  H A N G M A N
+   |/      |        Year 4: Networked Games CA - Hangman
+   |   ___(")___                  26/11/2017
+   |      |_| 
+   |      /^\                    Joe O'Regan
+   |    _// \\_                  Jason Foley
+ __|___________                 Samantha Marah
+```
 
 This is a group assignment for the 4th year Networked Games module. The group consists of:
   * [Joe O'Regan](https://github.com/joeaoregan)
@@ -42,8 +38,6 @@ Files that the client is dependent on to compile:
 
 This Server application will communicate with the Client application from 2-Hangman-Modified-TCP
 
-####### With Forking Server application running, the Client must connect to the same port
-
 To run the existing compiled Forking Server with default port number `1066`:
 ```c
 ./srv
@@ -53,7 +47,7 @@ To run Server specifying the port number to listen for client connections on e.g
 ./srv 8000
 ```
 
-###### With Server application running, the Client must connect to the same port
+####### With Forking Server application running, the Client must connect to the same port
 The already compiled Modified Client application included in the directory can be run with command: 
 ```c
 ./srv
