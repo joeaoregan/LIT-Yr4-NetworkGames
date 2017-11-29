@@ -15,7 +15,7 @@ This is a group assignment for the 4th year Networked Games module. The group co
   * [Jason Foley](https://github.com/samanthamarah)
 
 ![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/9AsynchronousClientUDP.png "Asynchronous UDP Client")
-UDP Client handling asynchronous inputs using select() 
+###### UDP Client handling asynchronous inputs using select() 
 
 ## 9-Asynchronous-Client-UDP
 

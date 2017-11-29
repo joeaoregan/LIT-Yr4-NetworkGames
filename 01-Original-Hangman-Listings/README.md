@@ -14,9 +14,9 @@ This is a group assignment for the 4th year Networked Games module. The group co
   * [Jason Foley](https://github.com/samanthamarah)
 
 ![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/1OriginalHangmanListings.png "Original Hangman Client and Server")
-Original Hangman Game
+###### Original Hangman Game
 ![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/WireShark/1WiresharkCapture.png "Original Hangman Client and Server Communication")
-Original Hangman Client and Server communication
+###### Original Hangman Client and Server communication
 
 ## 1-Original-Hangman-Listings
 
@@ -41,6 +41,8 @@ To run the existing compiled **Client**:
 ```c
 ./cli 127.0.0.1
 ```
+The words file must be in the same directory
+
 ## Compiling:
 To compile the **Client** code:
 ```c
