@@ -27,6 +27,7 @@
 #include <string.h>			// strlen()
 #include <stdlib.h>			// exit(), rand(), srand()
 #include <time.h>			// time(), Seed the random number
+#include <unistd.h>			// write(), read(), close()
 #include "../DrawHangman.h"		// Draw graphics and add colour, needs to be included before Hangman.h
 #include "../Hangman.h"			// Functions to play hangman
 #include "../CreateUDPSocket.h"		// Functions to create and use UDP sockets
@@ -55,7 +56,7 @@ int main (int argc, char * argv []) {									// Option to specify port as a com
 			printf("Username received: %s%s%s\n",BLUE,username,NORM);			// Format and display the username
 		}
 
-		//if(getUserNameUDP(sock,username,cliAddr)) playHangmanUDP(sock,sock,username);		// UDPPlayHangman.h Play the game after receiving username FREEZES
+		//if(getUserNameUDP(sock,username,cliAddr)) playHangmanUDP(sock,sock,username);		// UDPPlayHangman.h: Loop - Play the game after receiving username FREEZES
 
 		playHangmanUDP(sock,sock,username);
 

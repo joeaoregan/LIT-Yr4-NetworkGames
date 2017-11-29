@@ -18,7 +18,6 @@
 
 #include <errno.h>
 
-int checkGuessUDP(char* buf, char* word, char* part, char* guess, int lives);
 void playHangmanUDP(int in, int out, char* name);
 
 struct sockaddr_in cliAddr;									// IPv4 address structure
@@ -53,8 +52,7 @@ void playHangmanUDP(int in, int out, char* name) {
 			break;
 		}
 
-		//lives = checkGuessUDP(outbuf, whole_word, part_word, guess, lives, name, port);
-		lives = checkGuessUDP(outbuf, whole_word, part_word, guess, lives);		// UDPPlayHangman.h: check client guess, and display formatted message on server side
+		checkGuess(outbuf, whole_word, part_word, guess, &lives, name, CLI_PORT);	// Hangman.h: check client guess, and display formatted message on server side (29/11/2017 Function used by both TCP and UDP)
 
 		if ((game_state = checkGameState(whole_word, part_word, lives)) == 'L')		// Hangman.h: W = all letters guessed, L = if out of guesses/lives, otherwise return I
 			strcpy(part_word, whole_word);						// Copy the selected word, to be sent to the client, to show Player
@@ -76,23 +74,23 @@ void playHangmanUDP(int in, int out, char* name) {
 	perform checks for no user input
 */
 int getUserNameUDP(int s, char* name, struct sockaddr_in cliAddr) {
-	int count;									// Count of bytes received
-	int len = sizeof(cliAddr);							// Size of IPv4 client address stucture
+	int count;										// Count of bytes received
+	int len = sizeof(cliAddr);								// Size of IPv4 client address stucture
 	char input[LINESIZE];
 
-	if((count = recvfrom(s,input,LINESIZE,0,(struct sockaddr*)&cliAddr,&len))==-1) {// Server receives 1st, recvfrom returns -1 if error
-		printf("No more input from %s%s%s\n",BLUE,input,NORM);			// Display end of input message
-		return 0;								// Return false, leaving the function without errors,
-	} else {									// if no more input is received. Otherwise, 
-		input[count-1] = '\0';							// terminate the end of the string (before the '\n' new line character)
-		printf("Username received: %s%s%s\n",BLUE,input,NORM);			// Format and display the username
+	if((count = recvfrom(s,input,LINESIZE,0,(struct sockaddr*)&cliAddr,&len))==-1) {	// Server receives 1st, recvfrom returns -1 if error
+		printf("No more input from %s%s%s\n",BLUE,input,NORM);				// Display end of input message
+		return 0;									// Return false, leaving the function without errors,
+	} else {										// if no more input is received. Otherwise, 
+		input[count-1] = '\0';								// terminate the end of the string (before the '\n' new line character)
+		printf("Username received: %s%s%s\n",BLUE,input,NORM);				// Format and display the username
 	}
 
-	strcpy(name, input);
+	strcpy(name, input);									// Copy the input username to the name string
 
 	printf("input: %s name: %s\n",input, name);
 
-	return 1;									// Return a user name has been created is true
+	return 1;										// Return a user name has been created is true
 }
 
 
@@ -102,32 +100,11 @@ int getUserNameUDP(int s, char* name, struct sockaddr_in cliAddr) {
 	Displaying an error if sendto() returns -1
 */
 void sendGuess(int s, char* guess, struct sockaddr_in server) {
-	int len = sizeof(server);							// size of the server address (should be passed in maybe)
+	int len = sizeof(server);								// size of the server address (should be passed in maybe)
 
-	if (sendto(s, guess, strlen(guess), 0,(struct sockaddr *) &server, len) == -1)	// Send the guess entered on the client to the Server
+	if (sendto(s, guess, strlen(guess), 0,(struct sockaddr *) &server, len) == -1)		// Send the guess entered on the client to the Server
 		displayErrMsg("sendto() Failed");
 }
 
-
-/*
-	SERVER UDP:
-	Check input from client, format it, and display on server side, depending on the guess, 
-	and decrement the number of lives if bad guess
-	Returns the number of lives to be set in the client state.
-
-//int checkGuessUDP(char* buf, char* word, char* part, char* guess, int lives, char* ip, int port) {
-int checkGuessUDP(char* buf, char* word, char* part, char* guess, int lives) {
-    if (!correctGuess(word, part, guess)) {
-        lives--;										// Functionality moved to Hangman.h. Incorrect guess: decrement number of lives. Good guess: copy the letter to the part word
-        //sprintf(buf, "%sBad Guess%s Received From Client %s/%d %s\n",RED,NORM,ip,port,guess);	// Format a bad guess received, adding the ip and port of the client to identify
-        sprintf(buf, "%sBad Guess%s Received From Client %c\n",RED,NORM,guess[0]);		// Format a bad guess received, adding the ip and port of the client to identify
-    }
-    //else sprintf(buf,"%sGood Guess%s Received From Client %s/%d %s\n",GREEN,NORM,ip,port,guess);// Format a good guess received, adding the ip and port of the client to identify
-    else sprintf(buf,"%sGood Guess%s Received From Client %c\n",GREEN,NORM,guess[0]);		// Format a good guess received, adding the ip and port of the client to identify
-    write(0, buf, strlen(buf));									// Write the guess received to standard output, displaying on Server side
-
-    return lives;										// Return the number of guesses/lives remaining
-}
-*/
 
 #endif	/* __PLAY_HANGMAN_UDP */

@@ -14,6 +14,7 @@ This is a group assignment for the 4th year Networked Games module. The group co
   * [Jason Foley](https://github.com/samanthamarah)
 
 ![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/5HangmanSelectTCP.png "Select Server Handling 2 Clients")
+Concurrent Server using select() to handle multiple Client connections
 
 ## 5-Hangman-Select-TCP
 
@@ -21,10 +22,13 @@ A concurrent version of the **TCP Server** using `select()`, to handle input fro
 
 ##### Files:
 
-1. servers.c (Select Server code)
-2. client.c (Client code)
-3. srv (Concurrent Server Application)
-4. cli (Client Application)
+Code and application included in folder:
+|  | File        | Description           |
+| --- | ------------- |-------------|
+| 1. | **servers.c** | Concurrent Select Server Code |
+| 2. | **client.c** | Test: Client Code |
+| 3. | **srv** | Concurrent Select Server Application |
+| 4. | **cli** | Test: Client Application |
 
 ##### Dependencies (Placed in root directory):
 Files that the **Select Server** is dependent on to compile:

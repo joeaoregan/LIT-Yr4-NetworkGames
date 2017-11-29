@@ -14,6 +14,7 @@ This is a group assignment for the 4th year Networked Games module. The group co
   * [Jason Foley](https://github.com/samanthamarah)
 
 ![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/4ForkServerTCP.png "Concurrent Server using fork()")
+Concurrent Server using fork() to handle multiple Client connections
 
 ##  04. Fork Server TCP
 
@@ -21,9 +22,12 @@ A concurrent version of the **TCP Server** using `fork()`, to fork a separate pr
 
 ##### Files:
 
-1. serverf.c (code)
-2. srv (Forking Server Application)
-3. cli (2-Hangman-Modified-TCP Client Application)
+Code and application included in folder:
+|  | File        | Description           |
+| --- | ------------- |-------------|
+| 1. | **serverf.c** | Concurrent Forking Server Code |
+| 2. | **srv** | Concurrent Forking Server Application |
+| 3. | **cli** | Test: Client Application |
 
 ##### Dependencies (Placed in root directory):
 Files that the client is dependent on to compile:

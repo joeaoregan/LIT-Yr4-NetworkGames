@@ -13,14 +13,23 @@ This is a group assignment for the 4th year Networked Games module. The group co
   * [Samantha Marah](https://github.com/jasfoley)
   * [Jason Foley](https://github.com/samanthamarah)
 
+![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/1OriginalHangmanListings.png "Original Hangman Client and Server")
+Original Hangman Game
+![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/WireShark/1WiresharkCapture.png "Original Hangman Client and Server Communication")
+Original Hangman Client and Server communication
+
 ## 1-Original-Hangman-Listings
 
 The Original Hangman code, unmodified with errors. Using `read()` and `write()` to communicate
 
 ##### Files:
-1. hangclient.c
-2. hangserver_iter.c
-3. words
+
+Code and application included in folder:
+|  | File        | Description           |
+| --- | ------------- |-------------|
+| 1. | **hangserver_iter.c** | Original Server Code (Unchanged) |
+| 2. | **hangclient.c** | Original Client Code (Unchanged) |
+| 3. | **words** | List of words to randomly from |
 
 ## Running:
 To run the existing compiled **Server**:

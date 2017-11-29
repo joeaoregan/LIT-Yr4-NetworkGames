@@ -25,7 +25,6 @@
 #include <netdb.h>
 #include <string.h>
 #include "Hangman.h"
-#include "AddressFunctions.h"
 #include "HandleErrors.h"							// Display Error messages
 #include "Socket.h"
 

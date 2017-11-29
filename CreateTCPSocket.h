@@ -21,10 +21,9 @@
 #include <arpa/inet.h>									// inet_ntop()
 #include <netdb.h>									// gethostbyname()
 #include <string.h>									// strcpy(), bzero()
-#include "Hangman.h"
-#include "AddressFunctions.h"
+#include "Hangman.h"									// Functions to play hangman common to TCP and UDP
 #include "HandleErrors.h"								// Display error messages
-#include "Socket.h"
+#include "Socket.h"									// Functions to create sockets common to TCP and UDP
 
 #define	max(a,b) ((a) > (b) ? (a) : (b))						// Return the largest of 2 numbers
 

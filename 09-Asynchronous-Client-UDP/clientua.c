@@ -20,6 +20,7 @@
 #include <stdio.h>										// printf(), sscanf()
 #include <string.h>										// strlen(), strcmp()
 #include <stdlib.h>										// rand(), exit()
+#include <unistd.h>										// write(), read(), close()
 #include "../DrawHangman.h"									// Function to draw hangman graphics (include before Hangman.h)
 #include "../Hangman.h"
 #include "../CreateUDPSocket.h"

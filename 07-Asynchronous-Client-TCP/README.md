@@ -14,6 +14,7 @@ This is a group assignment for the 4th year Networked Games module. The group co
   * [Jason Foley](https://github.com/samanthamarah)
 
 ![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/7AsynchronousClientTCP.png "Asynchronous TCP Client")
+TCP Client handling asynchronous inputs using select()
 
 
 ## 7-Asynchronous-Client-TCP
@@ -22,9 +23,12 @@ The **Asynchronous TCP Client** handles input asynchronously from the socket and
 
 ##### Files:
 
-1. clientat.c (Asynchronous TCP Client code)
-2. cla (Asynchronous Client Application)
-3. srvf (Forking Server Application (04-Fork-Server-TCP))
+Code and application included in folder:
+|  | File        | Description           |
+| --- | ------------- |-------------|
+| 1. | **clientat.c** | Asynchronous TCP Client Code |
+| 2. | **cla** | Asynchronous Client Application |
+| 3. | **srvf** | Forking Server Application (04-Fork-Server-TCP) |
 
 ##### Dependencies (Placed in root directory):
 Files the Asynchronous Client is dependent on:

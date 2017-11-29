@@ -14,16 +14,20 @@ This is a group assignment for the 4th year Networked Games module. The group co
   * [Jason Foley](https://github.com/samanthamarah)
 
 ![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/3ModifiedClientSendRecv.png "Modified Client using send() and recv()")
+Client using send() and recv() communicating with Server using read() and write()
 
 ## 3. Client Send Recv TCP
 
-The Modified **Client** using `send()` and `recv()` instead of read() and write() to communicate with the server
+Modified **Client** using `send()` and `recv()` instead of `read()` and `write()` to communicate with the server
 
 ##### Files:
 
-1. clientsr.c (code)
-2. cli (Client Application)
-3. srv (2-Hangman-Modified-TCP Server Application)
+Code and application included in folder:
+|  | File        | Description           |
+| --- | ------------- |-------------|
+| 1. | **clientsr.c** | Client Code (send(), recv() |
+| 2. | **cli.c** | Client Application |
+| 3. | **srv** | Server Application (2-Hangman-Modified-TCP) |
 
 ##### Dependencies (Placed in root directory):
 Files that the **Client** is dependent on to compile:

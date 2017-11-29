@@ -27,24 +27,6 @@
 #include <ctype.h>										// tolower(): take uppercase and lowercase input from client
 
 void sendPartWord(int out, char* outbuf, char* part_word, int lives);				// Function to format and send the part word and lives data to client as a string
-//int checkGuess(char* buf, char* word, char* part, char* guess, int lives, char* name, int port);
-
-/*
-	SERVER TCP:
-	Check input from client, format it, and display on server side, depending on the guess, 
-	and decrement the number of lives if bad guess
-	Returns the number of lives to be set in the client state.
-*/
-int checkGuess(char* buf, char* word, char* part, char* guess, int* lives, char* ip, int port) {
-    if (!correctGuess(word, part, guess)) {							// Hangman.h: Good guess: copy letter to part word
-        (*lives)--;										// Incorrect guess: decrement lives. 
-        sprintf(buf, "%sBad Guess%s Received From Client %s/%d %s\n",RED,NORM,ip,port,guess);	// Format a bad guess received, adding the ip and port of the client to identify
-    }
-    else sprintf(buf,"%sGood Guess%s Received From Client %s/%d %s\n",GREEN,NORM,ip,port,guess);// Format a good guess received, adding the ip and port of the client to identify
-    write(0, buf, strlen(buf));									// Write the guess received to standard output, displaying on Server side
-
-    return (*lives);										// Return the number of guesses/lives remaining
-}
 
 
 /*--------------------------------------- PLAY HANGMAN -----------------------------------------*/

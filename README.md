@@ -1,8 +1,8 @@
 ```c
    _____________          T E A M 1 -  H A N G M A N
-   |/      |        Year 4 - Networked Games CA - Hangman
-   |   ___(")___                  26/11/2017
-   |      |_| 
+   |/      |        Year 4 - Networked Games CA - Hangman                29/11/2017
+   |   ___(")___                  26/11/2017                    Updated with report comments
+   |      |_|                                                        and image captions
    |      /^\                    Joe O'Regan
    |    _// \\_                  Jason Foley
  __|___________                 Samantha Marah
@@ -36,18 +36,20 @@ This online text based version of Hangman includes the following features:
 Each folder contains a separate set of sockets, or individual Client and Server that is interchangeable with others.
 Matching pairs of sockets have Hangman in the folder title, specific Client/Server sockets are specified in the title.
 
-######  1. [Original Hangman Listings](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/01-Original-Hangman-Listings)
-######  2. [Hangman Modified TCP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/02-Hangman-Modified-TCP)
-######  3. [Client Send Recv TCP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/03-Client-SendRecv-TCP)
-######  4. [Fork Server TCP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/04-Fork-Server-TCP)
-######  5. [Hangman Select TCP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/05-Hangman-Select-TCP)
-######  6. [Hangman UDP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/06-Hangman-UDP)
-######  7. [Asynchronous Client TCP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/07-Asynchronous-Client-TCP)
-######  8. [Hangman Dual Stack TCP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/08-Hangman-Dual-Stack-TCP)
-######  9. [Asynchronous Client UDP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/09-Asynchronous-Client-UDP)
-######  10. [Fork Server UDP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/10-Fork-Server-UDP)
+1. [Original Hangman Listings](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/01-Original-Hangman-Listings)
+2. [Hangman Modified TCP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/02-Hangman-Modified-TCP)
+3. [Client Send Recv TCP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/03-Client-SendRecv-TCP)
+4. [Fork Server TCP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/04-Fork-Server-TCP)
+5. [Hangman Select TCP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/05-Hangman-Select-TCP)
+6. [Hangman UDP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/06-Hangman-UDP)
+7. [Asynchronous Client TCP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/07-Asynchronous-Client-TCP)
+8. [Hangman Dual Stack TCP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/08-Hangman-Dual-Stack-TCP)
+9. [Asynchronous Client UDP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/09-Asynchronous-Client-UDP)
+10. [Fork Server UDP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/10-Fork-Server-UDP)
 
 ---
+
+## Description:
 
 ##### 1-Original-Hangman-Listings
 
@@ -81,14 +83,14 @@ The Modified TCP Client that can handle input asynchronously from the socket and
 
 The Modified Hangman TCP Client and Server that can handle connections to and from `IPv4` and `IPv6` addresses
 
-###### Server:
+* ###### Server:
 
-Dual stack Server can accept connections from Clients connecting with IPv4 or IPv6 sockets. 
+  Dual stack Server can accept connections from Clients connecting with IPv4 or IPv6 sockets. 
 Using `createDualStackServerSocket()` a `sockaddr_in6` structure is used to store an `IPv6` or `IPv4` address (formatted as IPv6)
 
-###### Client:
+* ###### Client:
 
-The Dual stack client, can take an IPv4 or IPv6 command line parameter and create the appropriate socket, before connecting to the Server. 
+  The Dual stack client, can take an IPv4 or IPv6 command line parameter and create the appropriate socket, before connecting to the Server. 
 The Client communicates with the Server using `read()` and `write()` if an `IPv4` address is supplied, 
 `createClientSocketType()` uses a `sockaddr_in` address structure, for an `IPv6` address a `sockaddr_in6` address structure is created, 
 `createTCPClientDualStack()` uses the IP address parameter, and the port number and calls `getaddrinfo()` 
@@ -109,7 +111,7 @@ A concurrent version of the UDP Server using `fork()`, to fork a separate proces
 ## Running:
 
 For each listing or set of listings, see running and compile instructions in each folder
-###### Format:
+###### Command Format:
 ```c
 gcc -o <compiled-app-name> <source-code-file-name>
 ```
@@ -119,17 +121,21 @@ Ensure dependendent files are in the root directory
 
 ## Header Files:
 
-1. **AddressFunctions.h** - Intended to hold address functions such as displaying an IP Address and Port number
-2. **CreateTCPSocket.h** - Functions to create and handle TCP sockets
-3. **CreateUDPSocket.h** - Funcions to create and handle UDP sockets
-4. **DrawHangman.h** - Draw the hangman graphics and display coloured text
-5. **GameState.h** - Functionality required to hold state for a game
-6. **HandleErrors.h** - Display Error messages, with exit status 
-7. **Hangman.h** - Functions to play Hangman common to both TCP and UDP
-8. **Socket.h**	- Socket Functins common to both TCP and UDP
-9. **TCPPlayHangman.h**	- Functions to play Hangman, modifying the original play_hangman() function using TCP
-10. **UDPPlayHangman.h** - Functions to play Hangman, modifying the original play_hangman() function using UDP
+| File        | Description           |
+| ------------- |-------------|
+| 1. **AddressFunctions.h** | Intended to hold address functions such as displaying an *IP Address* and *Port number* |
+| 2. **CreateTCPSocket.h** | Functions to create and handle *TCP* sockets |
+| 3. **CreateUDPSocket.h** | Funcions to create and handle *UDP* sockets |
+| 4. **DrawHangman.h** | Draw the hangman ASCII graphics and display coloured text |
+| 5. **GameState.h** | Functionality required to hold state for a game |
+| 6. **HandleErrors.h** | Display Error messages, with exit status |
+| 7. **Hangman.h** | Functions to play Hangman common to both *TCP* and *UDP* |
+| 8. **Socket.h** | Socket Functions common to both *TCP* and *UDP* |
+| 9. **TCPPlayHangman.h** | Functions to play Hangman, modifying the original play_hangman() function using *TCP* |
+| 10. **UDPPlayHangman.h** | Functions to play Hangman, modifying the original play_hangman() function using *UDP* |
 
 ## Other Files:
 
-1. **words** - Text file containing the various words the player should guess while playing the game
+| File        | Description           |
+| ------------- |-------------|
+| 1. **words** | Text file containing the various words the player should guess while playing the game |

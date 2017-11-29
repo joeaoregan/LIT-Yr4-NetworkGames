@@ -15,6 +15,7 @@ This is a group assignment for the 4th year Networked Games module. The group co
   * [Jason Foley](https://github.com/samanthamarah)
 
 ![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/9AsynchronousClientUDP.png "Asynchronous UDP Client")
+UDP Client handling asynchronous inputs using select() 
 
 ## 9-Asynchronous-Client-UDP
 
@@ -22,10 +23,13 @@ An **Asynchronous UDP Client** that can handle input asynchronously from socket 
 
 ##### Files:
 
-1. clientua.c (Asynchronous UDP Client code)
-2. serverua.c (Test UDP Server Code)
-2. cli (Asynchronous UDP Client Application)
-3. srv (Test UDP Server Application)
+Code and application included in folder:
+|  | File        | Description           |
+| --- | ------------- |-------------|
+| 1. | **clientua.c** | Asynchronous UDP Client code |
+| 2. | **serverua.c** | TEST: UDP Server code |
+| 3. | **cli** | synchronous UDP Client application |
+| 4. | **srv** | TEST: UDP Server application |
 
 ##### Dependencies (Placed in root directory):
 Files the **Asynchronous UDP Client** is dependent on:

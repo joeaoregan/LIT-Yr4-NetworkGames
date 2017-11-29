@@ -10,6 +10,7 @@
 #include <stdio.h>											// printf(), sscanf()
 #include <string.h>											// strlen(), strcmp()
 #include <stdlib.h>											// rand(), exit()
+#include <unistd.h>											// write(), read(), close()
 #include "../DrawHangman.h"										// Function do draw hangman graphics (needs to be included before Hangman.h"
 #include "../Hangman.h"											// Functions to play Hangman game
 #include "../CreateUDPSocket.h"										// Functions to create and handle UDP Client and Server sockets

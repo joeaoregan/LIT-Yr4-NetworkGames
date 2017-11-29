@@ -14,9 +14,9 @@ This is a group assignment for the 4th year Networked Games module. The group co
   * [Jason Foley](https://github.com/samanthamarah)
 
 ![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/8HangmanDualStackTCP.png "Dual Stack Client and Server")
-###### Dual Stack Client and Server communicating over IPv4
+Dual Stack Client and Server communicating over IPv4
 ![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/8HangmanDualStackTCPIPv6.png "Dual Stack Client and Server")
-###### Dual Stack Client and Server communicating over IPv6
+Dual Stack Client and Server communicating over IPv6
 
 ## 8-Hangman-Dual-Stack-TCP
 
@@ -37,10 +37,13 @@ creating an `addrinfo` address structure from which the address family can be de
 
 ##### Files:
 
-1. serverds.c (Dual Stack Server Code)
-2. clientds.c (Dual Stack Client code)
-4. srv (Dual Stack Server Application)
-3. cli (Dual Stack Client Application)
+Code and application included in folder:
+|  | File        | Description           |
+| --- | ------------- |-------------|
+| 1. | **serverds.c** | Dual Stack Server Code |
+| 2. | **clientds.c** | Dual Stack Client Code |
+| 3. | **srv** | Dual Stack Server Application |
+| 4. | **cli** | Dual Stack Client Application |
 
 ##### Dependencies (Placed in root directory):
 Files the Dual Stack Server is dependent on: 

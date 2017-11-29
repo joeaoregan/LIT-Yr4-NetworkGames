@@ -14,6 +14,7 @@ This is a group assignment for the 4th year Networked Games module. The group co
   * [Jason Foley](https://github.com/samanthamarah)
 
 ![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/2ModifiedHangman.png "Modified Hangman Client and Server")
+Client and Server communicating over TCP
 
 ## 02-Hangman-Modified-TCP
 
@@ -21,10 +22,13 @@ This is a group assignment for the 4th year Networked Games module. The group co
 
 ##### Files:
 
-1. clientm.c (Client code)
-2. serverm.c (Server code)
-3. cli (Client Application)
-4. srv (Server Application)
+Code and application included in folder:
+|  | File        | Description           |
+| --- | ------------- |-------------|
+| 1. | **serverm.c** | Modified Server Code |
+| 2. | **clientm.c** | Modified Client Code |
+| 3. | **srv** | Server Application |
+| 4. | **cli** | Client Application |
 
 ##### Dependencies (Placed in root directory):
 Files that the client is dependent on to compile:
