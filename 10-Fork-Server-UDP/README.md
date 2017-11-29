@@ -27,7 +27,7 @@ A concurrent version of the **UDP Server** using `fork()`, to fork a separate pr
 
 Code and application included in folder:
 | No. | File | Description |
-| --- | ------------- |-------------|
+| --- | --- | --- |
 | 1 | **serveruf.c** | UDP Fork Server Code |
 | 2 | **clientua.c** | TEST: Asynchronous UDP Client Code |
 | 3 | **srv** | UDP Fork Server Application |

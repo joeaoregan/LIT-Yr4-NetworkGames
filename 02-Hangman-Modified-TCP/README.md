@@ -28,7 +28,7 @@ Client and Server communicating over TCP WireShark Capture
 
 Code and application included in folder:
 | No. | File | Description |
-| --- | ------------- |-------------|
+| --- | --- | --- |
 | 1 | **serverm.c** | Modified Server Code |
 | 2 | **clientm.c** | Modified Client Code |
 | 3 | **srv** | Server Application |

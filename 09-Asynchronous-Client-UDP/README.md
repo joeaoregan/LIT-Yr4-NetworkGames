@@ -25,7 +25,7 @@ An **Asynchronous UDP Client** that can handle input asynchronously from socket 
 
 Code and application included in folder:
 | No. | File | Description |
-| --- | ------------- |-------------|
+| --- | --- | --- |
 | 1 | **clientua.c** | Asynchronous UDP Client code |
 | 2 | **serverua.c** | TEST: UDP Server code |
 | 3 | **cli** | synchronous UDP Client application |

@@ -28,7 +28,7 @@ A Hangman **UDP Client** and **UDP Server** using `sendto()` and `recvfrom()` to
 
 Code and application included in folder:
 | No. | File | Description |
-| --- | ------------- |-------------|
+| --- | --- | --- |
 | 1 | **serveru.c** | UDP Server Code |
 | 2 | **clientu.c** | UDP Client Code |
 | 3 | **srv** | UDP Server Application |

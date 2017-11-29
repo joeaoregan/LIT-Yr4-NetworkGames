@@ -24,7 +24,7 @@ Modified **Client** using `send()` and `recv()` instead of `read()` and `write()
 
 Code and application included in folder:
 | No. | File  | Description |
-| --- | ------------- |-------------|
+| --- | --- | --- |
 | 1 | **clientsr.c** | Client Code (send(), recv() |
 | 2 | **cli.c** | Client Application |
 | 3 | **srv** | Server Application (2-Hangman-Modified-TCP) |

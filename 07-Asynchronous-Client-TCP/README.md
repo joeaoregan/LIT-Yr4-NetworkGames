@@ -25,7 +25,7 @@ The **Asynchronous TCP Client** handles input asynchronously from the socket and
 
 Code and application included in folder:
 | No. | File | Description |
-| --- | ------------- |-------------|
+| --- | --- | --- |
 | 1 | **clientat.c** | Asynchronous TCP Client Code |
 | 2 | **cla** | Asynchronous Client Application |
 | 3 | **srvf** | Forking Server Application (04-Fork-Server-TCP) |

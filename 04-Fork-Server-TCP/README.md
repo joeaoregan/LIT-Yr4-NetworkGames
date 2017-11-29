@@ -24,7 +24,7 @@ A concurrent version of the **TCP Server** using `fork()`, to fork a separate pr
 
 Code and application included in folder:
 | No. | File | Description |
-| --- | ------------- |-------------|
+| --- | --- | --- |
 | 1 | **serverf.c** | Concurrent Forking Server Code |
 | 2 | **srv** | Concurrent Forking Server Application |
 | 3 | **cli** | Test: Client Application |

@@ -39,7 +39,7 @@ creating an `addrinfo` address structure from which the address family can be de
 
 Code and application included in folder:
 | No.| File | Description |
-| --- | ------------- |-------------|
+| --- | --- | --- |
 | 1 | **serverds.c** | Dual Stack Server Code |
 | 2 | **clientds.c** | Dual Stack Client Code |
 | 3 | **srv** | Dual Stack Server Application |
