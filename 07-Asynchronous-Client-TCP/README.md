@@ -24,7 +24,7 @@ The **Asynchronous TCP Client** handles input asynchronously from the socket and
 ##### Files:
 
 Code and application included in folder:
-|  | File        | Description           |
+| --- | File        | Description           |
 | --- | ------------- |-------------|
 | 1. | **clientat.c** | Asynchronous TCP Client Code |
 | 2. | **cla** | Asynchronous Client Application |

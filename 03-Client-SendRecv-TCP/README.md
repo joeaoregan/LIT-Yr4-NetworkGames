@@ -23,7 +23,7 @@ Modified **Client** using `send()` and `recv()` instead of `read()` and `write()
 ##### Files:
 
 Code and application included in folder:
-|  | File        | Description           |
+| --- | File        | Description           |
 | --- | ------------- |-------------|
 | 1. | **clientsr.c** | Client Code (send(), recv() |
 | 2. | **cli.c** | Client Application |

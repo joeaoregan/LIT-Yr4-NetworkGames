@@ -15,6 +15,10 @@ This is a group assignment for the 4th year Networked Games module. The group co
 
 ![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/2ModifiedHangman.png "Modified Hangman Client and Server")
 Client and Server communicating over TCP
+![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/2HanmanModifiedTCPWireShark.png "Modified Hangman Client and Server (WireShark)")
+Client and Server communicating over TCP (WireShark)
+![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/WireShark/2HanmanModifiedTCPWireSharkCapture.png "Modified Hangman Client and Server WireShark Capture")
+Client and Server communicating over TCP WireShark Capture
 
 ## 02-Hangman-Modified-TCP
 
@@ -23,7 +27,7 @@ Client and Server communicating over TCP
 ##### Files:
 
 Code and application included in folder:
-|  | File        | Description           |
+| --- | File        | Description           |
 | --- | ------------- |-------------|
 | 1. | **serverm.c** | Modified Server Code |
 | 2. | **clientm.c** | Modified Client Code |

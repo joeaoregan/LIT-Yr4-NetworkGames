@@ -23,7 +23,7 @@
 	23/09/2017	Added include to clear warning on read(), write()
 			Added hangman graphic
 */
-// Joe O'Regan K00203642
+
 #include <stdio.h>								// printf(), snprintf()
 #include <string.h>								// strlen()
 #include <stdlib.h>								// exit()
@@ -48,8 +48,7 @@ int main (int argc, char * argv []) {
 			(argc == 1) ? SRV_IP : argv[1], 			// use default IP address of localhost if none entered
 			(argc == 3) ? atoi(argv[2]) : TCP_PORT_NUM);		// If 3 parameters are entered, use the given port number, otherwise, use default 1066
 
-//	drawHangmanNew();							// DrawHangman.h: Draw Hangman Graphic Representation of Number of Lives Left
-	drawHangmanLogo(TCP_CLIENT);						// DrawHangman.h: Draw Hangman Game Logo, with title set with enum
+	drawHangmanLogo(TCP_CLIENT);						// DrawHangman.h: Draw Hangman Game Logo, with title set by enum
 
 	/* ----------------------CONNECTED TO THE SERVER--------------------------
 	* Take a line containing the part word from the server and display it, 

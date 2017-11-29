@@ -15,6 +15,10 @@ This is a group assignment for the 4th year Networked Games module. The group co
 
 ![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/6HangmanUDP.png "UDP Server and Client")
 Server and Client communicating over UDP protocol
+![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/6HanmanUDPFullGame.png "UDP Server and Client")
+UDP Server and Client Full Game (WireShark)
+![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/WireShark/6HanmanUDPWireShark.png "UDP Server and Client")
+UDP Server and Client WireShark Capture
 
 ## 6-Hangman-UDP
 
@@ -23,7 +27,7 @@ A Hangman **UDP Client** and **UDP Server** using `sendto()` and `recvfrom()` to
 ##### Files:
 
 Code and application included in folder:
-|  | File        | Description           |
+| --- | File        | Description           |
 | --- | ------------- |-------------|
 | 1. | **serveru.c** | UDP Server Code |
 | 2. | **clientu.c** | UDP Client Code |

@@ -25,7 +25,7 @@ The Original Hangman code, unmodified with errors. Using `read()` and `write()` 
 ##### Files:
 
 Code and application included in folder:
-|  | File        | Description           |
+| --- | File        | Description |
 | --- | ------------- |-------------|
 | 1. | **hangserver_iter.c** | Original Server Code (Unchanged) |
 | 2. | **hangclient.c** | Original Client Code (Unchanged) |

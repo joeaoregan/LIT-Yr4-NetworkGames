@@ -21,7 +21,7 @@
 			Win/Lose message displayed, and sent to Client to display
 			Added hangman graphic
 */
-// Joe O'Regan K00203642
+
 #include <stdio.h>								// printf(), sprintf()
 #include <string.h>								// strcpy(), strlen()
 #include <stdlib.h>								// exit()
@@ -48,8 +48,7 @@ int main (int argc, char * argv []) {						// Option to specify port as a comman
 	// Formats Address as IPv4:
 	//sock = createTCPServerSocket((argc == 2) ? argv[1] : TCP_PORT);	// Create & bind the TCP socket, before proceeding to accept connections,
 										// with an option to enter the port number, or leave blank for default
-//	drawHangmanNew();							// DrawHangman.h: Draw the hangman graphic in colour
-	drawHangmanLogo(TCP_SERVER);						// Draw game logo with title
+	drawHangmanLogo(TCP_SERVER);						// DrawHangman.h: Draw game logo with title and colour
 
  	while (1) {								// Infinite Loop, as soon as one Client finishes game, another can play
  		client_len = sizeof(client);

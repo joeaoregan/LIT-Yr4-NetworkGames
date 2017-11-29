@@ -38,7 +38,7 @@ creating an `addrinfo` address structure from which the address family can be de
 ##### Files:
 
 Code and application included in folder:
-|  | File        | Description           |
+| --- | File        | Description           |
 | --- | ------------- |-------------|
 | 1. | **serverds.c** | Dual Stack Server Code |
 | 2. | **clientds.c** | Dual Stack Client Code |

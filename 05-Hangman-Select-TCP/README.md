@@ -23,7 +23,7 @@ A concurrent version of the **TCP Server** using `select()`, to handle input fro
 ##### Files:
 
 Code and application included in folder:
-|  | File        | Description           |
+| --- | File        | Description           |
 | --- | ------------- |-------------|
 | 1. | **servers.c** | Concurrent Select Server Code |
 | 2. | **client.c** | Test: Client Code |
