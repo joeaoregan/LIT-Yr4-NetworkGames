@@ -2,14 +2,9 @@
 	Joe O'Regan K00203642
 	17/11/2017
 
-	cliAsync.c
+	TEST PURPOSES: clientua.c
 
 	Asynchronous UDP Client
-
-	20171117	Asynchronous UDP client sends and receives, and terminates when finished
-	20171116	CreateUDPSocket.h - abstracts the UDP socket creation code
-	20171115	Fixed client continuing to connect, 
- 	  		add command line parameter check
 */
 
 #include <stdio.h>											// printf(), sscanf()

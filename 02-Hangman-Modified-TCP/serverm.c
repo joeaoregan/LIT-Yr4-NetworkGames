@@ -49,7 +49,7 @@ int main (int argc, char * argv []) {						// Option to specify port as a comman
 	//sock = createTCPServerSocket((argc == 2) ? argv[1] : TCP_PORT);	// Create & bind the TCP socket, before proceeding to accept connections,
 										// with an option to enter the port number, or leave blank for default
 //	drawHangmanNew();							// DrawHangman.h: Draw the hangman graphic in colour
-	drawHangmanLogo(1);
+	drawHangmanLogo(TCP_SERVER);						// Draw game logo with title
 
  	while (1) {								// Infinite Loop, as soon as one Client finishes game, another can play
  		client_len = sizeof(client);
@@ -63,3 +63,4 @@ int main (int argc, char * argv []) {						// Option to specify port as a comman
  		close(fd);							// Close the client socket
  	}
 }
+

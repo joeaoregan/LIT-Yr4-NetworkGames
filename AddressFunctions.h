@@ -26,12 +26,8 @@
 int get_ip_str(int ip, void *sa, char *s, size_t maxlen);
 
 
-/*
-	Server:
-	Display the IP address and Port the Server is running on
-*/
-void displayAddress(const struct sockaddr* address, FILE* stream){
-	// Test for address and stream
+/* Server: Display the IP address and Port the Server is running on */
+void displayAddress(const struct sockaddr* address, FILE* stream){		// Test for address and stream	
 	if (address == NULL || stream == NULL) return;				// return from function if the struct or file is empty
 	
 	void *numericAddress;							// Pointer to binary address
@@ -51,60 +47,35 @@ void displayAddress(const struct sockaddr* address, FILE* stream){
 		return;
 	}
 
-
-      fputs("Server now running on ", stdout);
-	//printf("displayAddress test\n");
-	// Convert binary to printable address
+	fputs("Server now running on ", stdout);  				// Convert binary to printable address
         if(get_ip_str(address->sa_family, (void *) address, addressBuffer, INET6_ADDRSTRLEN) == 1) {
-	//if (inet_ntop(address->sa_family, numericAddress, addressBuffer, sizeof(addressBuffer)) == NULL)
 		fputs("[invalid address]", stream); 				// Unable to convert
-	} else {
-		//printf("addressBuffer: %s:\n",addressBuffer);			// test value in addressBuffer
+	} else {r
 		printf("%s", addressBuffer);
-		//fprintf(stream, "%s", addressBuffer);
 		if (port != 0) fprintf(stream, "/%u", port);			// Zero not valid in socket address
 	}
 
       fputc('\n', stdout);							// Add new line
 }
 
-/*
-	Function to return the IP address for an IPv4 or IPv6 address structure
-	Taken from beej website, but not implemented
-*/
+/* Function to return the IP address for an IPv4 or IPv6 address structure. Taken from beej website, but not implemented */
 int get_ip_str(int ip, void *sa, char *s, size_t maxlen) {
     switch(ip) {
-        case AF_INET:								// If it's an IPv4 address set the address value in the IPv4 address structure
-            inet_ntop(AF_INET, &(((struct sockaddr_in *)sa)->sin_addr), s, maxlen);
-		//printf("4 get_ip_str s: %s", s);
-            break;
-		
-        case AF_INET6:								// If it's an IPv6 address set the address value in the IPv6 address stucture
-            inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)sa)->sin6_addr), s, maxlen);
-		//printf("6 get_ip_str s: %s", s);
-            break;
-
+        case AF_INET:				// If it's an IPv4 address set the address value in the IPv4 address structure
+            inet_ntop(AF_INET, &(((struct sockaddr_in *)sa)->sin_addr), s, maxlen); break;		
+        case AF_INET6:				// If it's an IPv6 address set the address value in the IPv6 address stucture
+            inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)sa)->sin6_addr), s, maxlen); break;
         default:
-            strncpy(s, "Unknown Address Family", maxlen);			// If it's neither, something is wrong
-
-            return 1;								// if unsuccessful 
+            strncpy(s, "Unknown Address Family", maxlen);	// If it's neither, something is wrong
+            return 1;						// if unsuccessful 
     }
-
-    return 0;									// successful
+    return 0;							// successful
 }
 
-
-//	Select Server
-	char ip[INET_ADDRSTRLEN];		// client IP 
-
-char* storeAndDisplayIP(struct sockaddr_in addr, char* ip, int port) {
-	// Store and display the client IP and Port 
-//	if (inet_ntop(AF_INET, &addr.sin_addr.s_addr, ip,sizeof(ip)) != NULL){	// inet_ntop() - Convert IP address to human readable form
-	if (inet_ntop(AF_INET, &addr.sin_addr.s_addr, ip, INET_ADDRSTRLEN) != NULL){	// inet_ntop() - Convert IP address to human readable form
-		printf("Handling client %s/%d \n", ip, port);			// Display the client IP address and port number
-		//client[i].port = CLI_PORT;
+char* storeAndDisplayIP(struct sockaddr_in addr, char* ip, int port) {	// Store and display the client IP and Port 	
+	if (inet_ntop(AF_INET, &addr.sin_addr.s_addr, ip, INET_ADDRSTRLEN) != NULL){// inet_ntop() Convert IP address to human readable form
+		printf("Handling client %s/%d \n", ip, port);		// Display the client IP address and port number
 	}	
 	printf("storeAndDisplayIP: %s\n", ip);
-
 	return ip;
 }

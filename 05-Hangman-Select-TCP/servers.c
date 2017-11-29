@@ -1,5 +1,5 @@
  /* 
- 	File: 		server.c
+ 	File: 		servers.c
 	Version: 	Select Server
 	Author:		Joe O'Regan
 

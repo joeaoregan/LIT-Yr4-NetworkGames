@@ -23,7 +23,7 @@
 	23/09/2017	Added include to clear warning on read(), write()
 			Added hangman graphic
 */
-
+// Joe O'Regan K00203642
 #include <stdio.h>								// printf(), snprintf()
 #include <string.h>								// strlen()
 #include <stdlib.h>								// exit()

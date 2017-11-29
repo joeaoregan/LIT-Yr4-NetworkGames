@@ -23,7 +23,7 @@
 #include "../Hangman.h"										// Functions to play hangman
 #include "../CreateUDPSocket.h"									// Functions to create and use UDP sockets
 #include "../Socket.h"										// Socket functions intended for use with both TCP and UDP; displayHostname()
-#include "../UDPPlayHangman.h"									// Functions to play hangman using sendto() and recvfrom(), needs to be included after Socket.h
+#include "../UDPPlayHangman.h"									// Functions to play hangman using sendto() and recvfrom() (include after Socket.h)
 
 struct sockaddr_in client;									// Client address structure
 
@@ -53,9 +53,9 @@ count = recvfrom(sock,username,LINESIZE,0,(struct sockaddr*)&client,&cliLen);
 			username[count-1] = '\0';						// Terminate the end of the string (before the '\n' new line character)
 			printf("Username received: %s%s%s\n",BLUE,username,NORM);		// Format and display the username
 
-			childpid = fork();							// Creating child process of Server to handle client. Assigning unique process ID to the child.
-			if(childpid == 0) {
-				close(sock);								// Close listening socket, after forking a child process
+			childpid = fork();							// Creating child process of Server to handle client. Assigning unique process ID to child.
+			if(childpid == 0) {							// fork() returns 0 from child process
+				close(sock);							// Close listening socket, after forking a child process
 				playHangmanUDP(sock,sock,username);				// Play the game using the username entered to identify the player
 
 				printf("Finished Playing Hangman for %s%s%s\n",BLUE,username,NORM);	// Inform on server side the game has finished
@@ -71,13 +71,13 @@ count = recvfrom(sock,username,LINESIZE,0,(struct sockaddr*)&client,&cliLen);
 /*
 	Function to handle Zombie Processes
 */
-void sig_chld(int signo) {								// Signal handler catches SIGCHLD signal from terminating process
-	pid_t pid;									// The child process ID
-	int stat;									// The status of the child
+void sig_chld(int signo) {						// Signal handler catches SIGCHLD signal from terminating process
+	pid_t pid;							// The child process ID
+	int stat;							// The status of the child
 
-	while ((pid = waitpid(-1, &stat, WNOHANG)) > 0)					// Calling wait insufficient for preventing zombies, WNOHANG: tells waitpid not to block
-											// if child running that has not terminated.
-		printf("Child %s%d%s terminated\n", BLUE,pid,NORM);			// Display the process ID of the terminated child
+	while ((pid = waitpid(-1, &stat, WNOHANG)) > 0)			// Calling wait insufficient for preventing zombies, WNOHANG: tells waitpid not to block
+									// if child running that has not terminated.
+		printf("Child %s%d%s terminated\n", BLUE,pid,NORM);	// Display the process ID of the terminated child
 	
-	return;										// return not necessary here (void) - Reminder that return may interrupt a system call
+	return;								// return not necessary here (void) - Reminder that return may interrupt a system call
 }

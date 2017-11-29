@@ -32,13 +32,13 @@ int DRAW_HANGMAN_GFX = 0;						// Set whether to draw the graphics, 0 don't draw
 
 int main (int argc, char * argv []) {					// Arguments to specify another IP address, or default localhost/127.0.0.1
 	struct sockaddr_in si_other;
- 	int s, byteCount, win;						// socket, number of bytes recieved, & decide which end of game message displays
+ 	int s, byteCount, win;						// socket, byte counter, & decide which end of game message displays
 	int slen=sizeof(si_other);					// Size of the socket address
 	char userInput[LINESIZE];					// Send buffer, read in guess and sent to Server
 	char partword[LINESIZE];					// Input buffer, read in part word from Server
 
 	s = createUDPClient((argc == 2) ? argv[1]: SRV_IP);		// Create the IPv4 UDP socket
-	si_other = getServerAddress((argc == 2) ? argv[1]: SRV_IP, 	// CreateUDPSocket.h: Set up the address stucture for sending data to the server
+	si_other = getServerAddress((argc == 2) ? argv[1]: SRV_IP, 	// CreateUDPSocket.h: Set up address stucture for sending data to the server
 			(argc == 3) ? argv[2] : UDP_PORT);		// Enter IP address/port from command line, or use defaults
 
 	drawHangmanLogo(UDP_CLIENT);					// DrawHangman.h: Draw the game logo, with socket type label
@@ -56,7 +56,7 @@ int main (int argc, char * argv []) {					// Arguments to specify another IP add
 /*RECV*/	if (byteCount = recvfrom(s, &partword, LINESIZE, 0, (struct sockaddr *) &si_other, &slen) == -1) break;	
 		//printf("partword: %s\n", partword);			// Test part word received OK
 		if (partword[0] == 'b') break;				// Server sends "bye" when game is finished (BETTER IDEA: special character)
-		win = parseWordAndLives(partword, DRAW_HANGMAN_GFX);	// Hangman.h: parse the word, display it on screen, & win sets game over message
+		win = parseWordAndLives(partword, DRAW_HANGMAN_GFX);	// Hangman.h: parse the word, display it on screen, win sets game over message
 		
 		fgets(userInput, LINESIZE, stdin);			// Get the Players guess from the keyboard, standard input
 /*SEND*/	sendGuess(s, userInput, si_other);			// UDPPlayHangman.h: Send the guess input on Client side to Server

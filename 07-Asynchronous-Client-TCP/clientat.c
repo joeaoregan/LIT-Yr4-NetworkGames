@@ -66,7 +66,6 @@ int main(int argc, char **argv) {
 			write(sock, buf, byteCount);						// Otherwise, Send input to socket
 		}
 	}
-
 	close(sock);										// Close the socket
 	exit(0);										// Terminate the program, (terminating open descriptors)
 }

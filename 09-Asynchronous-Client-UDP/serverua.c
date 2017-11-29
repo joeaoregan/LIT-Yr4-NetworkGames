@@ -1,17 +1,10 @@
 /* 	
-	Joe O'Regan K00203642
-	17/11/2017
-
 	serverua.c
 
-	Test Asynchronous UDP Client
+	TEST: Asynchronous UDP Server (Already implemented in 06-Hangman-UDP)
 
-	20171117 	Asynchronous UDP client sends and receives, and terminates when finished
-	20171116 	CreateUDPSocket.h - abstracts the UDP socket creation code
-	20171115 	Fixed client continuing to connect
-	20171114 	Joe: Fixed warning messages by casting sockaddr_in to struct sockaddr*
-			And moved HandleErrors to parent folder	
-			Added random word selection	
+	Joe O'Regan K00203642
+	17/11/2017
 */
 
 #include <arpa/inet.h>

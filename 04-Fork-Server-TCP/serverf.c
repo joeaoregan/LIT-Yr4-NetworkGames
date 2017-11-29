@@ -1,5 +1,5 @@
  /* 
-	File: 		servf.c
+	File: 		serverf.c
 	Version: 	Modified version of Hangman Server
 	Modified By:	Joe O'Regan
 
@@ -61,18 +61,14 @@ int main (int argc, char * argv []) {							// Option to specify port as a comma
  		client_len = sizeof (client);						// Size of the client socket
  		if ((fd = accept (sock, (struct sockaddr *) &client, &client_len)) < 0)	// P41 A new descriptor is returned by accept() for each client that connects to our server
 			displayErrMsgStatus("Accepting Connection", 3);			// HandleErrors.h: Display the error message, and exit with status 3
-
 		/* DISPLAY CLIENT ADDRESS AND PORT */
 		if (inet_ntop(AF_INET, &client.sin_addr.s_addr, cliName, sizeof(cliName)) != NULL)
 			printf("Handling client %s/%d\n", cliName, CLI_PORT);
-
 		/* RANDOM NUMBER SEED - DIFFERENT WORD FOR EACH CLIENT CONNECTION */
 		srand(time(NULL));							// Seed/Reseed the random number. Moved to while loop so each client receives a different word
 
-		/*--- FORK - CREATE NEW CHILD PROCESS TO HANDLE THE CLIENT CONNECTION ----
-			The original server forks child process copies itself to handle incoming clients
-			Each child process has its own process ID fork returns 0 for a child, and the childs process ID for the parent 
-		*/
+/*--- FORK - CREATE NEW CHILD PROCESS TO HANDLE THE CLIENT CONNECTION ----
+The original server forks child process copies itself to handle incoming clients Each child process has its own process ID fork returns 0 for a child, and the childs process ID for the parent*/
 		if ( (childpid = fork()) == 0) {					// Creating child process of Server to handle client. Assigning unique process ID to the child.
 			close(sock);							// Close listening socket, after forking a child process
 			printf("%sForked Child Process%s To Handle Client %s/%d\n", 	// Show what the server has done with the connected Client

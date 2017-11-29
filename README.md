@@ -16,6 +16,8 @@ This is a group assignment for the 4th year Networked Games module. The group co
 ![alt text](https://raw.githubusercontent.com/joeaoregan/Yr4-NetworkGames-Hangman/master/Screenshots/5HangmanSelectTCP.png "Select Server Handling 2 Clients")
 Select Server Handling Two Clients
 
+---
+
 ## Features:
 
 This online text based version of Hangman includes the following features:
@@ -27,10 +29,13 @@ This online text based version of Hangman includes the following features:
   * All server and clients handling a dual TCP/IP stack (IPv4 and IPv6). With the client handling naming and the DNS.
     (The server can handle connections from both IPv4 and IPv6 clients, but the clients need to be separate programs)
 
+---
+
 ## Folders:
 
 Each folder contains a separate set of sockets, or individual Client and Server that is interchangeable with others.
 Matching pairs of sockets have Hangman in the folder title, specific Client/Server sockets are specified in the title.
+
 ######  1. [Original Hangman Listings](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/01-Original-Hangman-Listings)
 ######  2. [Hangman Modified TCP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/02-Hangman-Modified-TCP)
 ######  3. [Client Send Recv TCP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/03-Client-SendRecv-TCP)
@@ -41,9 +46,9 @@ Matching pairs of sockets have Hangman in the folder title, specific Client/Serv
 ######  8. [Hangman Dual Stack TCP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/08-Hangman-Dual-Stack-TCP)
 ######  9. [Asynchronous Client UDP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/09-Asynchronous-Client-UDP)
 ######  10. [Fork Server UDP](https://github.com/joeaoregan/Yr4-NetworkGames-Hangman/tree/master/10-Fork-Server-UDP)
-#
-#
+
 ---
+
 ##### 1-Original-Hangman-Listings
 
 The Original Hangman code, unmodified with errors. Using `read()` and `write()` to communicate
@@ -86,7 +91,7 @@ Using `createDualStackServerSocket()` a `sockaddr_in6` structure is used to stor
 The Dual stack client, can take an IPv4 or IPv6 command line parameter and create the appropriate socket, before connecting to the Server. 
 The Client communicates with the Server using `read()` and `write()` if an `IPv4` address is supplied, 
 `createClientSocketType()` uses a `sockaddr_in` address structure, for an `IPv6` address a `sockaddr_in6` address structure is created, 
-`createTCPClientDualStack` uses the IP address parameter, and the port number and calls `getaddrinfo()` 
+`createTCPClientDualStack()` uses the IP address parameter, and the port number and calls `getaddrinfo()` 
 creating an `addrinfo` address structure from which the address family can be determined.
 
 ##### 9-Asynchronous-Client-UDP
@@ -99,6 +104,8 @@ A concurrent version of the UDP Server using `fork()`, to fork a separate proces
 
 ###### This socket is incomplete
 
+---
+
 ## Running:
 
 For each listing or set of listings, see running and compile instructions in each folder
@@ -107,6 +114,8 @@ For each listing or set of listings, see running and compile instructions in eac
 gcc -o <compiled-app-name> <source-code-file-name>
 ```
 Ensure dependendent files are in the root directory
+
+---
 
 ## Header Files:
 

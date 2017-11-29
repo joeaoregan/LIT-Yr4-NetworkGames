@@ -19,14 +19,13 @@
 
 #include <syslog.h>
 
-char* word [] = {										// Array of words, one word will be selected randomly to guess
-  #include "words"										// words text file
+char* word [] = {								// Array of words, one word will be selected randomly to guess
+  #include "words"								// words text file
 };
 
-#define NUM_OF_WORDS (sizeof (word) / sizeof (word [0]))					// The number of words in the word array, used to randomly select a word
-#define MAX_LIVES 12										// The number of guesses the player can make
-#define LINESIZE 80										// Maximum size in the world of Any string
-
+#define NUM_OF_WORDS (sizeof (word) / sizeof (word [0]))			// Number of words in word array, used to randomly select a word
+#define MAX_LIVES 12								// Nhe number of guesses the player can make
+#define LINESIZE 80								// Maximum size in the world of Any string
 
 /*
 	SERVER:
@@ -34,27 +33,13 @@ char* word [] = {										// Array of words, one word will be selected randomly
 	Pick a word at random from the word list, displaying the Client IP & Port
 */
 char* selectRandomWord(char* ip, int port) {  
-  char* the_word = word[rand() % NUM_OF_WORDS];							// Select random word from words array for client to guess
+	char* the_word = word[rand() % NUM_OF_WORDS];				// Select random word from words array for client to guess
 
-  syslog (LOG_USER | LOG_INFO, "server chose hangman word %s", the_word);			// Message logging
+	syslog (LOG_USER | LOG_INFO, "server chose hangman word %s", the_word);	// Message logging
+	printf("Word: %s\"%s\"%s Randomly Selected For Client: %s/%d\n",	// Display the word selected for the client on the server, 
+			BLUE,the_word,NORM,ip,port);				// highlighting the word in red font
 
-  printf("Word: %s\"%s\"%s Randomly Selected For Client: %s/%d\n",BLUE,the_word,NORM,ip,port);	// Display the word selected for the client on the server, highlighting the word in red font
-
-  return the_word;										// Return the selected word
-}
-
-
-/*
-	SERVER:
-	Basic random word selection: 
-	Pick a word at random from the word list
-*/
-char* randomWord() {  
-  char* the_word = word[rand() % NUM_OF_WORDS];							// Select random word from words array for client to guess
-
-  printf("Word: \"%s\" Randomly Selected\n", the_word);						// Display the word selected for the client on the server
-
-  return the_word;										// Return the selected word
+	return the_word;							// Return the selected word
 }
 
 
@@ -63,10 +48,9 @@ char* randomWord() {
 	Initialise the part word to a string of hyphens
 */
 char initPartWord(char* partWord, int length) {
-	int i;											// For loop index
- 	for (i = 0; i < length; i++) partWord[i]='-';						// Set every character in the partword to a hyphern
- 	
-	partWord[i] = '\0';									// Set the string terminator
+	int i;									// For loop index
+ 	for (i = 0; i < length; i++) partWord[i]='-';				// Set every character in the partword to a hyphern 	
+	partWord[i] = '\0';							// Set the string terminator
 }
 
 
@@ -83,16 +67,15 @@ int parseWordAndLives(char* input, int draw) {
 	char word[20];
 	int lives;
 
-	sscanf(input, "%s %d", &(*word), &lives);						// Parse string data received from server into separate part-word and score variables
+	sscanf(input, "%s %d", &(*word), &lives);				// Parse string data received from server to part-word & score
 
-	if (draw) amputate(lives);								// If the draw paramater has been set, display the graphics for lives
+	if (draw) amputate(lives);						// If the draw paramater has been set, display the graphics for lives
 
-	printf("%sRemaining Guesses:%s\t%d\n", CYAN, NORM, lives);				// Guesses remaining
-	if (lives > 0) printf("%sWord To Guess:%s\t\t%s\n", CYAN, NORM, word);			// The part word string while game is playing OR
-	else printf("%sThe word was:%s\t\t%s\n", RED, NORM, word);				// The actual word if player loses
+	printf("%sRemaining Guesses:%s\t%d\n", CYAN, NORM, lives);		// Guesses remaining
+	if (lives > 0) printf("%sWord To Guess:%s\t\t%s\n", CYAN, NORM, word);	// The part word string while game is playing OR
+	else printf("%sThe word was:%s\t\t%s\n", RED, NORM, word);		// The actual word if player loses
 
-//	printf("lives: %d\n", lives);
-	return lives;										// Return the number of lives, to decide which game over message
+	return lives;								// Return the number of lives, to decide which game over message
 }
 
 
@@ -102,26 +85,26 @@ int parseWordAndLives(char* input, int draw) {
 */
 int correctGuess(char* word, char* part, char* guess) {
   //printf("part word before: %s\n", part);
-  int i, good_guess = 0;									// Set/reset good_guess to false
+  int i, good_guess = 0;							// Set/reset good_guess to false
     for (i = 0; i < strlen(word); i++) {
-      if (guess [0] == word [i]) {								// If the guess from client is a match
-        good_guess = 1;										// Set good guess true
-        part[i] = word[i];									// Fill the guessed letter in correct position
+      if (guess [0] == word [i]) {						// If the guess from client is a match
+        good_guess = 1;								// Set good guess true
+        part[i] = word[i];							// Fill the guessed letter in correct position
       }
     }
   //printf("part word after: %s\n", part);
 
-  return good_guess;										// Return 1 if good guess, and 0 if the letter isn't in the whole word
-}
+  return good_guess;								// Return 1 if good guess, and 0 if 
+}										// the letter isn't in the whole word
 
 
 /*
 	Check the game state, and decide if win/lose/continue
 */
 char checkGameState(char* word, char* part, int lives) {
-	if (strcmp (word, part) == 0) return 'W'; 						// If all letters guessed correctly. Game state becomes W ==> User Won
-	else if (lives <= 0) return 'L';							// If client has run out of guesses. Game state becomes L ==> User Lost
-
+	if (strcmp (word, part) == 0) return 'W'; 				// If all letters guessed correctly. Game = W (User Won)
+	else if (lives <= 0) return 'L';					// If client has run out of guesses. Game = L (User Lost)
+										
 	return 'I';	
 }
 
@@ -132,7 +115,7 @@ char checkGameState(char* word, char* part, int lives) {
 	Return 1 if game is finished
 */
 int checkGameOver(int state, char* outbuffer, char* word, int o, char* clname, int clport) {
- if (state == 'I') return 0;									// return false, skip the rest of this function
+ if (state == 'I') return 0;									// return false, skip the rest
 
   if (state == 'W') printf("%sClient %s/%d has guessed %s\"%s\"%s correctly!%s\n", 		// Display win message
 			GREEN,clname,clport,BLUE,word,GREEN,NORM); 				// Formatting with colour
@@ -170,6 +153,19 @@ int gameOverSelect(int state, char* outbuffer, char* word, int o, char* name, in
   }
 
     return 1;											// return true
+}
+*/
+/*
+	SERVER:
+	Basic random word selection: 
+	Pick a word at random from the word list
+
+char* randomWord() {  
+  char* the_word = word[rand() % NUM_OF_WORDS];							// Select random word from words array for client to guess
+
+  printf("Word: \"%s\" Randomly Selected\n", the_word);						// Display the word selected for the client on the server
+
+  return the_word;										// Return the selected word
 }
 */
 

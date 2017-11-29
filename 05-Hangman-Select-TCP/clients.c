@@ -1,5 +1,5 @@
  /* 
- 	File: 		client.c
+ 	File: 		clients.c
 	Version: 	Hangman Client using Select(), no read before loop, makes this different to other TCP client
 	Author:		Joe O'Regan
 

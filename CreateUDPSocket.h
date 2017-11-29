@@ -35,7 +35,7 @@
 
 /*
 	SERVER:
-	Function to create a UDP Server socket
+	Function to create and bind UDP Server socket
 */
 int createUDPServer(char* port) {
 	struct sockaddr_in srvAddr;
@@ -61,7 +61,7 @@ int createUDPServer(char* port) {
 
 /*
 	CLIENT:
-	Function to create a UDP Client socket
+	Function to create and return UDP Client socket
 */
 int createUDPClient(char* server_name){
 	struct sockaddr_in srvAddr;						// IPv4 address stucture
@@ -77,7 +77,7 @@ int createUDPClient(char* server_name){
 
 /*
 	SERVER:
-	Get the address of the server
+	Get the address of the server using inet_aton(), and return an IPv4 sockaddr_in address structure.
 */
 struct sockaddr_in getServerAddress(char* server_name, char* port){
 	struct sockaddr_in srvAddr;						// IPv4 address stucture

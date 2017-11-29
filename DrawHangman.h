@@ -142,15 +142,16 @@ void drawHangmanLogo(int desc) {
 	This function displays the graphical version of the lives remaining
 	First parsing the string from the server, to separate the part word and number of lives left
 	called by parseWordAndLives() which passes the lives/guesses remaining to it to draw the hangman
+	Takes a parameter of the number of lives/guesses remaining to draw the hangman game
 */
-void amputate(int lives) {							// Takes a parameter of the number of lives/guesses remaining to draw the hangman game
+void amputate(int lives) {						
 	printf("\n");								// Start on new line
 	if (lives == 12) {							// Full
 	  for (int h = 2; h < 9; ++h) {
 	    printf("%s\n", hangman[h]);	    
 	  }
-	  printf("As if hanging wasn't bad enough\n");				// Display not so funny the millionth time around message for Player
-	  printf("You are also facing the threat of amputation!\n");
+	  printf("As if hanging wasn't bad enough\n");				// Display not so funny the millionth time 
+	  printf("You are also facing the threat of amputation!\n");		// around message for Player
 	}
 	if (lives == 11) {							// Left Foot
 	  for (int h = 2; h < 9; ++h){

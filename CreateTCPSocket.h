@@ -85,7 +85,7 @@ int createTCPServerSocket(char* port) {
  	if(rtnVal != 0) displayErrGaiStr("getaddrinfo() fail",1, rtnVal);		// getaddrinfo() will return an error code using gai_strerror
 
   	int srv = -1;									// Initialise the server socket
-  	for (struct addrinfo *addr = addr2; addr != NULL; addr = addr->ai_next) {
+  	for (struct addrinfo *addr = addr2; addr != NULL; addr = addr->ai_next) {	// Search the list of addresses
 		srv = socket(addr2->ai_family, addr2->ai_socktype, addr2->ai_protocol); // Create a TCP socket
 		if (srv < 0) continue;       						// Socket creation failed; try next address
 
@@ -105,7 +105,7 @@ int createTCPServerSocket(char* port) {
 	    	}
 
     		close(srv);  								// Close and try again
-    		srv = -1;								// Reset the socket
+    		srv = -1;								// Reset the socket, and try the next address in the loop
   	}
 
 	freeaddrinfo(addr2);								// Frees memory getaddrinfo() allocated for dynamically allocated 
@@ -175,8 +175,8 @@ void displayIPAndPort(struct sockaddr_storage* cli,int clilen,char* name,int* so
 
 /*
 	CLIENT:
-	Use the IP address and protocol from the client, entered as command line params
-	or using default values, and figure out the protocol used, to create a suitable 
+	Use the IP address and protocol from the client, entered as a command line parameter
+	or using the stored default values, and figure out the protocol used, to create a suitable 
 	socket to connect to the Server. Default value is IPv4 if know command line
 	parameters are entered
 */
@@ -191,7 +191,7 @@ int createTCPClientDualStack(char* serverIP, int port){					// Use the IP addres
 	hints.ai_flags = AI_PASSIVE;     						// fill in my IP for me	
 
 	int rtnVal = getaddrinfo(serverIP, "1066", &hints, &servinfo);			// Specify port number or use default 1066, address structure, 
-	if(rtnVal != 0) displayErrGaiStr("getaddrinfo() fail", 1, rtnVal);		// DieWithUserMessage("getaddrinfo() failed", gai_strerror(rtnVal));
+	if(rtnVal != 0) displayErrGaiStr("getaddrinfo() fail", 1, rtnVal);		// gai_strerror() displays an error message based on rtnVal
 	
 	if(servinfo->ai_family == AF_INET) {						// Check the address family
 		printf("Creating IPv4 Socket Connection To: %s/%d\n", serverIP,port);	// Notify the user of the type of socket (IPv4)

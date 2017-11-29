@@ -24,15 +24,14 @@
 */
 
 #include <stdio.h>
-#include <string.h>											// strlen()
-#include <stdlib.h>											// exit(), rand(), srand()
-#include <unistd.h>
-#include <time.h>											// time(), Seed the random number
-#include "../DrawHangman.h"										// Draw graphics and add colour, needs to be included before Hangman.h
-#include "../Hangman.h"											// Functions to play hangman
-#include "../CreateUDPSocket.h"										// Functions to create and use UDP sockets
-#include "../Socket.h"											// Socket functions intended for use with both TCP and UDP; displayHostname()
-#include "../UDPPlayHangman.h"										// Functions to play hangman using sendto() and recvfrom(), needs to be included after Socket.h
+#include <string.h>			// strlen()
+#include <stdlib.h>			// exit(), rand(), srand()
+#include <time.h>			// time(), Seed the random number
+#include "../DrawHangman.h"		// Draw graphics and add colour, needs to be included before Hangman.h
+#include "../Hangman.h"			// Functions to play hangman
+#include "../CreateUDPSocket.h"		// Functions to create and use UDP sockets
+#include "../Socket.h"			// Socket functions intended for use with both TCP and UDP; displayHostname()
+#include "../UDPPlayHangman.h"		// Functions to play hangman using sendto() and recvfrom() (include after Socket.h)
 
 
 int main (int argc, char * argv []) {									// Option to specify port as a command line parameter
@@ -50,7 +49,7 @@ int main (int argc, char * argv []) {									// Option to specify port as a com
 		if((count = recvfrom(sock,username,LINESIZE,0,(struct sockaddr*) &cliAddr, &slen))==-1) {// Server receives 1st, recvfrom returns -1 if error
 			//displayErrMsg("Username recvfrom() Failed");
 			printf("No more input from %s%s%s\n",BLUE,username,NORM);			// Display end of input message
-			break;										// Just leave the loop without fuss or errors, if no more input is received
+			break;										// Leave the loop without fuss or errors, if no more input is received
 		} else {		
 			username[count-1] = '\0';							// Terminate the end of the string (before the '\n' new line character)
 			printf("Username received: %s%s%s\n",BLUE,username,NORM);			// Format and display the username

@@ -4,7 +4,7 @@
 /*
 	Data structure containing the variable necessary to retain game state
 */
-struct sessionData {						// Store the game state, (XXX maybe use a linked list of structs instead of array)
+struct sessionData {						// Store the game state 
 	int sock;						// The client socket that is connected
 	char* word;						// Store the current full word
 	char partWord[LINESIZE];				// Store the current part word
@@ -15,7 +15,6 @@ struct sessionData {						// Store the game state, (XXX maybe use a linked list 
 	char ip[INET_ADDRSTRLEN];				// client IP
 	int port;						// client port
 };
-
 
 /*
 	Reset or clear sessionData variables when a Client has finished playing
