@@ -27,12 +27,12 @@ A Hangman **UDP Client** and **UDP Server** using `sendto()` and `recvfrom()` to
 ##### Files:
 
 Code and application included in folder:
-| --- | File        | Description           |
+| No. | File | Description |
 | --- | ------------- |-------------|
-| 1. | **serveru.c** | UDP Server Code |
-| 2. | **clientu.c** | UDP Client Code |
-| 3. | **srv** | UDP Server Application |
-| 4. | **cli** | UDP Client Application |
+| 1 | **serveru.c** | UDP Server Code |
+| 2 | **clientu.c** | UDP Client Code |
+| 3 | **srv** | UDP Server Application |
+| 4 | **cli** | UDP Client Application |
 
 ##### Dependencies (Placed in root directory):
 Files that the Select Server is dependent on to compile:

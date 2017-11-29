@@ -38,12 +38,12 @@ creating an `addrinfo` address structure from which the address family can be de
 ##### Files:
 
 Code and application included in folder:
-| --- | File        | Description           |
+| No.| File | Description |
 | --- | ------------- |-------------|
-| 1. | **serverds.c** | Dual Stack Server Code |
-| 2. | **clientds.c** | Dual Stack Client Code |
-| 3. | **srv** | Dual Stack Server Application |
-| 4. | **cli** | Dual Stack Client Application |
+| 1 | **serverds.c** | Dual Stack Server Code |
+| 2 | **clientds.c** | Dual Stack Client Code |
+| 3 | **srv** | Dual Stack Server Application |
+| 4 | **cli** | Dual Stack Client Application |
 
 ##### Dependencies (Placed in root directory):
 Files the Dual Stack Server is dependent on: 

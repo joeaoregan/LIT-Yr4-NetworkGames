@@ -27,12 +27,12 @@ Client and Server communicating over TCP WireShark Capture
 ##### Files:
 
 Code and application included in folder:
-| --- | File        | Description           |
+| No. | File | Description |
 | --- | ------------- |-------------|
-| 1. | **serverm.c** | Modified Server Code |
-| 2. | **clientm.c** | Modified Client Code |
-| 3. | **srv** | Server Application |
-| 4. | **cli** | Client Application |
+| 1 | **serverm.c** | Modified Server Code |
+| 2 | **clientm.c** | Modified Client Code |
+| 3 | **srv** | Server Application |
+| 4 | **cli** | Client Application |
 
 ##### Dependencies (Placed in root directory):
 Files that the client is dependent on to compile:

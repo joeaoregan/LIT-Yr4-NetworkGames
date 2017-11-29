@@ -24,11 +24,11 @@ The **Asynchronous TCP Client** handles input asynchronously from the socket and
 ##### Files:
 
 Code and application included in folder:
-| --- | File        | Description           |
+| No. | File | Description |
 | --- | ------------- |-------------|
-| 1. | **clientat.c** | Asynchronous TCP Client Code |
-| 2. | **cla** | Asynchronous Client Application |
-| 3. | **srvf** | Forking Server Application (04-Fork-Server-TCP) |
+| 1 | **clientat.c** | Asynchronous TCP Client Code |
+| 2 | **cla** | Asynchronous Client Application |
+| 3 | **srvf** | Forking Server Application (04-Fork-Server-TCP) |
 
 ##### Dependencies (Placed in root directory):
 Files the Asynchronous Client is dependent on:

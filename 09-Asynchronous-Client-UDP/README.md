@@ -24,12 +24,12 @@ An **Asynchronous UDP Client** that can handle input asynchronously from socket 
 ##### Files:
 
 Code and application included in folder:
-| --- | File        | Description           |
+| No. | File | Description |
 | --- | ------------- |-------------|
-| 1. | **clientua.c** | Asynchronous UDP Client code |
-| 2. | **serverua.c** | TEST: UDP Server code |
-| 3. | **cli** | synchronous UDP Client application |
-| 4. | **srv** | TEST: UDP Server application |
+| 1 | **clientua.c** | Asynchronous UDP Client code |
+| 2 | **serverua.c** | TEST: UDP Server code |
+| 3 | **cli** | synchronous UDP Client application |
+| 4 | **srv** | TEST: UDP Server application |
 
 ##### Dependencies (Placed in root directory):
 Files the **Asynchronous UDP Client** is dependent on:

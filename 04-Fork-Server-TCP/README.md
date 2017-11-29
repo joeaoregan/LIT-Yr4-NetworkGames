@@ -23,11 +23,11 @@ A concurrent version of the **TCP Server** using `fork()`, to fork a separate pr
 ##### Files:
 
 Code and application included in folder:
-| --- | File        | Description           |
+| No. | File | Description |
 | --- | ------------- |-------------|
-| 1. | **serverf.c** | Concurrent Forking Server Code |
-| 2. | **srv** | Concurrent Forking Server Application |
-| 3. | **cli** | Test: Client Application |
+| 1 | **serverf.c** | Concurrent Forking Server Code |
+| 2 | **srv** | Concurrent Forking Server Application |
+| 3 | **cli** | Test: Client Application |
 
 ##### Dependencies (Placed in root directory):
 Files that the client is dependent on to compile:

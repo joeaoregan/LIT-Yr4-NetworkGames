@@ -26,12 +26,12 @@ A concurrent version of the **UDP Server** using `fork()`, to fork a separate pr
 ##### Files:
 
 Code and application included in folder:
-| --- | File        | Description           |
+| No. | File | Description |
 | --- | ------------- |-------------|
-| 1. | **serveruf.c** | UDP Fork Server Code |
-| 2. | **clientua.c** | TEST: Asynchronous UDP Client Code |
-| 3. | **srv** | UDP Fork Server Application |
-| 4. | **cli** | TEST: Asynchronous UDP Client Application |
+| 1 | **serveruf.c** | UDP Fork Server Code |
+| 2 | **clientua.c** | TEST: Asynchronous UDP Client Code |
+| 3 | **srv** | UDP Fork Server Application |
+| 4 | **cli** | TEST: Asynchronous UDP Client Application |
 
 ##### Dependencies (Placed in root directory):
 

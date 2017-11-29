@@ -121,18 +121,18 @@ Ensure dependendent files are in the root directory
 
 ## Header Files:
 
-| File        | Description           |
-| ------------- |-------------|
-| 1. **AddressFunctions.h** | Intended to hold address functions such as displaying an *IP Address* and *Port number* |
-| 2. **CreateTCPSocket.h** | Functions to create and handle *TCP* sockets |
-| 3. **CreateUDPSocket.h** | Funcions to create and handle *UDP* sockets |
-| 4. **DrawHangman.h** | Draw the hangman ASCII graphics and display coloured text |
-| 5. **GameState.h** | Functionality required to hold state for a game |
-| 6. **HandleErrors.h** | Display Error messages, with exit status |
-| 7. **Hangman.h** | Functions to play Hangman common to both *TCP* and *UDP* |
-| 8. **Socket.h** | Socket Functions common to both *TCP* and *UDP* |
-| 9. **TCPPlayHangman.h** | Functions to play Hangman, modifying the original play_hangman() function using *TCP* |
-| 10. **UDPPlayHangman.h** | Functions to play Hangman, modifying the original play_hangman() function using *UDP* |
+| No. | File        | Description |
+| --- | ------------- |-------------|
+| 1 | **AddressFunctions.h** | Intended to hold address functions such as displaying an *IP Address* and *Port number* |
+| 2 | **CreateTCPSocket.h** | Functions to create and handle *TCP* sockets |
+| 3 | **CreateUDPSocket.h** | Funcions to create and handle *UDP* sockets |
+| 4 | **DrawHangman.h** | Draw the hangman ASCII graphics and display coloured text |
+| 5 | **GameState.h** | Functionality required to hold state for a game |
+| 6 | **HandleErrors.h** | Display Error messages, with exit status |
+| 7 | **Hangman.h** | Functions to play Hangman common to both *TCP* and *UDP* |
+| 8 | **Socket.h** | Socket Functions common to both *TCP* and *UDP* |
+| 9 | **TCPPlayHangman.h** | Functions to play Hangman, modifying the original play_hangman() function using *TCP* |
+| 10 | **UDPPlayHangman.h** | Functions to play Hangman, modifying the original play_hangman() function using *UDP* |
 
 ## Other Files:
 

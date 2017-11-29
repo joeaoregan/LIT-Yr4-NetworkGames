@@ -23,12 +23,12 @@ A concurrent version of the **TCP Server** using `select()`, to handle input fro
 ##### Files:
 
 Code and application included in folder:
-| --- | File        | Description           |
+| No. | File | Description |
 | --- | ------------- |-------------|
-| 1. | **servers.c** | Concurrent Select Server Code |
-| 2. | **client.c** | Test: Client Code |
-| 3. | **srv** | Concurrent Select Server Application |
-| 4. | **cli** | Test: Client Application |
+| 1 | **servers.c** | Concurrent Select Server Code |
+| 2 | **client.c** | Test: Client Code |
+| 3 | **srv** | Concurrent Select Server Application |
+| 4 | **cli** | Test: Client Application |
 
 ##### Dependencies (Placed in root directory):
 Files that the **Select Server** is dependent on to compile:
