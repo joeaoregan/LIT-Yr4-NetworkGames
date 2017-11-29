@@ -25,11 +25,12 @@ The Original Hangman code, unmodified with errors. Using `read()` and `write()` 
 ##### Files:
 
 Code and application included in folder:
-| No. | File        | Description |
-| --- | ------------- |-------------|
-| 1. | **hangserver_iter.c** | Original Server Code (Unchanged) |
-| 2. | **hangclient.c** | Original Client Code (Unchanged) |
-| 3. | **words** | List of words to randomly from |
+
+No. | File | Description 
+--- | --- | ---
+1. | **hangserver_iter.c** | Original Server Code (Unchanged)
+2. | **hangclient.c** | Original Client Code (Unchanged)
+3. | **words** | List of words to randomly from
 
 ## Running:
 To run the existing compiled **Server**:
