@@ -50,7 +50,7 @@ int main (int argc, char * argv []) {							// Option to specify port as a comma
 	pid_t childpid;									// pid_t: signed int data type, capable of representing  a process ID. 
 	void sig_chld(int);								// Signal handling function, catches SIGCHLD signal from terminating process
 
-	sock = createTCPServerSocket((argc == 2) ? argv[1] : TCP_PORT);			// IPv4 only: Functionality to create socket moved to separate file CreateTCPServer.h
+	sock = createTCPServerSocket((argc == 2) ? argv[1] : TCP_PORT);			// CreateTCPSocket.h: IPv4 only: Functionality to create socket moved to separate file CreateTCPServer.h
 
 	// The UNP books signal() function calls POSIX sigaction	
 	signal(SIGCHLD, sig_chld);							// SIGCHLD signal sent to parent of a child process when it exits, is interupted, 

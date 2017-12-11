@@ -67,14 +67,14 @@ int createDualStackServerSocket(char* port){
 	Function to create a Server socket using IPv4 TCP protocol
 	Taking a parameter of the port number to run the Server on
 	addr1 specifies the criteria for the address stuctures
-	addr2 holds the values returned by getddrinfo()
+	addr2 holds the values returned by getaddrinfo()
 */
 int createTCPServerSocket(char* port) {
 	int reuse = 1;
 	// Construct the server address structure
 	struct addrinfo addr1;                   					// Criteria for address match
 	memset(&addr1, 0, sizeof(addr1)); 						// Zero out structure
-	addr1.ai_family = AF_UNSPEC;             					// Any address family
+	addr1.ai_family = AF_UNSPEC;             					// Any address family (IPv4 or IPv6)
 	addr1.ai_flags = AI_PASSIVE;             					// Accept on any address/port
 	addr1.ai_socktype = SOCK_STREAM;         					// Only stream sockets
 	addr1.ai_protocol = IPPROTO_TCP;         					// Only TCP protocol
