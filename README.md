@@ -8,6 +8,16 @@
  __|___________                 Samantha Marah
 ```
 
+# Networked Games
+## Joe O'Regan (K00203642), Samantha Marah (K00200782), and Jason Foley (K00186690)
+## Year 4, Semester 7
+### BSc Computing (Games Design and Development)
+#### Limerick Institute of Technology
+
+---
+
+## Networked Games CA
+
 This is a group assignment for the 4th year Networked Games module. The group consists of:
   * [Joe O'Regan](https://github.com/joeaoregan)
   * [Samantha Marah](https://github.com/jasfoley)
